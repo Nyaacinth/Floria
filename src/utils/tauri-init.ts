@@ -45,7 +45,7 @@ const WEBVIEW_NATIVEIFY_CSS = `
         cursor: text;
     }
 `
-    .replaceAll(/\s+/g, "")
+    .replaceAll(/\s+/g, " ")
     .trim()
 
 function isEditableElement(elm: HTMLElement) {
@@ -57,30 +57,36 @@ function isEditableElement(elm: HTMLElement) {
     return false
 }
 
-function doTauriInit() {
-    // Inject stylesheet that nativefies tauri webview
-    const styleElement = document.createElement("style")
-    styleElement.innerHTML = WEBVIEW_NATIVEIFY_CSS
-    document.head.appendChild(styleElement)
+const doTauriInit = (() => {
+    let didTauriInit = false
 
-    // Disable F5, Ctrl+R, and Cmd+R from reloading the page
-    document.addEventListener("keydown", (event) => {
-        if (event.key === "F5" || (event.ctrlKey && event.key === "r") || (event.metaKey && event.key === "r")) {
+    return function doTauriInit() {
+        if (didTauriInit) return
+        // Inject stylesheet that nativefies tauri webview
+        const styleElement = document.createElement("style")
+        styleElement.innerHTML = WEBVIEW_NATIVEIFY_CSS
+        document.head.appendChild(styleElement)
+
+        // Disable F5, Ctrl+R, and Cmd+R from reloading the page
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "F5" || (event.ctrlKey && event.key === "r") || (event.metaKey && event.key === "r")) {
+                event.preventDefault()
+            }
+        })
+
+        // Only allow context menu on editable elements
+        document.addEventListener("contextmenu", (event) => {
+            if (isEditableElement(event.target as HTMLElement)) return
             event.preventDefault()
-        }
-    })
+        })
 
-    // Only allow context menu on editable elements
-    document.addEventListener("contextmenu", (event) => {
-        if (isEditableElement(event.target as HTMLElement)) return
-        event.preventDefault()
-    })
-
-    // Paired with `"visible": false` in `tauri.conf.json` to show window after page loaded to avoid flickers
-    const thisWindow = getCurrentWindow()
-    thisWindow.show()
-    thisWindow.setFocus()
-}
+        // Paired with `"visible": false` in `tauri.conf.json` to show window after page loaded to avoid flickers
+        const thisWindow = getCurrentWindow()
+        thisWindow.show()
+        thisWindow.setFocus()
+        didTauriInit = true
+    }
+})()
 
 // Wrapper, making sure it only runs once after page load in tauri, use your own `useEffect` alternative respectively.
 export function useTauriInit() {
