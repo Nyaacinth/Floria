@@ -2,7 +2,7 @@ import { isTauri } from "@tauri-apps/api/core"
 import { getCurrentWindow } from "@tauri-apps/api/window"
 import { useEffect } from "react"
 
-const EDITABLE_SELECTORS = [
+const editableSelectors = [
     'input[type="text"]',
     'input[type="password"]',
     'input[type="email"]',
@@ -16,7 +16,7 @@ const EDITABLE_SELECTORS = [
 ]
 
 // Paired with <div id="root" style="display: contents" />
-const WEBVIEW_NATIVEIFY_CSS = `
+const webviewNativefyCSS = `
     html {
         overscroll-behavior: none;
         overflow: hidden;
@@ -39,7 +39,7 @@ const WEBVIEW_NATIVEIFY_CSS = `
         user-select: none;
         cursor: default;
     }
-    ${EDITABLE_SELECTORS.join(", ")} {
+    ${editableSelectors.join(", ")} {
         -webkit-user-select: text;
         user-select: text;
         cursor: text;
@@ -49,7 +49,7 @@ const WEBVIEW_NATIVEIFY_CSS = `
     .trim()
 
 function isEditableElement(elm: HTMLElement) {
-    for (const selector of EDITABLE_SELECTORS) {
+    for (const selector of editableSelectors) {
         if (elm.matches(selector)) {
             return true
         }
@@ -64,7 +64,7 @@ const doTauriInit = (() => {
         if (didTauriInit) return
         // Inject stylesheet that nativefies tauri webview
         const styleElement = document.createElement("style")
-        styleElement.innerHTML = WEBVIEW_NATIVEIFY_CSS
+        styleElement.innerHTML = webviewNativefyCSS
         document.head.appendChild(styleElement)
 
         // Disable F5, Ctrl+R, and Cmd+R from reloading the page
