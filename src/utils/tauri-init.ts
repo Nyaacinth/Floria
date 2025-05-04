@@ -84,6 +84,7 @@ const doTauriInit = (() => {
         const thisWindow = getCurrentWindow()
         thisWindow.show()
         thisWindow.setFocus()
+
         didTauriInit = true
     }
 })()
