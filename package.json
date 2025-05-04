@@ -11,9 +11,9 @@
     "dependencies": {
         "@headlessui/react": "^2.2.2",
         "@tauri-apps/api": "^2.5.0",
-        "animejs": "^4.0.2",
         "jotai": "^2.12.3",
         "lodash-es": "^4.17.21",
+        "motion": "^12.9.4",
         "react": "^19.1.0",
         "react-dom": "^19.1.0",
         "react-use": "^17.6.0",
