@@ -6,9 +6,7 @@ import babel from "vite-plugin-babel"
 
 export default defineConfig({
     plugins: [
-        macros({
-            attrs: { type: "macro" }
-        }),
+        macros(),
         babel({
             filter: /\.[jt]sx$/,
             babelConfig: {
