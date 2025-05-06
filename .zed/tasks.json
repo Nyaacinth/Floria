@@ -1,0 +1,7 @@
+[
+    {
+        "label": "Launch App in Development Mode",
+        "command": "bun run tauri dev",
+        "allow_concurrent_runs": false
+    }
+]
