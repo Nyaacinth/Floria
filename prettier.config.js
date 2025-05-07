@@ -13,5 +13,7 @@ export default {
     htmlWhitespaceSensitivity: "ignore",
     endOfLine: "lf",
     embeddedLanguageFormatting: "auto",
-    singleAttributePerLine: false
+    singleAttributePerLine: false,
+    tailwindStylesheet: "./src/main.css",
+    plugins: ["prettier-plugin-tailwindcss"]
 }
