@@ -10,6 +10,7 @@ export default defineConfig({
         macros(),
         babel({
             filter: /\.[jt]sx?$/,
+            exclude: ["node_modules"],
             babelConfig: {
                 plugins: [
                     ["@babel/plugin-syntax-typescript", { isTSX: true }],
