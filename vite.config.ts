@@ -17,7 +17,11 @@ export default defineConfig({
                 ]
             },
             loader: (fpath) => {
-                return extname(fpath).replace(/^\./, "") as "js" | "ts" | "jsx" | "tsx"
+                const validLoaders = ["js", "ts", "jsx", "tsx"] as const
+                const loader = extname(fpath).replace(/^\./, "")
+                if (!(validLoaders as unknown as string[]).includes(loader))
+                    throw new Error(`Unsupported file extension: ${loader}`)
+                return loader as (typeof validLoaders)[number]
             }
         }),
         react(),
