@@ -1,8 +1,0 @@
-<svg>
-    <defs>
-        <filter id="liquid_glass_filter" x="0%" y="0%" width="100%" height="100%"
-            filterUnits="objectBoundingBox">
-            <feDisplacementMap scale="200" />
-        </filter>
-    </defs>
-</svg>
