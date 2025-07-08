@@ -8,6 +8,7 @@ pub fn run() {
         .setup(|app| {
             let main_window = app.get_webview_window("main").unwrap();
 
+            // Open devtools
             #[cfg(debug_assertions)]
             main_window.open_devtools();
 
