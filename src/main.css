@@ -1,1 +1,5 @@
 @import "tailwindcss";
+
+:root {
+    --decorum-titlebar-height: 32px;
+}

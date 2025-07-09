@@ -1,3 +1,4 @@
+import { Theme } from "@radix-ui/themes"
 import type { FunctionComponent } from "react"
 import { Route, Router } from "wouter"
 import { useTauriInit } from "./hooks/useTauriInit"
@@ -7,8 +8,10 @@ export const MainApp: FunctionComponent = () => {
     useTauriInit()
 
     return (
-        <Router>
-            <Route path="/" component={Splash} />
-        </Router>
+        <Theme accentColor="mint" panelBackground="translucent">
+            <Router>
+                <Route path="/" component={Splash} />
+            </Router>
+        </Theme>
     )
 }
