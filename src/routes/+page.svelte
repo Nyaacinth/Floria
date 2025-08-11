@@ -4,6 +4,8 @@
     import { downloadTextFile } from "$lib/utils/downloadTextFile"
     import { onMount } from "svelte"
 
+    let storyContent = $state(inkyTestString)
+
     let inkDisplay = $state<InkDisplay>()
 
     const uniqueId = $props.id()
@@ -17,31 +19,56 @@
     <div
         class="absolute top-6 left-[15%] h-[calc(100%-4rem)] w-[calc(100%-2*15%)] rounded-sm bg-[#ffffffcf] p-4 shadow-2xl backdrop-blur-lg"
     >
-        <InkDisplay bind:this={inkDisplay} storyContent={inkyTestString} />
+        {#key storyContent}
+            <InkDisplay bind:this={inkDisplay} {storyContent} />
+        {/key}
     </div>
     <div class="absolute bottom-0 h-5 w-full bg-[#000000cf] px-2 text-[0.8rem] text-[#ffffffef]">
-        {#snippet spacedButton(text: string, onclick?: () => void)}
-            <button class="mx-2" {onclick}>[{text}]</button>
-        {/snippet}
-        {@render spacedButton("保存", () => {
-            const saves = inkDisplay?.story.saveToStateJson()
-            if (saves) {
-                downloadTextFile("Saved-State.json", saves)
-            }
-        })}
-        {@render spacedButton("读取", () => {
-            document.getElementById(`${uniqueId}-file-selector`)?.click()
-        })}
+        <div class="relative h-full w-full">
+            {#snippet spacedButton(text: string, onclick?: () => void)}
+                <button class="mx-2" {onclick}>[{text}]</button>
+            {/snippet}
+            {@render spacedButton("保存", () => {
+                const saves = inkDisplay?.story.saveToStateJson()
+                if (saves) {
+                    downloadTextFile("Saved-State.json", saves)
+                }
+            })}
+            {@render spacedButton("读取", () => {
+                document.getElementById(`${uniqueId}-load-saves-file-selector`)?.click()
+            })}
+            <button
+                class="absolute right-0 mx-2"
+                onclick={() => {
+                    document.getElementById(`${uniqueId}-load-story-file-selector`)?.click()
+                }}
+            >
+                [载入新故事]
+            </button>
+        </div>
     </div>
     <input
         type="file"
-        id={`${uniqueId}-file-selector`}
+        id={`${uniqueId}-load-saves-file-selector`}
         accept=".json"
         style:display="none"
-        onchange={(e) => {
-            const uploader = document.getElementById(`${uniqueId}-file-selector`)! as HTMLInputElement
+        onchange={() => {
+            const uploader = document.getElementById(`${uniqueId}-load-saves-file-selector`)! as HTMLInputElement
             uploader.files?.[0].text().then((value) => {
                 inkDisplay?.recoverFromStateJsonAndRefreshHistory(value)
+                uploader.value = ""
+            })
+        }}
+    />
+    <input
+        type="file"
+        id={`${uniqueId}-load-story-file-selector`}
+        accept=".json"
+        style:display="none"
+        onchange={() => {
+            const uploader = document.getElementById(`${uniqueId}-load-story-file-selector`)! as HTMLInputElement
+            uploader.files?.[0].text().then((value) => {
+                storyContent = value
                 uploader.value = ""
             })
         }}
