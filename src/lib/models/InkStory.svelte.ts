@@ -1,7 +1,7 @@
 import { Story } from "inkjs"
 import { ErrorType } from "inkjs/engine/Error"
 
-export class InkStory {
+export class ReactiveInkStory {
     private story: [version: number, Story] = $state.raw([0, null as unknown as Story /* Init in Ctor */])
 
     getInnerStoryWithoutReactivity() {
@@ -15,9 +15,19 @@ export class InkStory {
         this.story = newState
     }
 
-    constructor(storyContent: string) {
+    markStateAsDirtyFromExternal({ Justification }: { Justification: string }) {
+        if (typeof Justification !== "string" || Justification.length <= 3)
+            throw new Error("You need your justification to mark the state as dirty from external libs")
+        this.markStateAsDirty()
+    }
+
+    private constructor(storyContent: string) {
         this.story[1] = new Story(storyContent)
         this.story[1].onError = this.defaultHandler_onError
+    }
+
+    static new(storyContent: string) {
+        return new ReactiveInkStory(storyContent)
     }
 
     private defaultHandler_onError = (message: string, type: ErrorType) => {

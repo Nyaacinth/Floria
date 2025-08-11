@@ -1,5 +1,71 @@
-<h1>Welcome to SvelteKit</h1>
-<p>
-    Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a>
-    to read the documentation
-</p>
+<script lang="ts">
+    import inkyTestString from "$lib/assets/data/inky-test.json?raw"
+    import InkDisplay from "$lib/components/InkDisplay.svelte"
+    import { downloadTextFile } from "$lib/utils/downloadTextFile"
+    import { onMount } from "svelte"
+
+    let inkDisplay = $state<InkDisplay>()
+
+    const uniqueId = $props.id()
+
+    onMount(() => {
+        ;(window as any).myInkDisplay = inkDisplay
+    })
+</script>
+
+<div class="isometric-background relative h-full w-full">
+    <div
+        class="absolute top-6 left-[15%] h-[calc(100%-4rem)] w-[calc(100%-2*15%)] rounded-sm bg-[#ffffffcf] p-4 shadow-2xl backdrop-blur-lg"
+    >
+        <InkDisplay bind:this={inkDisplay} storyContent={inkyTestString} />
+    </div>
+    <div class="absolute bottom-0 h-5 w-full bg-[#000000cf] px-2 text-[0.8rem] text-[#ffffffef]">
+        {#snippet spacedButton(text: string, onclick?: () => void)}
+            <button class="mx-2" {onclick}>[{text}]</button>
+        {/snippet}
+        {@render spacedButton("保存", () => {
+            const saves = inkDisplay?.story.saveToStateJson()
+            if (saves) {
+                downloadTextFile("Saved-State.json", saves)
+            }
+        })}
+        {@render spacedButton("读取", () => {
+            document.getElementById(`${uniqueId}-file-selector`)?.click()
+        })}
+    </div>
+    <input
+        type="file"
+        id={`${uniqueId}-file-selector`}
+        accept=".json"
+        style:display="none"
+        onchange={(e) => {
+            const uploader = document.getElementById(`${uniqueId}-file-selector`)! as HTMLInputElement
+            uploader.files?.[0].text().then((value) => {
+                inkDisplay?.recoverFromStateJsonAndRefreshHistory(value)
+                uploader.value = ""
+            })
+        }}
+    />
+</div>
+
+<style>
+    .isometric-background {
+        background-color: #99bcac44;
+        opacity: 0.8;
+        background-image:
+            linear-gradient(30deg, #99bcac 12%, transparent 12.5%, transparent 87%, #99bcac 87.5%, #99bcac),
+            linear-gradient(150deg, #99bcac 12%, transparent 12.5%, transparent 87%, #99bcac 87.5%, #99bcac),
+            linear-gradient(30deg, #99bcac 12%, transparent 12.5%, transparent 87%, #99bcac 87.5%, #99bcac),
+            linear-gradient(150deg, #99bcac 12%, transparent 12.5%, transparent 87%, #99bcac 87.5%, #99bcac),
+            linear-gradient(60deg, #99bcac77 25%, transparent 25.5%, transparent 75%, #99bcac77 75%, #99bcac77),
+            linear-gradient(60deg, #99bcac77 25%, transparent 25.5%, transparent 75%, #99bcac77 75%, #99bcac77);
+        background-size: 20px 35px;
+        background-position:
+            0 0,
+            0 0,
+            10px 18px,
+            10px 18px,
+            0 0,
+            10px 18px;
+    }
+</style>
