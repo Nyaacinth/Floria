@@ -12,6 +12,8 @@
 
     let { storyContent, autoMode = false }: InkDisplayProps = $props()
 
+    let containerRef = $state<HTMLDivElement>()
+
     export const story = ReactiveInkStory.new(storyContent)
 
     let inkHistory: string[] = $state([])
@@ -33,12 +35,28 @@
         if (typeof currentText == "string" && currentText !== "") inkHistory.push(currentText)
     }
 
+    function scrollContainerToBottom() {
+        if (containerRef) {
+            containerRef.scrollTop = containerRef.scrollHeight - containerRef.clientHeight
+        }
+    }
+
+    onMount(() => {
+        const ticket = setInterval(() => {
+            if (inkTweening) {
+                scrollContainerToBottom()
+            }
+        }, 150)
+
+        return () => clearInterval(ticket)
+    })
+
     onMount(() => {
         continueStoryAndPushStack()
     })
 </script>
 
-<div class="scrollbar-thin h-full w-full overflow-x-hidden overflow-y-auto font-serif">
+<div bind:this={containerRef} class="scrollbar-thin h-full w-full overflow-x-hidden overflow-y-auto font-serif">
     {#each inkHistory as historyItem, index}
         {@const isTheMostRecentLine =
             (story.canContinue || story.currentChoices.length > 0 || inkTweening) && index === inkHistory.length - 1}
@@ -49,6 +67,7 @@
             onintrostart={() => (inkTweening = true)}
             onintroend={() => {
                 inkTweening = false
+                scrollContainerToBottom()
                 if (autoMode) tick().then(() => continueStoryAndPushStack())
             }}
             onoutrostart={() => (inkTweening = true)}
@@ -61,7 +80,7 @@
         {/if}
     {/each}
     {#if !inkTweening}
-        <div in:fly={{ duration: 300, x: 30 }}>
+        <div in:fly={{ duration: 300, x: 30 }} {@attach scrollContainerToBottom}>
             {#if story.canContinue}
                 <button
                     class="m-1 flex rounded-full p-1 text-sm text-gray-800 italic"
