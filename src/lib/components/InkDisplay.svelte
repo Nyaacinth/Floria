@@ -3,7 +3,7 @@
     import { typewriter } from "$lib/utils/transitions/typewriter"
     import { onMount } from "svelte"
     import { fly } from "svelte/transition"
-    import CaretDown from "~icons/gravity-ui/caret-down"
+    import CaretDownIcon from "~icons/gravity-ui/caret-down"
 
     interface InkDisplayProps {
         storyContent: string
@@ -63,7 +63,7 @@
                     class="m-1 flex rounded-full p-1 text-sm text-gray-800 italic"
                     onclick={() => continueStoryAndPushStack()}
                 >
-                    <CaretDown width="20" height="20" />
+                    <CaretDownIcon width="20" height="20" />
                     <span>Continue</span>
                 </button>
             {:else if story.currentChoices.length > 0}

@@ -1,5 +1,6 @@
 <script lang="ts">
-    import inkyTestString from "$lib/assets/data/inky-test.json?raw"
+    import inkyTestString from "$lib/assets/data/inky-default-story.json?raw"
+    import FloriaLogo from "$lib/components/FloriaLogo.svelte"
     import InkDisplay from "$lib/components/InkDisplay.svelte"
     import PlatformSpecificCloseButton from "$lib/components/PlatformSpecificCloseButton.svelte"
     import { downloadTextFile } from "$lib/utils/downloadTextFile"
@@ -51,6 +52,7 @@
         </div>
     </div>
     <PlatformSpecificCloseButton />
+    <FloriaLogo />
     <input
         type="file"
         id={`${uniqueId}-load-saves-file-selector`}
