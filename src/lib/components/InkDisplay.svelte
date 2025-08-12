@@ -58,6 +58,10 @@
     onMount(() => {
         continueStoryAndPushStack()
     })
+
+    story.bindExternalFunction("clear", () => {
+        clearHistory()
+    })
 </script>
 
 <div bind:this={containerRef} class="scrollbar-hide h-full w-full overflow-x-hidden overflow-y-auto font-serif">
