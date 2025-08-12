@@ -3,17 +3,12 @@
     import InkDisplay from "$lib/components/InkDisplay.svelte"
     import PlatformSpecificCloseButton from "$lib/components/PlatformSpecificCloseButton.svelte"
     import { downloadTextFile } from "$lib/utils/downloadTextFile"
-    import { onMount } from "svelte"
 
     let storyContent = $state(inkyTestString)
 
     let inkDisplay = $state<InkDisplay>()
 
     const uniqueId = $props.id()
-
-    onMount(() => {
-        ;(window as any).myInkDisplay = inkDisplay
-    })
 </script>
 
 <div class="isometric-background relative h-full w-full" data-tauri-drag-region>
