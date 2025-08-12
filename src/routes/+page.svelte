@@ -9,6 +9,8 @@
 
     let inkDisplay = $state<InkDisplay>()
 
+    let autoMode = $state(false)
+
     const uniqueId = $props.id()
 </script>
 
@@ -17,11 +19,14 @@
         class="absolute top-6 left-[15%] h-[calc(100%-4rem)] w-[calc(100%-2*15%)] rounded-sm bg-[#ffffffcf] p-4 shadow-2xl backdrop-blur-lg"
     >
         {#key storyContent}
-            <InkDisplay bind:this={inkDisplay} {storyContent} />
+            <InkDisplay bind:this={inkDisplay} {storyContent} {autoMode} />
         {/key}
     </div>
     <div class="absolute bottom-0 h-5 w-full bg-[#000000cf] px-2 text-[0.8rem] text-[#ffffffef]">
         <div class="relative h-full w-full">
+            <button class={`mx-2 ${autoMode ? "text-blue-400" : ""}`} onclick={() => (autoMode = !autoMode)}>
+                [Auto]
+            </button>
             <button
                 class="mx-2"
                 onclick={() => {

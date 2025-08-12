@@ -1,15 +1,16 @@
 <script lang="ts">
     import { ReactiveInkStory } from "$lib/models/InkStory.svelte"
     import { typewriter } from "$lib/utils/transitions/typewriter"
-    import { onMount } from "svelte"
+    import { onMount, tick } from "svelte"
     import { fly } from "svelte/transition"
     import CaretDownIcon from "~icons/gravity-ui/caret-down"
 
     interface InkDisplayProps {
         storyContent: string
+        autoMode?: boolean
     }
 
-    let { storyContent }: InkDisplayProps = $props()
+    let { storyContent, autoMode = false }: InkDisplayProps = $props()
 
     export const story = ReactiveInkStory.new(storyContent)
 
@@ -46,7 +47,10 @@
             in:typewriter={{ speed: 1.2 }}
             out:fly={{ opacity: 0, y: -30 }}
             onintrostart={() => (inkTweening = true)}
-            onintroend={() => (inkTweening = false)}
+            onintroend={() => {
+                inkTweening = false
+                if (autoMode) tick().then(() => continueStoryAndPushStack())
+            }}
             onoutrostart={() => (inkTweening = true)}
             onoutroend={() => (inkTweening = false)}
         >
