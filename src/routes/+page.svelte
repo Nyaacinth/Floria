@@ -47,6 +47,14 @@
                 [Load]
             </button>
             <button
+                class="mx-2"
+                onclick={() => {
+                    inkDisplay?.clearHistory()
+                }}
+            >
+                [Clear History]
+            </button>
+            <button
                 class="absolute right-0 mx-2"
                 onclick={() => {
                     document.getElementById(`${uniqueId}-load-story-file-selector`)?.click()

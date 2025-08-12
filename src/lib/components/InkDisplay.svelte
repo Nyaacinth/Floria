@@ -35,6 +35,10 @@
         if (typeof currentText == "string" && currentText !== "") inkHistory.push(currentText)
     }
 
+    export function clearHistory() {
+        inkHistory = []
+    }
+
     function scrollContainerToBottom() {
         if (containerRef) {
             containerRef.scrollTop = containerRef.scrollHeight - containerRef.clientHeight
@@ -56,7 +60,7 @@
     })
 </script>
 
-<div bind:this={containerRef} class="scrollbar-thin h-full w-full overflow-x-hidden overflow-y-auto font-serif">
+<div bind:this={containerRef} class="scrollbar-hide h-full w-full overflow-x-hidden overflow-y-auto font-serif">
     {#each inkHistory as historyItem, index}
         {@const isTheMostRecentLine =
             (story.canContinue || story.currentChoices.length > 0 || inkTweening) && index === inkHistory.length - 1}
@@ -66,9 +70,17 @@
             out:fly={{ opacity: 0, y: -30 }}
             onintrostart={() => (inkTweening = true)}
             onintroend={() => {
-                inkTweening = false
                 scrollContainerToBottom()
-                if (autoMode) tick().then(() => continueStoryAndPushStack())
+                if (autoMode) {
+                    tick().then(() =>
+                        setTimeout(() => {
+                            continueStoryAndPushStack()
+                            inkTweening = false
+                        }, 700)
+                    )
+                } else {
+                    inkTweening = false
+                }
             }}
             onoutrostart={() => (inkTweening = true)}
             onoutroend={() => (inkTweening = false)}
@@ -79,37 +91,39 @@
             <div class="my-2"></div>
         {/if}
     {/each}
-    {#if !inkTweening}
-        <div in:fly={{ duration: 300, x: 30 }} {@attach scrollContainerToBottom}>
-            {#if story.canContinue}
-                <button
-                    class="m-1 flex rounded-full p-1 text-sm text-gray-800 italic"
-                    onclick={() => continueStoryAndPushStack()}
-                >
-                    <CaretDownIcon width="20" height="20" />
-                    <span>Continue</span>
-                </button>
-            {:else if story.currentChoices.length > 0}
-                {#each story.currentChoices as choice}
+    <div class="min-h-[33%] w-full">
+        {#if !inkTweening}
+            <div in:fly={{ duration: 300, x: 30 }} {@attach scrollContainerToBottom}>
+                {#if story.canContinue}
                     <button
-                        class="m-1 flex rounded-full border border-gray-300 bg-gray-50 p-1 px-3 text-sm text-black"
-                        onclick={() => {
-                            story.chooseChoiceIndex(choice.index)
-                            continueStoryAndPushStack()
-                        }}
+                        class="m-1 flex rounded-full p-1 text-sm text-gray-800 italic"
+                        onclick={() => continueStoryAndPushStack()}
                     >
-                        {choice.text}
+                        <CaretDownIcon width="20" height="20" />
+                        <span>Continue</span>
                     </button>
-                {/each}
-            {:else}
-                <p class="italic">-- The End.</p>
-            {/if}
-        </div>
-    {/if}
+                {:else if story.currentChoices.length > 0}
+                    {#each story.currentChoices as choice}
+                        <button
+                            class="m-1 flex rounded-full border border-gray-300 bg-gray-50 p-1 px-3 text-sm text-black"
+                            onclick={() => {
+                                story.chooseChoiceIndex(choice.index)
+                                continueStoryAndPushStack()
+                            }}
+                        >
+                            {choice.text}
+                        </button>
+                    {/each}
+                {:else}
+                    <p class="italic">-- The End.</p>
+                {/if}
+            </div>
+        {/if}
+    </div>
 </div>
 
 <style>
-    .scrollbar-thin {
-        scrollbar-width: thin;
+    .scrollbar-hide {
+        scrollbar-width: none;
     }
 </style>
