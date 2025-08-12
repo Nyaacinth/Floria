@@ -2,7 +2,7 @@
     import inkyTestString from "$lib/assets/data/inky-default-story.json?raw"
     import FloriaLogo from "$lib/components/FloriaLogo.svelte"
     import InkDisplay from "$lib/components/InkDisplay.svelte"
-    import PlatformSpecificCloseButton from "$lib/components/PlatformSpecificCloseButton.svelte"
+    import PlatformSpecificCloseAndMinimizeButton from "$lib/components/PlatformSpecificCloseAndMinimizeButton.svelte"
     import { downloadTextFile } from "$lib/utils/downloadTextFile"
 
     let storyContent = $state(inkyTestString)
@@ -51,7 +51,7 @@
             </button>
         </div>
     </div>
-    <PlatformSpecificCloseButton />
+    <PlatformSpecificCloseAndMinimizeButton />
     <FloriaLogo />
     <input
         type="file"
