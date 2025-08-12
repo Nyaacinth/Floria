@@ -1,6 +1,7 @@
 <script lang="ts">
     import inkyTestString from "$lib/assets/data/inky-test.json?raw"
     import InkDisplay from "$lib/components/InkDisplay.svelte"
+    import PlatformSpecificCloseButton from "$lib/components/PlatformSpecificCloseButton.svelte"
     import { downloadTextFile } from "$lib/utils/downloadTextFile"
     import { onMount } from "svelte"
 
@@ -15,7 +16,7 @@
     })
 </script>
 
-<div class="isometric-background relative h-full w-full">
+<div class="isometric-background relative h-full w-full" data-tauri-drag-region>
     <div
         class="absolute top-6 left-[15%] h-[calc(100%-4rem)] w-[calc(100%-2*15%)] rounded-sm bg-[#ffffffcf] p-4 shadow-2xl backdrop-blur-lg"
     >
@@ -25,28 +26,36 @@
     </div>
     <div class="absolute bottom-0 h-5 w-full bg-[#000000cf] px-2 text-[0.8rem] text-[#ffffffef]">
         <div class="relative h-full w-full">
-            {#snippet spacedButton(text: string, onclick?: () => void)}
-                <button class="mx-2" {onclick}>[{text}]</button>
-            {/snippet}
-            {@render spacedButton("保存", () => {
-                const saves = inkDisplay?.story.saveToStateJson()
-                if (saves) {
-                    downloadTextFile("Saved-State.json", saves)
-                }
-            })}
-            {@render spacedButton("读取", () => {
-                document.getElementById(`${uniqueId}-load-saves-file-selector`)?.click()
-            })}
+            <button
+                class="mx-2"
+                onclick={() => {
+                    const saves = inkDisplay?.story.saveToStateJson()
+                    if (saves) {
+                        downloadTextFile("Saved-State.json", saves)
+                    }
+                }}
+            >
+                [Save]
+            </button>
+            <button
+                class="mx-2"
+                onclick={() => {
+                    document.getElementById(`${uniqueId}-load-saves-file-selector`)?.click()
+                }}
+            >
+                [Load]
+            </button>
             <button
                 class="absolute right-0 mx-2"
                 onclick={() => {
                     document.getElementById(`${uniqueId}-load-story-file-selector`)?.click()
                 }}
             >
-                [载入新故事]
+                [Import Inky Story]
             </button>
         </div>
     </div>
+    <PlatformSpecificCloseButton />
     <input
         type="file"
         id={`${uniqueId}-load-saves-file-selector`}
