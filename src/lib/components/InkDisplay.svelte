@@ -1,6 +1,7 @@
 <script lang="ts">
     import { ReactiveInkStory } from "$lib/models/InkStory.svelte"
-    import { typewriter } from "$lib/utils/transitions/typewriter"
+    import { getPureTextLength } from "$lib/utils/getPureTextLength"
+    import DOMPurify from "dompurify"
     import { onMount, tick } from "svelte"
     import { fly } from "svelte/transition"
     import CaretDownIcon from "~icons/gravity-ui/caret-down"
@@ -41,8 +42,6 @@
 
     onMount(() => {
         // Smoothly Scroll to Bottom by Default
-        let fontSize = containerRef ? parseFloat(getComputedStyle(containerRef).fontSize.replace("px", "")) : 16
-        console.log(fontSize)
         let start: number
         function progressive_ScrollContainerToBottom(timestamp: number) {
             if (start === undefined) {
@@ -54,7 +53,8 @@
                 const targetScrollTop = containerRef.scrollHeight - containerRef.clientHeight
                 if (
                     targetScrollTop > containerRef.scrollTop &&
-                    targetScrollTop - containerRef.scrollTop < 3 * fontSize
+                    targetScrollTop - containerRef.scrollTop <
+                        parseFloat(getComputedStyle(containerRef).height.replace("px", "")) * 0.33
                 ) {
                     containerRef.scrollTop += dt * 0.00005
                 }
@@ -82,18 +82,20 @@
     {#each inkHistory as historyItem, index}
         {@const isTheMostRecentLine =
             (story.canContinue || story.currentChoices.length > 0 || inkTweening) && index === inkHistory.length - 1}
-        <p
-            class={`transition-colors duration-1200 ${isTheMostRecentLine ? "text-[#000000]" : "text-[#0000006A]"}`}
-            in:typewriter={{ speed: 1.2 }}
+        <div
+            in:fly={{ opacity: 0, x: 30 }}
             out:fly={{ opacity: 0, y: -30 }}
             onintrostart={() => (inkTweening = true)}
             onintroend={() => {
                 if (autoMode) {
                     tick().then(() =>
-                        setTimeout(() => {
-                            continueStoryAndPushStack()
-                            inkTweening = false
-                        }, 700)
+                        setTimeout(
+                            () => {
+                                continueStoryAndPushStack()
+                                inkTweening = false
+                            },
+                            getPureTextLength(historyItem.replace(/^\>\>\>\:\:[A-z]+\:\:/gm, "")) * 100
+                        )
                     )
                 } else {
                     inkTweening = false
@@ -102,8 +104,18 @@
             onoutrostart={() => (inkTweening = true)}
             onoutroend={() => (inkTweening = false)}
         >
-            {historyItem}
-        </p>
+            {#if !historyItem.startsWith(">>>::")}
+                <p
+                    class={`transition-colors duration-1200 ${isTheMostRecentLine ? "text-[#000000]" : "text-[#0000006A]"}`}
+                >
+                    {historyItem}
+                </p>
+            {:else if historyItem.startsWith(">>>::img::")}
+                <p>{">>> Placeholder"}</p>
+            {:else if historyItem.startsWith(">>>::hypertext::")}
+                {@html DOMPurify.sanitize(historyItem.substring(16))}
+            {/if}
+        </div>
         {#if !isTheMostRecentLine}
             <div class="my-2"></div>
         {/if}
