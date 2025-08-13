@@ -140,7 +140,7 @@
             }}
             onoutrostart={() => (inkTweening = true)}
             onoutroend={() => (inkTweening = false)}
-            class={`text-[#000000] transition-opacity duration-1200 ${isTheMostRecentLine ? "opacity-100" : "opacity-41"}`}
+            class={`text-[#000000] transition-opacity duration-1200 hover:opacity-100 ${isTheMostRecentLine ? "opacity-100" : "opacity-41"}`}
         >
             {#if !historyItem.startsWith(">>>::")}
                 <p>
