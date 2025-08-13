@@ -5,7 +5,7 @@
     import type { StoryArchive } from "$lib/utils/getStoryArchiveFromZip"
     import DOMPurify from "dompurify"
     import { onMount, tick } from "svelte"
-    import { fly } from "svelte/transition"
+    import { fade, fly } from "svelte/transition"
     import CaretDownIcon from "~icons/gravity-ui/caret-down"
 
     interface InkDisplayProps {
@@ -57,7 +57,7 @@
                 if (
                     targetScrollTop > containerRef.scrollTop &&
                     targetScrollTop - containerRef.scrollTop <
-                        parseFloat(getComputedStyle(containerRef).height.replace("px", "")) * 0.33
+                        parseFloat(getComputedStyle(containerRef).height.replace("px", "")) * 0.25
                 ) {
                     containerRef.scrollTop += dt * 0.00005
                 }
@@ -164,7 +164,7 @@
     {/each}
     <div class="min-h-[33%] w-full">
         {#if !inkTweening}
-            <div in:fly={{ duration: 300, x: 30 }}>
+            <div in:fade={{ duration: 350 }}>
                 {#if story.canContinue}
                     <button
                         class="m-1 flex rounded-full p-1 text-sm text-gray-800 italic"
@@ -186,7 +186,7 @@
                         </button>
                     {/each}
                 {:else}
-                    <p class="italic">-- The End.</p>
+                    <p class="italic">(End of Story)</p>
                 {/if}
             </div>
         {/if}
