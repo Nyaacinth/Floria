@@ -103,11 +103,10 @@
             }}
             onoutrostart={() => (inkTweening = true)}
             onoutroend={() => (inkTweening = false)}
+            class={`text-[#000000] transition-opacity duration-1200 ${isTheMostRecentLine ? "opacity-100" : "opacity-41"}`}
         >
             {#if !historyItem.startsWith(">>>::")}
-                <p
-                    class={`transition-colors duration-1200 ${isTheMostRecentLine ? "text-[#000000]" : "text-[#0000006A]"}`}
-                >
+                <p>
                     {historyItem}
                 </p>
             {:else if historyItem.startsWith(">>>::img::")}
