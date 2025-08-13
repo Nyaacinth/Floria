@@ -39,20 +39,34 @@
         inkHistory = []
     }
 
-    function scrollContainerToBottom() {
-        if (containerRef) {
-            containerRef.scrollTop = containerRef.scrollHeight - containerRef.clientHeight
-        }
-    }
-
     onMount(() => {
-        const ticket = setInterval(() => {
-            if (inkTweening) {
-                scrollContainerToBottom()
+        // Smoothly Scroll to Bottom by Default
+        let fontSize = containerRef ? parseFloat(getComputedStyle(containerRef).fontSize.replace("px", "")) : 16
+        console.log(fontSize)
+        let start: number
+        function progressive_ScrollContainerToBottom(timestamp: number) {
+            if (start === undefined) {
+                start = timestamp
             }
-        }, 150)
+            const dt = timestamp - start
 
-        return () => clearInterval(ticket)
+            if (containerRef) {
+                const targetScrollTop = containerRef.scrollHeight - containerRef.clientHeight
+                if (
+                    targetScrollTop > containerRef.scrollTop &&
+                    targetScrollTop - containerRef.scrollTop < 3 * fontSize
+                ) {
+                    containerRef.scrollTop += dt * 0.00005
+                }
+            }
+        }
+        let ticket: number
+        const callback = (timestamp: number) => {
+            progressive_ScrollContainerToBottom(timestamp)
+            ticket = requestAnimationFrame(callback)
+        }
+        ticket = requestAnimationFrame(callback)
+        return () => cancelAnimationFrame(ticket)
     })
 
     onMount(() => {
@@ -74,7 +88,6 @@
             out:fly={{ opacity: 0, y: -30 }}
             onintrostart={() => (inkTweening = true)}
             onintroend={() => {
-                scrollContainerToBottom()
                 if (autoMode) {
                     tick().then(() =>
                         setTimeout(() => {
@@ -97,7 +110,7 @@
     {/each}
     <div class="min-h-[33%] w-full">
         {#if !inkTweening}
-            <div in:fly={{ duration: 300, x: 30 }} {@attach scrollContainerToBottom}>
+            <div in:fly={{ duration: 300, x: 30 }}>
                 {#if story.canContinue}
                     <button
                         class="m-1 flex rounded-full p-1 text-sm text-gray-800 italic"
