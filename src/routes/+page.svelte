@@ -3,6 +3,7 @@
     import FloriaLogo from "$lib/components/FloriaLogo.svelte"
     import InkDisplay from "$lib/components/InkDisplay.svelte"
     import PlatformSpecificCloseAndMinimizeButton from "$lib/components/PlatformSpecificCloseAndMinimizeButton.svelte"
+    import { defaultStoryBackground } from "$lib/constants"
     import { downloadTextFile } from "$lib/utils/downloadTextFile"
     import { getStoryArchiveFromZip, type StoryArchive } from "$lib/utils/getStoryArchiveFromZip"
 
@@ -14,17 +15,19 @@
 
     let inkDisplay = $state<InkDisplay>()
 
+    let background = $state(defaultStoryBackground)
+
     let autoMode = $state(false)
 
     const uniqueId = $props.id()
 </script>
 
-<div class="isometric-background relative h-full w-full" data-tauri-drag-region>
+<div class="isometric-background relative h-full w-full" style:--story-background={background} data-tauri-drag-region>
     <div
         class="absolute top-6 left-[15%] h-[calc(100%-4rem)] w-[calc(100%-2*15%)] rounded-sm bg-[#ffffffcf] p-4 shadow-2xl backdrop-blur-lg"
     >
         {#key storyArchive}
-            <InkDisplay bind:this={inkDisplay} {storyArchive} {autoMode} />
+            <InkDisplay bind:this={inkDisplay} {storyArchive} {autoMode} bind:background />
         {/key}
     </div>
     <div class="absolute bottom-0 h-5 w-full bg-[#000000cf] px-2 text-[0.8rem] text-[#ffffffef]">
@@ -101,22 +104,6 @@
 
 <style>
     .isometric-background {
-        background-color: #99bcac44;
-        opacity: 0.8;
-        background-image:
-            linear-gradient(30deg, #99bcac 12%, transparent 12.5%, transparent 87%, #99bcac 87.5%, #99bcac),
-            linear-gradient(150deg, #99bcac 12%, transparent 12.5%, transparent 87%, #99bcac 87.5%, #99bcac),
-            linear-gradient(30deg, #99bcac 12%, transparent 12.5%, transparent 87%, #99bcac 87.5%, #99bcac),
-            linear-gradient(150deg, #99bcac 12%, transparent 12.5%, transparent 87%, #99bcac 87.5%, #99bcac),
-            linear-gradient(60deg, #99bcac77 25%, transparent 25.5%, transparent 75%, #99bcac77 75%, #99bcac77),
-            linear-gradient(60deg, #99bcac77 25%, transparent 25.5%, transparent 75%, #99bcac77 75%, #99bcac77);
-        background-size: 20px 35px;
-        background-position:
-            0 0,
-            0 0,
-            10px 18px,
-            10px 18px,
-            0 0,
-            10px 18px;
+        background-color: var(--story-background);
     }
 </style>

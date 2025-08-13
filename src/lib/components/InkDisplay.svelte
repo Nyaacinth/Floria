@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { defaultStoryBackground } from "$lib/constants"
     import { ReactiveInkStory } from "$lib/models/InkStory.svelte"
     import { getPureTextLength } from "$lib/utils/getPureTextLength"
     import type { StoryArchive } from "$lib/utils/getStoryArchiveFromZip"
@@ -10,9 +11,10 @@
     interface InkDisplayProps {
         storyArchive: StoryArchive
         autoMode?: boolean
+        background: string
     }
 
-    let { storyArchive, autoMode = false }: InkDisplayProps = $props()
+    let { storyArchive, autoMode = false, background = $bindable() }: InkDisplayProps = $props()
 
     let containerRef = $state<HTMLDivElement>()
 
@@ -93,6 +95,22 @@
         audioElement.src = audioObj.prefix + audioObj.base64
         audioElement.play()
     })
+
+    try {
+        function setBackground(value: unknown) {
+            if (typeof value != "string" || value === "") return
+            if (value === "default") {
+                background = defaultStoryBackground
+                return
+            }
+            background = value
+        }
+        setBackground(story.getVariableState("background"))
+        story.addVariableObserver("background", (varName, value) => {
+            if (varName !== "background") return
+            setBackground(value)
+        })
+    } catch {}
 </script>
 
 <div bind:this={containerRef} class="scrollbar-semitrans h-full w-full overflow-x-hidden overflow-y-auto font-serif">
