@@ -64,7 +64,7 @@
     })
 </script>
 
-<div bind:this={containerRef} class="scrollbar-hide h-full w-full overflow-x-hidden overflow-y-auto font-serif">
+<div bind:this={containerRef} class="scrollbar-semitrans h-full w-full overflow-x-hidden overflow-y-auto font-serif">
     {#each inkHistory as historyItem, index}
         {@const isTheMostRecentLine =
             (story.canContinue || story.currentChoices.length > 0 || inkTweening) && index === inkHistory.length - 1}
@@ -127,7 +127,8 @@
 </div>
 
 <style>
-    .scrollbar-hide {
-        scrollbar-width: none;
+    .scrollbar-semitrans {
+        scrollbar-width: thin;
+        scrollbar-color: #444444af #00000000;
     }
 </style>
