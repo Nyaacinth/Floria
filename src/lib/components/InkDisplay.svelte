@@ -113,7 +113,27 @@
     } catch {
         background = defaultStoryBackground
     }
+
+    let ctrlIsDown = false
 </script>
+
+<svelte:window
+    onkeydown={(e) => {
+        if (e.key === " " || e.key === "Enter") {
+            continueStoryAndPushStack()
+        } else if (e.key === "Control") {
+            if (!inkTweening) {
+                continueStoryAndPushStack()
+            }
+            ctrlIsDown = true
+        }
+    }}
+    onkeyup={(e) => {
+        if (e.key === "Control") {
+            ctrlIsDown = false
+        }
+    }}
+/>
 
 <div
     bind:this={containerRef}
@@ -128,15 +148,20 @@
             onintrostart={() => (inkTweening = true)}
             onintroend={() => {
                 if (autoMode) {
-                    tick().then(() =>
-                        setTimeout(
-                            () => {
-                                continueStoryAndPushStack()
-                                inkTweening = false
-                            },
-                            getPureTextLength(historyItem.replace(/^\>\>\>\:\:[A-z]+\:\:/gm, "")) * 100
-                        )
-                    )
+                    tick().then(() => {
+                        if (ctrlIsDown) {
+                            continueStoryAndPushStack()
+                            inkTweening = false
+                        } else {
+                            setTimeout(
+                                () => {
+                                    continueStoryAndPushStack()
+                                    inkTweening = false
+                                },
+                                getPureTextLength(historyItem.replace(/^\>\>\>\:\:[A-z]+\:\:/gm, "")) * 100
+                            )
+                        }
+                    })
                 } else {
                     inkTweening = false
                 }
