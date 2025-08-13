@@ -195,7 +195,7 @@
             <div in:fade={{ duration: 350 }}>
                 {#if story.canContinue}
                     <button
-                        class="m-1 flex rounded-full p-1 text-sm text-gray-800 italic"
+                        class="blink-opacity m-1 flex rounded-full p-1 text-sm text-gray-800 italic"
                         onclick={() => continueStoryAndPushStack()}
                     >
                         <CaretDownIcon width="20" height="20" />
@@ -236,5 +236,18 @@
     }
     .customized-font-serif {
         font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif, NSimSun, "MS Mincho", Batang;
+    }
+
+    @keyframes blink-opacity-kf {
+        0%,
+        100% {
+            opacity: 100%;
+        }
+        50% {
+            opacity: 41%;
+        }
+    }
+    .blink-opacity {
+        animation: blink-opacity-kf 1.5s ease-in-out infinite;
     }
 </style>
