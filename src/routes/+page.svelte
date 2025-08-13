@@ -63,6 +63,14 @@
                 [Clear History]
             </button>
             <button
+                class="mx-2"
+                onclick={() => {
+                    storyArchive = { ...storyArchive }
+                }}
+            >
+                [Restart Story]
+            </button>
+            <button
                 class="absolute right-0 mx-2"
                 onclick={() => {
                     document.getElementById(`${uniqueId}-load-story-file-selector`)?.click()
