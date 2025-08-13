@@ -131,4 +131,12 @@
         scrollbar-width: thin;
         scrollbar-color: #444444af #00000000;
     }
+    .scrollbar-semitrans::-webkit-scrollbar-thumb {
+        /* Foreground */
+        background: #444444af;
+    }
+    .scrollbar-semitrans::-webkit-scrollbar-track {
+        /* Background */
+        background: #00000000;
+    }
 </style>
