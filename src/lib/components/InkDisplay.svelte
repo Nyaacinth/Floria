@@ -115,7 +115,10 @@
     }
 </script>
 
-<div bind:this={containerRef} class="scrollbar-semitrans h-full w-full overflow-x-hidden overflow-y-auto font-serif">
+<div
+    bind:this={containerRef}
+    class="scrollbar-semitrans customized-font-serif h-full w-full overflow-x-hidden overflow-y-auto"
+>
     {#each inkHistory as historyItem, index}
         {@const isTheMostRecentLine =
             (story.canContinue || story.currentChoices.length > 0 || inkTweening) && index === inkHistory.length - 1}
@@ -205,5 +208,8 @@
     .scrollbar-semitrans::-webkit-scrollbar-track {
         /* Background */
         background: #00000000;
+    }
+    .customized-font-serif {
+        font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif, NSimSun, "MS Mincho", Batang;
     }
 </style>
