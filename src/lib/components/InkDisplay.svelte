@@ -134,7 +134,7 @@
                                 continueStoryAndPushStack()
                                 inkTweening = false
                             },
-                            getPureTextLength(historyItem.replace(/^\>\>\>\:\:[A-z]+\:\:/gm, "")) * 100
+                            getPureTextLength(historyItem.replace(/^\>\>\>\:\:[A-z]+\:\:/gm, "")) * 100 + 220
                         )
                     })
                 } else {
