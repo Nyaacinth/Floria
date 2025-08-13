@@ -21,7 +21,7 @@ export async function getStoryArchiveFromZip(file: File) {
 
     const files = new Map<string, string>() // key: fileName, value: base64
 
-    let storyContent = ""
+    let storyContent: string | undefined = undefined
 
     const promises: Promise<void>[] = []
     zip.forEach((path, entry) => {
