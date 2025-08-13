@@ -110,7 +110,9 @@
             if (varName !== "background") return
             setBackground(value)
         })
-    } catch {}
+    } catch {
+        background = defaultStoryBackground
+    }
 </script>
 
 <div bind:this={containerRef} class="scrollbar-semitrans h-full w-full overflow-x-hidden overflow-y-auto font-serif">
@@ -169,7 +171,7 @@
                         onclick={() => continueStoryAndPushStack()}
                     >
                         <CaretDownIcon width="20" height="20" />
-                        <span>Continue</span>
+                        <!-- <span>Continue</span> -->
                     </button>
                 {:else if story.currentChoices.length > 0}
                     {#each story.currentChoices as choice}
