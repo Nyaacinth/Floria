@@ -9,7 +9,7 @@
 
 {#if isTauri() && platform() === "windows"}
     <div
-        class="fixed top-3 right-3 z-9999 flex h-min w-min rounded-[9999px] bg-[#FFFFFF76] p-1 text-green-900 shadow-md backdrop-blur-md"
+        class="fixed top-3 right-3 z-9999 flex h-min w-min rounded-[9999px] bg-[#FFFFFF76] p-1 text-gray-900 shadow-md backdrop-blur-md"
     >
         <button class="contents" onclick={() => getCurrentWindow().minimize()}>
             <ChevronDownIcon width="18" height="18" />

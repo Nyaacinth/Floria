@@ -22,7 +22,11 @@
     const uniqueId = $props.id()
 </script>
 
-<div class="isometric-background relative h-full w-full" style:--story-background={background} data-tauri-drag-region>
+<div
+    class="isometric-background relative h-full w-full transition-colors duration-500"
+    style:background-color={background}
+    data-tauri-drag-region
+>
     <div
         class="absolute top-6 left-[15%] h-[calc(100%-4rem)] w-[calc(100%-2*15%)] rounded-sm bg-[#ffffffcf] p-4 shadow-2xl backdrop-blur-lg"
     >
@@ -112,15 +116,14 @@
 
 <style>
     .isometric-background {
-        background-color: hsl(from var(--story-background) h s calc(l + 10));
         opacity: 0.8;
         background-size: 17px 17px;
         background-image: repeating-linear-gradient(
             45deg,
-            var(--story-background) 0,
-            var(--story-background) 1.7000000000000002px,
-            hsl(from var(--story-background) h s calc(l + 10)) 0,
-            hsl(from var(--story-background) h s calc(l + 10)) 50%
+            transparent 0,
+            transparent 1.7000000000000002px,
+            #ffffff4c 0,
+            #ffffff4c 50%
         );
     }
 </style>
