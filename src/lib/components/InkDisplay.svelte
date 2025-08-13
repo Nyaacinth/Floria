@@ -1,21 +1,22 @@
 <script lang="ts">
     import { ReactiveInkStory } from "$lib/models/InkStory.svelte"
     import { getPureTextLength } from "$lib/utils/getPureTextLength"
+    import type { StoryArchive } from "$lib/utils/getStoryArchiveFromZip"
     import DOMPurify from "dompurify"
     import { onMount, tick } from "svelte"
     import { fly } from "svelte/transition"
     import CaretDownIcon from "~icons/gravity-ui/caret-down"
 
     interface InkDisplayProps {
-        storyContent: string
+        storyArchive: StoryArchive
         autoMode?: boolean
     }
 
-    let { storyContent, autoMode = false }: InkDisplayProps = $props()
+    let { storyArchive, autoMode = false }: InkDisplayProps = $props()
 
     let containerRef = $state<HTMLDivElement>()
 
-    export const story = ReactiveInkStory.new(storyContent)
+    export const story = ReactiveInkStory.new(storyArchive.storyContent)
 
     let inkHistory: string[] = $state([])
 
@@ -76,6 +77,22 @@
     story.bindExternalFunction("clear", () => {
         clearHistory()
     })
+
+    story.bindExternalFunction("playSound", (name) => {
+        if (!name || typeof name != "string") {
+            story.warning("Invalid sound name")
+            inkHistory.push(">>> Invalid Sound Name Detected")
+            return
+        }
+        const audioObj = storyArchive.audio[name]
+        if (!audioObj) {
+            inkHistory.push(`>>> Sound Not Found: ${name}`)
+            return
+        }
+        const audioElement = document.createElement("audio")
+        audioElement.src = audioObj.prefix + audioObj.base64
+        audioElement.play()
+    })
 </script>
 
 <div bind:this={containerRef} class="scrollbar-semitrans h-full w-full overflow-x-hidden overflow-y-auto font-serif">
@@ -110,7 +127,13 @@
                     {historyItem}
                 </p>
             {:else if historyItem.startsWith(">>>::img::")}
-                <p>{">>> Placeholder"}</p>
+                {@const imageName = historyItem.substring(10).trim()}
+                {@const imageObj = storyArchive.images[imageName]}
+                {#if imageObj}
+                    <img src={imageObj.prefix + imageObj.base64} alt={imageName} />
+                {:else}
+                    <p>{">>>"} Image Not Found: {imageName}</p>
+                {/if}
             {:else if historyItem.startsWith(">>>::hypertext::")}
                 {@html DOMPurify.sanitize(historyItem.substring(16))}
             {/if}

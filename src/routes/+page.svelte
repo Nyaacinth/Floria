@@ -4,8 +4,13 @@
     import InkDisplay from "$lib/components/InkDisplay.svelte"
     import PlatformSpecificCloseAndMinimizeButton from "$lib/components/PlatformSpecificCloseAndMinimizeButton.svelte"
     import { downloadTextFile } from "$lib/utils/downloadTextFile"
+    import { getStoryArchiveFromZip, type StoryArchive } from "$lib/utils/getStoryArchiveFromZip"
 
-    let storyContent = $state(inkyTestString)
+    let storyArchive = $state.raw<StoryArchive>({
+        storyContent: inkyTestString,
+        images: {},
+        audio: {}
+    })
 
     let inkDisplay = $state<InkDisplay>()
 
@@ -18,8 +23,8 @@
     <div
         class="absolute top-6 left-[15%] h-[calc(100%-4rem)] w-[calc(100%-2*15%)] rounded-sm bg-[#ffffffcf] p-4 shadow-2xl backdrop-blur-lg"
     >
-        {#key storyContent}
-            <InkDisplay bind:this={inkDisplay} {storyContent} {autoMode} />
+        {#key storyArchive}
+            <InkDisplay bind:this={inkDisplay} {storyArchive} {autoMode} />
         {/key}
     </div>
     <div class="absolute bottom-0 h-5 w-full bg-[#000000cf] px-2 text-[0.8rem] text-[#ffffffef]">
@@ -82,14 +87,14 @@
     <input
         type="file"
         id={`${uniqueId}-load-story-file-selector`}
-        accept=".json"
+        accept=".zip"
         style:display="none"
         onchange={() => {
             const uploader = document.getElementById(`${uniqueId}-load-story-file-selector`)! as HTMLInputElement
-            uploader.files?.[0].text().then((value) => {
-                storyContent = value
-                uploader.value = ""
-            })
+            const file = uploader.files?.[0]
+            if (file) {
+                getStoryArchiveFromZip(file).then((value) => (storyArchive = value))
+            }
         }}
     />
 </div>

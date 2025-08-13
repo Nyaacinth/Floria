@@ -81,6 +81,11 @@ export class ReactiveInkStory {
         return this.story[1].TagsForContentAtPath(path)
     }
 
+    warning(message: string) {
+        this.markStateAsDirty()
+        this.story[1].Warning(message)
+    }
+
     // Justification: To mimic the original behavior, here we choose `any[]` for the `args` parameter.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     choosePathString(path: string, resetCallstack?: boolean, args?: any[]) {
