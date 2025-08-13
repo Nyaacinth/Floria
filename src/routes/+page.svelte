@@ -104,6 +104,15 @@
 
 <style>
     .isometric-background {
-        background-color: var(--story-background);
+        background-color: hsl(from var(--story-background) h s calc(l + 10));
+        opacity: 0.8;
+        background-size: 17px 17px;
+        background-image: repeating-linear-gradient(
+            45deg,
+            var(--story-background) 0,
+            var(--story-background) 1.7000000000000002px,
+            hsl(from var(--story-background) h s calc(l + 10)) 0,
+            hsl(from var(--story-background) h s calc(l + 10)) 50%
+        );
     }
 </style>
