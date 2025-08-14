@@ -113,7 +113,29 @@
     } catch {
         background = defaultStoryBackground
     }
+
+    let enterPressed = false
+
+    let continueButtonRef = $state<HTMLButtonElement>()
 </script>
+
+<svelte:window
+    onkeydown={(e) => {
+        if (e.key === "Enter" && !e.ctrlKey && !e.shiftKey && !e.altKey && !e.metaKey && !e.repeat) {
+            if (!enterPressed && !inkTweening) {
+                if (continueButtonRef) {
+                    continueButtonRef.click()
+                }
+            }
+            enterPressed = true
+        }
+    }}
+    onkeyup={(e) => {
+        if (e.key === "Enter") {
+            enterPressed = false
+        }
+    }}
+/>
 
 <div
     bind:this={containerRef}
@@ -170,6 +192,7 @@
             <div in:fade={{ duration: 350 }}>
                 {#if story.canContinue}
                     <button
+                        bind:this={continueButtonRef}
                         class="blink-opacity m-1 flex rounded-full p-1 text-sm text-gray-800 italic"
                         onclick={() => continueStoryAndPushStack()}
                     >
