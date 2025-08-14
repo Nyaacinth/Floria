@@ -189,7 +189,7 @@
                         </button>
                     {/each}
                 {:else}
-                    <p class="italic">(End of Story)</p>
+                    <p class="text-sm text-gray-700 italic">-- End of Story --</p>
                 {/if}
             </div>
         {/if}
