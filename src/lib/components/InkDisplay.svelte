@@ -192,6 +192,7 @@
             <div in:fade={{ duration: 350 }}>
                 {#if story.canContinue}
                     <button
+                        aria-label="Button: Continue the Story"
                         bind:this={continueButtonRef}
                         class="blink-opacity m-1 flex rounded-full p-1 text-sm text-gray-800 italic"
                         onclick={() => continueStoryAndPushStack()}

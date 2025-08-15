@@ -22,6 +22,10 @@
     const uniqueId = $props.id()
 </script>
 
+<svelte:head>
+    <title>Floria</title>
+</svelte:head>
+
 <div
     class="isometric-background relative h-full w-full transition-colors duration-500"
     style:background-color={background}
@@ -87,6 +91,7 @@
     <PlatformSpecificCloseAndMinimizeButton />
     <FloriaLogo />
     <input
+        title="Save Files Loading File Selector"
         type="file"
         id={`${uniqueId}-load-saves-file-selector`}
         accept=".json"
@@ -100,6 +105,7 @@
         }}
     />
     <input
+        title="Story Loading File Selector"
         type="file"
         id={`${uniqueId}-load-story-file-selector`}
         accept=".zip"
