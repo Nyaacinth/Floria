@@ -22,9 +22,35 @@
 
     let background = $state(defaultStoryBackground)
 
+    let containerRef = $state<HTMLDivElement>()
+
     let autoMode = $state(false)
 
     const uniqueId = $props.id()
+
+    function shakeContainer() {
+        if (!containerRef) return
+        containerRef.animate(
+            [
+                {
+                    transform: "translate(0, 0)"
+                },
+                {
+                    transform: "translate(30px, 0)"
+                },
+                {
+                    transform: "translate(-30px, 0)"
+                },
+                {
+                    transform: "translate(0, 0)"
+                }
+            ],
+            {
+                duration: 175,
+                iterations: 1
+            }
+        )
+    }
 </script>
 
 <svelte:head>
@@ -37,10 +63,11 @@
     data-tauri-drag-region
 >
     <div
+        bind:this={containerRef}
         class="absolute top-6 left-[15%] h-[calc(100%-4rem)] w-[calc(100%-2*15%)] rounded-sm bg-[#ffffffcf] p-4 shadow-2xl backdrop-blur-lg"
     >
         {#key storyArchive}
-            <InkDisplay bind:this={inkDisplay} {storyArchive} {autoMode} bind:background />
+            <InkDisplay bind:this={inkDisplay} {storyArchive} {autoMode} bind:background onshake={shakeContainer} />
         {/key}
     </div>
     <div class="absolute bottom-0 h-5 w-full bg-[#000000cf] px-2 text-[0.8rem] text-[#ffffffef]">

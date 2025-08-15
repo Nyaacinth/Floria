@@ -33,6 +33,12 @@ Clear Screen
 EXTERNAL clear()
 ```
 
+Shake Screen
+
+```
+EXTERNAL shake()
+```
+
 Set Background Color
 
 ```

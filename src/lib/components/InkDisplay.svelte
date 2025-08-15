@@ -12,9 +12,10 @@
         storyArchive: StoryArchive
         autoMode?: boolean
         background: string
+        onshake?: () => void
     }
 
-    let { storyArchive, autoMode = false, background = $bindable() }: InkDisplayProps = $props()
+    let { storyArchive, autoMode = false, background = $bindable(), onshake }: InkDisplayProps = $props()
 
     let containerRef = $state<HTMLDivElement>()
 
@@ -95,6 +96,8 @@
         audioElement.src = audioObj.prefix + audioObj.data
         audioElement.play()
     })
+
+    story.bindExternalFunction("shake", () => onshake?.())
 
     try {
         function setBackground(value: unknown) {
