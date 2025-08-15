@@ -54,10 +54,12 @@
             const dt = timestamp - start
 
             if (containerRef) {
+                const containerScrollTop = containerRef.scrollTop
                 const targetScrollTop = containerRef.scrollHeight - containerRef.clientHeight
                 if (
-                    targetScrollTop > containerRef.scrollTop &&
-                    targetScrollTop - containerRef.scrollTop <
+                    containerScrollTop !== 0 &&
+                    targetScrollTop > containerScrollTop &&
+                    targetScrollTop - containerScrollTop <
                         parseFloat(getComputedStyle(containerRef).height.replace("px", "")) * 0.25
                 ) {
                     containerRef.scrollTop += dt * 0.00005
@@ -150,7 +152,21 @@
         <div
             in:fly={{ opacity: 0, x: 30 }}
             out:fly={{ opacity: 0, y: -30 }}
-            onintrostart={() => (inkTweening = true)}
+            onintrostart={() => {
+                tick().then(() => {
+                    if (containerRef) {
+                        const difference =
+                            containerRef.scrollHeight - containerRef.clientHeight - containerRef.scrollTop
+                        if (
+                            difference > 1 &&
+                            difference < parseFloat(getComputedStyle(containerRef).height.replace("px", "")) * 0.25
+                        ) {
+                            containerRef.scrollTop += 1
+                        }
+                    }
+                })
+                inkTweening = true
+            }}
             onintroend={() => {
                 if (autoMode) {
                     tick().then(() => {
