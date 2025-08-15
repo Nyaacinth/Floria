@@ -67,12 +67,16 @@
             }
         }
         let ticket: number
+        let cancelled = false
         const callback = (timestamp: number) => {
             progressive_ScrollContainerToBottom(timestamp)
-            ticket = requestAnimationFrame(callback)
+            if (!cancelled) ticket = requestAnimationFrame(callback)
         }
         ticket = requestAnimationFrame(callback)
-        return () => cancelAnimationFrame(ticket)
+        return () => {
+            cancelled = true
+            cancelAnimationFrame(ticket)
+        }
     })
 
     onMount(() => {
