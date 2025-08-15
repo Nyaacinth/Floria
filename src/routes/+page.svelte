@@ -1,4 +1,9 @@
 <script lang="ts">
+    // If you want to ship your own default story (or the only story), you can start by modifying
+    // the constant below and `storyArchive` variable, go to `${workspaceFolder}/src/lib/assets/data`
+    // and add your story & assets there.
+    const ALLOW_IMPORTING_NEW_STORY = true
+
     import inkyTestString from "$lib/assets/data/inky-default-story.json?raw"
     import FloriaLogo from "$lib/components/FloriaLogo.svelte"
     import InkDisplay from "$lib/components/InkDisplay.svelte"
@@ -78,14 +83,16 @@
             >
                 [Restart Story]
             </button>
-            <button
-                class="absolute right-0 mx-2"
-                onclick={() => {
-                    document.getElementById(`${uniqueId}-load-story-file-selector`)?.click()
-                }}
-            >
-                [Import Inky Story]
-            </button>
+            {#if ALLOW_IMPORTING_NEW_STORY}
+                <button
+                    class="absolute right-0 mx-2"
+                    onclick={() => {
+                        document.getElementById(`${uniqueId}-load-story-file-selector`)?.click()
+                    }}
+                >
+                    [Import Inky Story]
+                </button>
+            {/if}
         </div>
     </div>
     <PlatformSpecificCloseAndMinimizeButton />
@@ -99,25 +106,35 @@
         onchange={() => {
             const uploader = document.getElementById(`${uniqueId}-load-saves-file-selector`)! as HTMLInputElement
             uploader.files?.[0].text().then((value) => {
-                inkDisplay?.recoverFromStateJsonAndRefreshHistory(value)
-                uploader.value = ""
+                try {
+                    inkDisplay?.recoverFromStateJsonAndRefreshHistory(value)
+                } catch (e) {
+                    alert(
+                        "Cannot load this save file, please check the content." +
+                            (e instanceof Error ? "\n" + e.message : "")
+                    )
+                } finally {
+                    uploader.value = ""
+                }
             })
         }}
     />
-    <input
-        title="Story Loading File Selector"
-        type="file"
-        id={`${uniqueId}-load-story-file-selector`}
-        accept=".zip"
-        style:display="none"
-        onchange={() => {
-            const uploader = document.getElementById(`${uniqueId}-load-story-file-selector`)! as HTMLInputElement
-            const file = uploader.files?.[0]
-            if (file) {
-                getStoryArchiveFromZip(file).then((value) => (storyArchive = value))
-            }
-        }}
-    />
+    {#if ALLOW_IMPORTING_NEW_STORY}
+        <input
+            title="Story Loading File Selector"
+            type="file"
+            id={`${uniqueId}-load-story-file-selector`}
+            accept=".zip"
+            style:display="none"
+            onchange={() => {
+                const uploader = document.getElementById(`${uniqueId}-load-story-file-selector`)! as HTMLInputElement
+                const file = uploader.files?.[0]
+                if (file) {
+                    getStoryArchiveFromZip(file).then((value) => (storyArchive = value))
+                }
+            }}
+        />
+    {/if}
 </div>
 
 <style>
