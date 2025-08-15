@@ -4,13 +4,13 @@ export type StoryArchive = {
     storyContent: string
     images: {
         [imageName: string]: {
-            base64: string
+            data: string
             prefix: string
         }
     }
     audio: {
         [audioName: string]: {
-            base64: string
+            data: string
             prefix: string
         }
     }
@@ -47,13 +47,13 @@ export async function getStoryArchiveFromZip(file: File) {
         storyContent?: string
         images: {
             [imageName: string]: {
-                base64: string
+                data: string
                 prefix: string
             }
         }
         audio: {
             [audioName: string]: {
-                base64: string
+                data: string
                 prefix: string
             }
         }
@@ -66,12 +66,12 @@ export async function getStoryArchiveFromZip(file: File) {
     files.forEach((base64, filename) => {
         if (filename.endsWith(".jpg")) {
             storyArchive.images[filename.substring(0, filename.length - 4)] = {
-                base64,
+                data: base64,
                 prefix: "data:image/jpeg;base64,"
             }
         } else if (filename.endsWith(".mp3")) {
             storyArchive.audio[filename.substring(0, filename.length - 4)] = {
-                base64,
+                data: base64,
                 prefix: "data:audio/mpeg;base64,"
             }
         }

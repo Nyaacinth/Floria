@@ -92,7 +92,7 @@
             return
         }
         const audioElement = document.createElement("audio")
-        audioElement.src = audioObj.prefix + audioObj.base64
+        audioElement.src = audioObj.prefix + audioObj.data
         audioElement.play()
     })
 
@@ -175,7 +175,7 @@
                 {@const imageName = historyItem.substring(10).trim()}
                 {@const imageObj = storyArchive.images[imageName]}
                 {#if imageObj}
-                    <img src={imageObj.prefix + imageObj.base64} alt={imageName} />
+                    <img src={imageObj.prefix + imageObj.data} alt={imageName} />
                 {:else}
                     <p>{">>>"} Image Not Found: {imageName}</p>
                 {/if}
