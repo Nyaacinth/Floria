@@ -4,14 +4,14 @@
         {
             "label": "Launch Development Server",
             "type": "shell",
-            "command": "bun run dev",
+            "command": "deno task dev",
             "isBackground": true,
             "group": "build"
         },
         {
             "label": "Build Tauri Application",
             "type": "shell",
-            "command": "bun run build:tauri",
+            "command": "deno task build:tauri",
             "group": "build"
         }
     ]
