@@ -1,11 +1,5 @@
 {
     "nodeModulesDir": "auto",
-    "fmt": {
-        "exclude": ["**/*.*"]
-    },
-    "lint": {
-        "exclude": ["**/*.*"]
-    },
     "tasks": {
         "dev": "vite dev",
         "build": "vite build",
@@ -17,6 +11,12 @@
         "format": "prettier --write .",
         "dev:tauri": "tauri dev",
         "build:tauri": "tauri build"
+    },
+    "fmt": {
+        "exclude": ["**/*.*"]
+    },
+    "lint": {
+        "exclude": ["**/*.*"]
     },
     "imports": {
         "@eslint/compat": "npm:@eslint/compat@^1.3.2",
