@@ -1,5 +1,11 @@
 {
     "nodeModulesDir": "auto",
+    "fmt": {
+        "exclude": ["**/*.*"]
+    },
+    "lint": {
+        "exclude": ["**/*.*"]
+    },
     "tasks": {
         "dev": "vite dev",
         "build": "vite build",
