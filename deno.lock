@@ -10,7 +10,7 @@
     "npm:@tailwindcss/vite@^4.1.12": "4.1.12_vite@7.1.3__picomatch@4.0.3",
     "npm:@tauri-apps/api@^2.8.0": "2.8.0",
     "npm:@tauri-apps/cli@^2.8.1": "2.8.1",
-    "npm:@tauri-apps/plugin-os@~2.3.1": "2.3.1",
+    "npm:@tauri-apps/plugin-os@^2.3.1": "2.3.1",
     "npm:dompurify@^3.2.6": "3.2.6",
     "npm:eslint-config-prettier@^10.1.8": "10.1.8_eslint@9.34.0",
     "npm:eslint-plugin-svelte@^3.11.0": "3.11.0_eslint@9.34.0_svelte@5.38.2__acorn@8.15.0_postcss@8.5.6",
@@ -27,6 +27,7 @@
     "npm:typescript-eslint@^8.40.0": "8.40.0_eslint@9.34.0_typescript@5.9.2_@typescript-eslint+parser@8.40.0__eslint@9.34.0__typescript@5.9.2",
     "npm:typescript@^5.9.2": "5.9.2",
     "npm:unplugin-icons@^22.2.0": "22.2.0_svelte@5.38.2__acorn@8.15.0",
+    "npm:vite@7.1.3": "7.1.3_picomatch@4.0.3",
     "npm:vite@^7.1.3": "7.1.3_picomatch@4.0.3"
   },
   "npm": {
@@ -1937,36 +1938,34 @@
     }
   },
   "workspace": {
-    "packageJson": {
-      "dependencies": [
-        "npm:@eslint/compat@^1.3.2",
-        "npm:@eslint/js@^9.34.0",
-        "npm:@iconify-json/gravity-ui@^1.2.10",
-        "npm:@sveltejs/adapter-static@^3.0.9",
-        "npm:@sveltejs/kit@^2.36.1",
-        "npm:@sveltejs/vite-plugin-svelte@^6.1.3",
-        "npm:@tailwindcss/vite@^4.1.12",
-        "npm:@tauri-apps/api@^2.8.0",
-        "npm:@tauri-apps/cli@^2.8.1",
-        "npm:@tauri-apps/plugin-os@~2.3.1",
-        "npm:dompurify@^3.2.6",
-        "npm:eslint-config-prettier@^10.1.8",
-        "npm:eslint-plugin-svelte@^3.11.0",
-        "npm:eslint@^9.34.0",
-        "npm:globals@^16.3.0",
-        "npm:inkjs@^2.3.2",
-        "npm:jszip@^3.10.1",
-        "npm:prettier-plugin-svelte@^3.4.0",
-        "npm:prettier-plugin-tailwindcss@~0.6.14",
-        "npm:prettier@^3.6.2",
-        "npm:svelte-check@^4.3.1",
-        "npm:svelte@^5.38.2",
-        "npm:tailwindcss@^4.1.12",
-        "npm:typescript-eslint@^8.40.0",
-        "npm:typescript@^5.9.2",
-        "npm:unplugin-icons@^22.2.0",
-        "npm:vite@^7.1.3"
-      ]
-    }
+    "dependencies": [
+      "npm:@eslint/compat@^1.3.2",
+      "npm:@eslint/js@^9.34.0",
+      "npm:@iconify-json/gravity-ui@^1.2.10",
+      "npm:@sveltejs/adapter-static@^3.0.9",
+      "npm:@sveltejs/kit@^2.36.1",
+      "npm:@sveltejs/vite-plugin-svelte@^6.1.3",
+      "npm:@tailwindcss/vite@^4.1.12",
+      "npm:@tauri-apps/api@^2.8.0",
+      "npm:@tauri-apps/cli@^2.8.1",
+      "npm:@tauri-apps/plugin-os@^2.3.1",
+      "npm:dompurify@^3.2.6",
+      "npm:eslint-config-prettier@^10.1.8",
+      "npm:eslint-plugin-svelte@^3.11.0",
+      "npm:eslint@^9.34.0",
+      "npm:globals@^16.3.0",
+      "npm:inkjs@^2.3.2",
+      "npm:jszip@^3.10.1",
+      "npm:prettier-plugin-svelte@^3.4.0",
+      "npm:prettier-plugin-tailwindcss@~0.6.14",
+      "npm:prettier@^3.6.2",
+      "npm:svelte-check@^4.3.1",
+      "npm:svelte@^5.38.2",
+      "npm:tailwindcss@^4.1.12",
+      "npm:typescript-eslint@^8.40.0",
+      "npm:typescript@^5.9.2",
+      "npm:unplugin-icons@^22.2.0",
+      "npm:vite@^7.1.3"
+    ]
   }
 }
