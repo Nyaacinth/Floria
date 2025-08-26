@@ -14,10 +14,10 @@
         "build:tauri": "tauri build"
     },
     "fmt": {
-        "exclude": ["**/*.*"] // reason: prettier, deno does not support svelte
+        "exclude": ["**/*.*"]
     },
     "lint": {
-        "exclude": ["**/*.*"] // reason: eslint, deno does not support svelte
+        "exclude": ["**/*.*"]
     },
     "imports": {
         "@eslint/compat": "npm:@eslint/compat@^1.3.2",
