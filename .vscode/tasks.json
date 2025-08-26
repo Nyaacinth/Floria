@@ -3,15 +3,17 @@
     "tasks": [
         {
             "label": "Launch Development Server",
-            "type": "shell",
-            "command": "deno task dev",
+            "type": "deno",
+            "command": "task",
+            "args": ["dev"],
             "isBackground": true,
             "group": "build"
         },
         {
             "label": "Build Tauri Application",
-            "type": "shell",
-            "command": "deno task build:tauri",
+            "type": "deno",
+            "command": "task",
+            "args": ["build:tauri"],
             "group": "build"
         }
     ]
