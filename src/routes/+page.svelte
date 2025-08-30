@@ -9,8 +9,15 @@
     import InkDisplay from "$lib/components/InkDisplay.svelte"
     import PlatformSpecificCloseAndMinimizeButton from "$lib/components/PlatformSpecificCloseAndMinimizeButton.svelte"
     import { defaultStoryBackground } from "$lib/constants"
+    import { alert_cx } from "$lib/utils/alert_cx"
     import { downloadTextFile } from "$lib/utils/downloadTextFile"
-    import { getStoryArchiveFromZip, type StoryArchive } from "$lib/utils/getStoryArchiveFromZip"
+    import {
+        getStoryArchiveFromZip,
+        getStoryArchiveFromZip_Tauri,
+        type StoryArchive
+    } from "$lib/utils/getStoryArchiveFromZip"
+    import { getTextFromFile_Tauri } from "$lib/utils/getTextFromFile_Tauri"
+    import { isTauri } from "@tauri-apps/api/core"
 
     let storyArchive = $state.raw<StoryArchive>({
         storyContent: inkyTestString,
@@ -58,7 +65,7 @@
 </svelte:head>
 
 <div
-    class="isometric-background relative h-full w-full transition-colors duration-500"
+    class="pattern-background relative h-full w-full transition-colors duration-500"
     style:background-color={background}
     data-tauri-drag-region
 >
@@ -89,7 +96,21 @@
             <button
                 class="mx-2"
                 onclick={() => {
-                    document.getElementById(`${uniqueId}-load-saves-file-selector`)?.click()
+                    if (isTauri()) {
+                        getTextFromFile_Tauri("Saved-State", ["json"]).then((value) => {
+                            if (!value) return
+                            try {
+                                inkDisplay?.recoverFromStateJsonAndRefreshHistory(value)
+                            } catch (e) {
+                                alert_cx(
+                                    "Cannot load this save file, please check the content." +
+                                        (e instanceof Error ? "\n" + e.message : "")
+                                )
+                            }
+                        })
+                    } else {
+                        document.getElementById(`${uniqueId}-load-saves-file-selector`)?.click()
+                    }
                 }}
             >
                 [Load]
@@ -114,7 +135,11 @@
                 <button
                     class="absolute right-0 mx-2"
                     onclick={() => {
-                        document.getElementById(`${uniqueId}-load-story-file-selector`)?.click()
+                        if (isTauri()) {
+                            getStoryArchiveFromZip_Tauri().then((value) => value && (storyArchive = value))
+                        } else {
+                            document.getElementById(`${uniqueId}-load-story-file-selector`)?.click()
+                        }
                     }}
                 >
                     [Import Inky Story]
@@ -136,7 +161,7 @@
                 try {
                     inkDisplay?.recoverFromStateJsonAndRefreshHistory(value)
                 } catch (e) {
-                    alert(
+                    alert_cx(
                         "Cannot load this save file, please check the content." +
                             (e instanceof Error ? "\n" + e.message : "")
                     )
@@ -165,7 +190,7 @@
 </div>
 
 <style>
-    .isometric-background {
+    .pattern-background {
         opacity: 0.8;
         background-size: 17px 17px;
         background-image: repeating-linear-gradient(
