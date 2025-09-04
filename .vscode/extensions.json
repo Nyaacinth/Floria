@@ -1,6 +1,6 @@
 {
     "recommendations": [
-        "denoland.vscode-deno",
+        "oven.bun-vscode",
         "svelte.svelte-vscode",
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",

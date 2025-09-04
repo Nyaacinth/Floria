@@ -1,13 +1,13 @@
 {
     "$schema": "https://schema.tauri.app/config/2",
     "productName": "Floria",
-    "version": "../deno.json",
+    "version": "../package.json",
     "identifier": "work.nyaacinth.app.floria",
     "build": {
         "frontendDist": "../build",
         "devUrl": "http://localhost:5173",
-        "beforeDevCommand": "deno task dev --port=5173 --strictPort",
-        "beforeBuildCommand": "deno task build"
+        "beforeDevCommand": "bun run dev --port=5173 --strictPort",
+        "beforeBuildCommand": "bun run build"
     },
     "app": {
         "windows": [

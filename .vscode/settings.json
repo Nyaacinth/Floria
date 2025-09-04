@@ -3,7 +3,6 @@
     "editor.codeActionsOnSave": { "source.organizeImports": "explicit" },
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "prettier.ignorePath": ".gitignore",
-    "deno.enable": false,
     "[rust]": {
         "editor.defaultFormatter": "rust-lang.rust-analyzer"
     },

@@ -4,7 +4,7 @@
             "name": "Run Tauri Application",
             "type": "node-terminal",
             "request": "launch",
-            "command": "deno task dev:tauri"
+            "command": "bun run dev:tauri"
         }
     ]
 }
