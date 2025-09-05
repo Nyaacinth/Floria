@@ -45,6 +45,12 @@ Set Background Color
 VAR background = "<css_color>"
 ```
 
+Set Background Image: {name}.jpg
+
+```
+VAR background = "img:img_name"
+```
+
 HTML Rich Text (sanitized)
 
 ```
