@@ -10,6 +10,8 @@
     import PlatformSpecificCloseAndMinimizeButton from "$lib/components/PlatformSpecificCloseAndMinimizeButton.svelte"
     import { defaultStoryBackground } from "$lib/constants"
     import { alert_cx } from "$lib/utils/alert_cx"
+    import type { CSSColor, ImageBackground } from "$lib/utils/background"
+    import { isCSSColor, isImageBackground } from "$lib/utils/background"
     import { downloadTextFile } from "$lib/utils/downloadTextFile"
     import {
         getStoryArchiveFromZip,
@@ -18,6 +20,7 @@
     } from "$lib/utils/getStoryArchiveFromZip"
     import { getTextFromFile_Tauri } from "$lib/utils/getTextFromFile_Tauri"
     import { isTauri } from "@tauri-apps/api/core"
+    import { fade } from "svelte/transition"
 
     let storyArchive = $state.raw<StoryArchive>({
         storyContent: inkyTestString,
@@ -27,7 +30,7 @@
 
     let inkDisplay = $state<InkDisplay>()
 
-    let background = $state(defaultStoryBackground)
+    let background: CSSColor | ImageBackground = $state(defaultStoryBackground)
 
     let containerRef = $state<HTMLDivElement>()
 
@@ -66,9 +69,19 @@
 
 <div
     class="pattern-background relative h-full w-full transition-colors duration-500"
-    style:background-color={background}
+    style:background-color={isCSSColor(background) ? background : "white"}
     data-tauri-drag-region
 >
+    {#if isImageBackground(background)}
+        {@const imageName = background.substring(4).trim()}
+        {@const imageObj = storyArchive.images[imageName]}
+        <img
+            transition:fade={{ duration: 500 }}
+            class="pointer-events-none absolute z-[-1] h-full w-full object-cover"
+            src={imageObj.prefix + imageObj.data}
+            alt={imageName}
+        />
+    {/if}
     <div
         bind:this={containerRef}
         class="absolute top-6 left-[15%] h-[calc(100%-4rem)] w-[calc(100%-2*15%)] rounded-sm bg-[#ffffffcf] p-4 shadow-2xl backdrop-blur-lg"

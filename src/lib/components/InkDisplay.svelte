@@ -60,7 +60,7 @@
                     containerScrollTop !== 0 &&
                     targetScrollTop > containerScrollTop &&
                     targetScrollTop - containerScrollTop <
-                        parseFloat(getComputedStyle(containerRef).height.replace("px", "")) * 0.25
+                        parseFloat(getComputedStyle(containerRef).height.replace("px", "")) * 0.33
                 ) {
                     containerRef.scrollTop += dt * 0.00005
                 }
@@ -190,20 +190,31 @@
             onoutroend={() => (inkTweening = false)}
             class={`text-[#000000] transition-opacity duration-1200 hover:opacity-100 ${isTheMostRecentLine ? "opacity-100" : "opacity-41"}`}
         >
-            {#if !historyItem.startsWith(">>>::")}
+            {#if !historyItem.startsWith("::")}
                 <p>
                     {historyItem}
                 </p>
-            {:else if historyItem.startsWith(">>>::img::")}
-                {@const imageName = historyItem.substring(10).trim()}
+            {:else if historyItem.startsWith("::img::")}
+                {@const imageName = historyItem.substring(7).trim()}
                 {@const imageObj = storyArchive.images[imageName]}
                 {#if imageObj}
-                    <img src={imageObj.prefix + imageObj.data} alt={imageName} />
+                    <img
+                        {@attach () => {
+                            tick().then(() => {
+                                if (containerRef) {
+                                    containerRef.scrollTop += 1
+                                }
+                            })
+                        }}
+                        class="aspect-video w-[85%] object-contain object-left"
+                        src={imageObj.prefix + imageObj.data}
+                        alt={imageName}
+                    />
                 {:else}
                     <p>{">>>"} Image Not Found: {imageName}</p>
                 {/if}
-            {:else if historyItem.startsWith(">>>::hypertext::")}
-                {@html DOMPurify.sanitize(historyItem.substring(16))}
+            {:else if historyItem.startsWith("::html::")}
+                {@html DOMPurify.sanitize(historyItem.substring(8))}
             {/if}
         </div>
         {#if !isTheMostRecentLine}
