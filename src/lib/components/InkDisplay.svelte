@@ -19,6 +19,14 @@
 
     let containerRef = $state<HTMLDivElement>()
 
+    let containerHeight = $state("0px")
+
+    $effect(() => {
+        if (containerRef) {
+            containerHeight = getComputedStyle(containerRef).height
+        }
+    })
+
     export const story = ReactiveInkStory.new(storyArchive.storyContent)
 
     let inkHistory: string[] = $state([])
@@ -60,7 +68,7 @@
                     containerScrollTop !== 0 &&
                     targetScrollTop > containerScrollTop &&
                     targetScrollTop - containerScrollTop <
-                        parseFloat(getComputedStyle(containerRef).height.replace("px", "")) * 0.33
+                        parseFloat(getComputedStyle(containerRef).height.replace("px", "")) * 0.45
                 ) {
                     containerRef.scrollTop += dt * 0.00005
                 }
@@ -129,6 +137,11 @@
 </script>
 
 <svelte:window
+    onresize={() => {
+        if (containerRef) {
+            containerHeight = getComputedStyle(containerRef).height
+        }
+    }}
     onkeydown={(e) => {
         if (e.key === "Enter" && !e.ctrlKey && !e.shiftKey && !e.altKey && !e.metaKey && !e.repeat) {
             if (!enterPressed && !inkTweening) {
@@ -206,6 +219,7 @@
                                 }
                             })
                         }}
+                        style={`max-height: calc(${containerHeight} * 0.4);`}
                         class="aspect-video w-[85%] object-contain object-left"
                         src={imageObj.prefix + imageObj.data}
                         alt={imageName}
