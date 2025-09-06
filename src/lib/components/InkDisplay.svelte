@@ -53,14 +53,7 @@
     }
 
     onMount(() => {
-        // Smoothly Scroll to Bottom by Default
-        let start: number
-        function progressive_ScrollContainerToBottom(timestamp: number) {
-            if (start === undefined) {
-                start = timestamp
-            }
-            const dt = timestamp - start
-
+        const ticket = setInterval(() => {
             if (containerRef) {
                 const containerScrollTop = containerRef.scrollTop
                 const targetScrollTop = containerRef.scrollHeight - containerRef.clientHeight
@@ -70,21 +63,15 @@
                     targetScrollTop - containerScrollTop <
                         parseFloat(getComputedStyle(containerRef).height.replace("px", "")) * 0.45
                 ) {
-                    containerRef.scrollTop += dt * 0.00005
+                    containerRef.scrollBy({
+                        top: targetScrollTop - containerScrollTop,
+                        behavior: "smooth"
+                    })
                 }
             }
-        }
-        let ticket: number
-        let cancelled = false
-        const callback = (timestamp: number) => {
-            progressive_ScrollContainerToBottom(timestamp)
-            if (!cancelled) ticket = requestAnimationFrame(callback)
-        }
-        ticket = requestAnimationFrame(callback)
-        return () => {
-            cancelled = true
-            cancelAnimationFrame(ticket)
-        }
+        }, 300)
+
+        return () => clearInterval(ticket)
     })
 
     onMount(() => {
