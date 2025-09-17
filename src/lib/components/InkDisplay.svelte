@@ -240,7 +240,7 @@
                 {:else if story.currentChoices.length > 0}
                     {#each story.currentChoices as choice}
                         <button
-                            class="m-1 rounded-full border border-gray-300 bg-gray-50 p-1 px-3 text-sm text-black"
+                            class="m-1 rounded-[0.875rem] border border-gray-300 bg-gray-50 p-1 px-3 text-left text-sm text-black"
                             onclick={() => {
                                 story.chooseChoiceIndex(choice.index)
                                 continueStoryAndPushStack()

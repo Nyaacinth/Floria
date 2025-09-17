@@ -4,7 +4,8 @@
     // and add your story & assets there.
     const ALLOW_IMPORTING_NEW_STORY = true
 
-    import inkyTestString from "$lib/assets/data/inky-default-story.json?raw"
+    import inkyStoryPlaceholder from "$lib/assets/data/story-placeholder.json?raw"
+    import inkyDefaultStory from "$lib/assets/data/story.zip?url"
     import InkDisplay from "$lib/components/InkDisplay.svelte"
     import PlatformSpecificCloseAndMinimizeButton from "$lib/components/PlatformSpecificCloseAndMinimizeButton.svelte"
     import { defaultStoryBackground } from "$lib/constants"
@@ -13,7 +14,8 @@
     import { isCSSColor, isImageBackground } from "$lib/utils/background"
     import { downloadTextFile } from "$lib/utils/downloadTextFile"
     import {
-        getStoryArchiveFromZip,
+        getStoryArchiveFromZip_Fetch,
+        getStoryArchiveFromZip_File,
         getStoryArchiveFromZip_Tauri,
         type StoryArchive
     } from "$lib/utils/getStoryArchiveFromZip"
@@ -23,10 +25,12 @@
     import { fade } from "svelte/transition"
 
     let storyArchive = $state.raw<StoryArchive>({
-        storyContent: inkyTestString,
+        storyContent: inkyStoryPlaceholder,
         images: {},
         audio: {}
     })
+
+    getStoryArchiveFromZip_Fetch(inkyDefaultStory).then((value) => (storyArchive = value))
 
     let inkDisplay = $state<InkDisplay>()
 
@@ -72,24 +76,25 @@
         platform() === 'linux' &&
         'overflow-hidden rounded-lg border-1 border-[#00000044]'} h-full w-full bg-white"
 >
-    <div
-        class="pattern-background relative h-full w-full transition-colors duration-500"
-        style:background-color={isCSSColor(background) ? background : "white"}
-        data-tauri-drag-region
-    >
-        {#if isImageBackground(background)}
-            {@const imageName = background.substring(4).trim()}
-            {@const imageObj = storyArchive.images[imageName]}
-            <img
-                transition:fade={{ duration: 500 }}
-                class="pointer-events-none absolute z-[-1] h-full w-full object-cover"
-                src={imageObj.prefix + imageObj.data}
-                alt={imageName}
-            />
-        {/if}
+    <div class="pattern2-background relative h-full w-full" data-tauri-drag-region>
+        <div
+            class="pattern-background pointer-events-none absolute top-0 left-0 h-full w-[calc(63%-2*0.75rem)] bg-white transition-colors duration-500"
+            style:background-color={isCSSColor(background) ? background : "white"}
+        >
+            {#if isImageBackground(background)}
+                {@const imageName = background.substring(4).trim()}
+                {@const imageObj = storyArchive.images[imageName]}
+                <img
+                    transition:fade={{ duration: 500 }}
+                    class="pointer-events-none absolute z-[-1] h-full w-full object-cover"
+                    src={imageObj.prefix + imageObj.data}
+                    alt={imageName}
+                />
+            {/if}
+        </div>
         <div
             bind:this={containerRef}
-            class="absolute top-6 left-[15%] h-[calc(100%-4rem)] w-[calc(100%-2*15%)] rounded-sm bg-[#ffffffcf] p-4 shadow-2xl backdrop-blur-lg"
+            class="absolute top-12 right-3 h-[calc(100%-5rem)] w-[37%] rounded-sm bg-[#ffffffcf] p-4 shadow-2xl backdrop-blur-lg"
         >
             {#key storyArchive}
                 <InkDisplay bind:this={inkDisplay} {storyArchive} {autoMode} bind:background onshake={shakeContainer} />
@@ -201,7 +206,7 @@
                     )! as HTMLInputElement
                     const file = uploader.files?.[0]
                     if (file) {
-                        getStoryArchiveFromZip(file).then((value) => (storyArchive = value))
+                        getStoryArchiveFromZip_File(file).then((value) => (storyArchive = value))
                     }
                 }}
             />
@@ -211,14 +216,27 @@
 
 <style>
     .pattern-background {
+        background-image:
+            linear-gradient(#ffffff4c 3.2px, transparent 3.2px),
+            linear-gradient(90deg, #ffffff4c 3.2px, transparent 3.2px),
+            linear-gradient(#ffffff4c 1.6px, transparent 1.6px),
+            linear-gradient(90deg, #ffffff4c 1.6px, transparent 1.6px);
+        background-size:
+            80px 80px,
+            80px 80px,
+            16px 16px,
+            16px 16px;
+        background-position:
+            -3.2px -3.2px,
+            -3.2px -3.2px,
+            -1.6px -1.6px,
+            -1.6px -1.6px;
+    }
+    .pattern2-background {
+        background-color: #cfcfcf;
         opacity: 0.8;
-        background-size: 17px 17px;
-        background-image: repeating-linear-gradient(
-            45deg,
-            transparent 0,
-            transparent 1.7000000000000002px,
-            #ffffff4c 0,
-            #ffffff4c 50%
-        );
+        background-image:
+            repeating-radial-gradient(circle at 0 0, transparent 0, #cfcfcf 16px),
+            repeating-linear-gradient(#44444455, #444444);
     }
 </style>
