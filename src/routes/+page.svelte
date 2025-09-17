@@ -78,7 +78,7 @@
 >
     <div class="pattern2-background relative h-full w-full" data-tauri-drag-region>
         <div
-            class="pattern-background pointer-events-none absolute top-0 left-0 h-full w-[calc(63%-2*0.75rem)] bg-white transition-colors duration-500"
+            class="pattern-background pointer-events-none relative h-full w-[calc(63%-2*0.75rem)] bg-white transition-colors duration-500"
             style:background-color={isCSSColor(background) ? background : "white"}
         >
             {#if isImageBackground(background)}
@@ -86,7 +86,7 @@
                 {@const imageObj = storyArchive.images[imageName]}
                 <img
                     transition:fade={{ duration: 500 }}
-                    class="pointer-events-none absolute z-[-1] h-full w-full object-cover"
+                    class="pointer-events-none absolute h-full w-full object-cover"
                     src={imageObj.prefix + imageObj.data}
                     alt={imageName}
                 />
