@@ -92,7 +92,7 @@
     </div>
     <div class="absolute bottom-0 h-5 w-full bg-[#000000cf] px-2 text-[0.8rem] text-[#ffffffef]">
         <div class="relative h-full w-full">
-            <button class={`mx-2 ${autoMode ? "text-blue-400" : ""}`} onclick={() => (autoMode = !autoMode)}>
+            <button class="mx-2 {autoMode ? 'text-blue-400' : ''}" onclick={() => (autoMode = !autoMode)}>
                 [Auto]
             </button>
             <button
@@ -165,7 +165,7 @@
     <input
         title="Save Files Loading File Selector"
         type="file"
-        id={`${uniqueId}-load-saves-file-selector`}
+        id="{uniqueId}-load-saves-file-selector"
         accept=".json"
         style:display="none"
         onchange={() => {
@@ -188,7 +188,7 @@
         <input
             title="Story Loading File Selector"
             type="file"
-            id={`${uniqueId}-load-story-file-selector`}
+            id="{uniqueId}-load-story-file-selector"
             accept=".zip"
             style:display="none"
             onchange={() => {
