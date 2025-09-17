@@ -5,7 +5,6 @@
     const ALLOW_IMPORTING_NEW_STORY = true
 
     import inkyTestString from "$lib/assets/data/inky-default-story.json?raw"
-    import FloriaLogo from "$lib/components/FloriaLogo.svelte"
     import InkDisplay from "$lib/components/InkDisplay.svelte"
     import PlatformSpecificCloseAndMinimizeButton from "$lib/components/PlatformSpecificCloseAndMinimizeButton.svelte"
     import { defaultStoryBackground } from "$lib/constants"
@@ -20,6 +19,7 @@
     } from "$lib/utils/getStoryArchiveFromZip"
     import { getTextFromFile_Tauri } from "$lib/utils/getTextFromFile_Tauri"
     import { isTauri } from "@tauri-apps/api/core"
+    import { platform } from "@tauri-apps/plugin-os"
     import { fade } from "svelte/transition"
 
     let storyArchive = $state.raw<StoryArchive>({
@@ -68,138 +68,145 @@
 </svelte:head>
 
 <div
-    class="pattern-background relative h-full w-full transition-colors duration-500"
-    style:background-color={isCSSColor(background) ? background : "white"}
-    data-tauri-drag-region
+    class="{isTauri() &&
+        platform() === 'linux' &&
+        'overflow-hidden rounded-lg border-1 border-[#00000044]'} h-full w-full bg-white"
 >
-    {#if isImageBackground(background)}
-        {@const imageName = background.substring(4).trim()}
-        {@const imageObj = storyArchive.images[imageName]}
-        <img
-            transition:fade={{ duration: 500 }}
-            class="pointer-events-none absolute z-[-1] h-full w-full object-cover"
-            src={imageObj.prefix + imageObj.data}
-            alt={imageName}
-        />
-    {/if}
     <div
-        bind:this={containerRef}
-        class="absolute top-6 left-[15%] h-[calc(100%-4rem)] w-[calc(100%-2*15%)] rounded-sm bg-[#ffffffcf] p-4 shadow-2xl backdrop-blur-lg"
+        class="pattern-background relative h-full w-full transition-colors duration-500"
+        style:background-color={isCSSColor(background) ? background : "white"}
+        data-tauri-drag-region
     >
-        {#key storyArchive}
-            <InkDisplay bind:this={inkDisplay} {storyArchive} {autoMode} bind:background onshake={shakeContainer} />
-        {/key}
-    </div>
-    <div class="absolute bottom-0 h-5 w-full bg-[#000000cf] px-2 text-[0.8rem] text-[#ffffffef]">
-        <div class="relative h-full w-full">
-            <button class="mx-2 {autoMode ? 'text-blue-400' : ''}" onclick={() => (autoMode = !autoMode)}>
-                [Auto]
-            </button>
-            <button
-                class="mx-2"
-                onclick={() => {
-                    const saves = inkDisplay?.story.saveToStateJson()
-                    if (saves) {
-                        downloadTextFile("Saved-State.json", saves)
-                    }
-                }}
-            >
-                [Save]
-            </button>
-            <button
-                class="mx-2"
-                onclick={() => {
-                    if (isTauri()) {
-                        getTextFromFile_Tauri("Saved-State", ["json"]).then((value) => {
-                            if (!value) return
-                            try {
-                                inkDisplay?.recoverFromStateJsonAndRefreshHistory(value)
-                            } catch (e) {
-                                alert_cx(
-                                    "Cannot load this save file, please check the content." +
-                                        (e instanceof Error ? "\n" + e.message : "")
-                                )
-                            }
-                        })
-                    } else {
-                        document.getElementById(`${uniqueId}-load-saves-file-selector`)?.click()
-                    }
-                }}
-            >
-                [Load]
-            </button>
-            <button
-                class="mx-2"
-                onclick={() => {
-                    inkDisplay?.clearHistory()
-                }}
-            >
-                [Clear History]
-            </button>
-            <button
-                class="mx-2"
-                onclick={() => {
-                    storyArchive = { ...storyArchive }
-                }}
-            >
-                [Restart Story]
-            </button>
-            {#if ALLOW_IMPORTING_NEW_STORY}
+        {#if isImageBackground(background)}
+            {@const imageName = background.substring(4).trim()}
+            {@const imageObj = storyArchive.images[imageName]}
+            <img
+                transition:fade={{ duration: 500 }}
+                class="pointer-events-none absolute z-[-1] h-full w-full object-cover"
+                src={imageObj.prefix + imageObj.data}
+                alt={imageName}
+            />
+        {/if}
+        <div
+            bind:this={containerRef}
+            class="absolute top-6 left-[15%] h-[calc(100%-4rem)] w-[calc(100%-2*15%)] rounded-sm bg-[#ffffffcf] p-4 shadow-2xl backdrop-blur-lg"
+        >
+            {#key storyArchive}
+                <InkDisplay bind:this={inkDisplay} {storyArchive} {autoMode} bind:background onshake={shakeContainer} />
+            {/key}
+        </div>
+        <div class="absolute bottom-0 h-5 w-full bg-[#000000cf] px-2 text-[0.8rem] text-[#ffffffef]">
+            <div class="relative h-full w-full">
+                <button class="mx-2 {autoMode ? 'text-blue-400' : ''}" onclick={() => (autoMode = !autoMode)}>
+                    [Auto]
+                </button>
                 <button
-                    class="absolute right-0 mx-2"
+                    class="mx-2"
                     onclick={() => {
-                        if (isTauri()) {
-                            getStoryArchiveFromZip_Tauri().then((value) => value && (storyArchive = value))
-                        } else {
-                            document.getElementById(`${uniqueId}-load-story-file-selector`)?.click()
+                        const saves = inkDisplay?.story.saveToStateJson()
+                        if (saves) {
+                            downloadTextFile("Saved-State.json", saves)
                         }
                     }}
                 >
-                    [Import Inky Story]
+                    [Save]
                 </button>
-            {/if}
+                <button
+                    class="mx-2"
+                    onclick={() => {
+                        if (isTauri()) {
+                            getTextFromFile_Tauri("Saved-State", ["json"]).then((value) => {
+                                if (!value) return
+                                try {
+                                    inkDisplay?.recoverFromStateJsonAndRefreshHistory(value)
+                                } catch (e) {
+                                    alert_cx(
+                                        "Cannot load this save file, please check the content." +
+                                            (e instanceof Error ? "\n" + e.message : "")
+                                    )
+                                }
+                            })
+                        } else {
+                            document.getElementById(`${uniqueId}-load-saves-file-selector`)?.click()
+                        }
+                    }}
+                >
+                    [Load]
+                </button>
+                <button
+                    class="mx-2"
+                    onclick={() => {
+                        inkDisplay?.clearHistory()
+                    }}
+                >
+                    [Clear History]
+                </button>
+                <button
+                    class="mx-2"
+                    onclick={() => {
+                        storyArchive = { ...storyArchive }
+                    }}
+                >
+                    [Restart Story]
+                </button>
+                {#if ALLOW_IMPORTING_NEW_STORY}
+                    <button
+                        class="absolute right-0 mx-2"
+                        onclick={() => {
+                            if (isTauri()) {
+                                getStoryArchiveFromZip_Tauri().then((value) => value && (storyArchive = value))
+                            } else {
+                                document.getElementById(`${uniqueId}-load-story-file-selector`)?.click()
+                            }
+                        }}
+                    >
+                        [Import Inky Story]
+                    </button>
+                {/if}
+            </div>
         </div>
-    </div>
-    <PlatformSpecificCloseAndMinimizeButton />
-    <FloriaLogo />
-    <input
-        title="Save Files Loading File Selector"
-        type="file"
-        id="{uniqueId}-load-saves-file-selector"
-        accept=".json"
-        style:display="none"
-        onchange={() => {
-            const uploader = document.getElementById(`${uniqueId}-load-saves-file-selector`)! as HTMLInputElement
-            uploader.files?.[0].text().then((value) => {
-                try {
-                    inkDisplay?.recoverFromStateJsonAndRefreshHistory(value)
-                } catch (e) {
-                    alert_cx(
-                        "Cannot load this save file, please check the content." +
-                            (e instanceof Error ? "\n" + e.message : "")
-                    )
-                } finally {
-                    uploader.value = ""
-                }
-            })
-        }}
-    />
-    {#if ALLOW_IMPORTING_NEW_STORY}
+        <PlatformSpecificCloseAndMinimizeButton />
         <input
-            title="Story Loading File Selector"
+            title="Save Files Loading File Selector"
             type="file"
-            id="{uniqueId}-load-story-file-selector"
-            accept=".zip"
+            id="{uniqueId}-load-saves-file-selector"
+            accept=".json"
             style:display="none"
             onchange={() => {
-                const uploader = document.getElementById(`${uniqueId}-load-story-file-selector`)! as HTMLInputElement
-                const file = uploader.files?.[0]
-                if (file) {
-                    getStoryArchiveFromZip(file).then((value) => (storyArchive = value))
-                }
+                const uploader = document.getElementById(`${uniqueId}-load-saves-file-selector`)! as HTMLInputElement
+                uploader.files?.[0].text().then((value) => {
+                    try {
+                        inkDisplay?.recoverFromStateJsonAndRefreshHistory(value)
+                    } catch (e) {
+                        alert_cx(
+                            "Cannot load this save file, please check the content." +
+                                (e instanceof Error ? "\n" + e.message : "")
+                        )
+                    } finally {
+                        uploader.value = ""
+                    }
+                })
             }}
         />
-    {/if}
+        {#if ALLOW_IMPORTING_NEW_STORY}
+            <input
+                title="Story Loading File Selector"
+                type="file"
+                id="{uniqueId}-load-story-file-selector"
+                accept=".zip"
+                style:display="none"
+                onchange={() => {
+                    const uploader = document.getElementById(
+                        `${uniqueId}-load-story-file-selector`
+                    )! as HTMLInputElement
+                    const file = uploader.files?.[0]
+                    if (file) {
+                        getStoryArchiveFromZip(file).then((value) => (storyArchive = value))
+                    }
+                }}
+            />
+        {/if}
+    </div>
 </div>
 
 <style>

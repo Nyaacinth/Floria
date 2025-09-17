@@ -5,18 +5,56 @@
     import { isTauri } from "@tauri-apps/api/core"
     import { getCurrentWindow } from "@tauri-apps/api/window"
     import { platform } from "@tauri-apps/plugin-os"
+
+    let { forcePosition }: { forcePosition?: "left" | "right" } = $props()
+
+    const position = $derived.by(() => {
+        let position = forcePosition
+        if (position) return position
+        const currentPlatform = isTauri() ? platform() : "web"
+        switch (currentPlatform) {
+            case "windows":
+            case "linux":
+                return "right"
+            case "macos":
+                return /* "left" */ "none"
+            case "web":
+                return "none"
+        }
+        console.warn(`Unsupported platform: "${currentPlatform}"; defaulting to right for window controls position`)
+        return "right"
+    })
 </script>
 
-{#if isTauri() && platform() === "windows"}
+{#if position !== "none"}
     <div
-        class="fixed top-3 right-3 z-9999 flex h-min w-min rounded-[9999px] bg-[#FFFFFF76] p-1 text-gray-900 shadow-md backdrop-blur-md"
+        class="fixed top-3 {position === 'left'
+            ? 'left-3'
+            : position === 'right'
+              ? 'right-3'
+              : ''} z-9999 flex h-min w-min rounded-[9999px] bg-[#FFFFFF76] p-1 text-gray-900 shadow-md backdrop-blur-md"
     >
-        <button class="contents" onclick={() => getCurrentWindow().minimize()}>
-            <ChevronDownIcon width="18" height="18" />
-        </button>
-        <div class="mx-0.5"></div>
-        <button class="contents" onclick={() => getCurrentWindow().close()}>
-            <XmarkIcon width="18" height="18" />
-        </button>
+        {#snippet minimizeButton()}
+            <button class="contents" onclick={() => getCurrentWindow().minimize()}>
+                <ChevronDownIcon width="18" height="18" />
+            </button>
+        {/snippet}
+        {#snippet closeButton()}
+            <button class="contents" onclick={() => getCurrentWindow().close()}>
+                <XmarkIcon width="18" height="18" />
+            </button>
+        {/snippet}
+        {#snippet spaceBetween()}
+            <div class="mx-0.5"></div>
+        {/snippet}
+        {#if position === "left"}
+            {@render closeButton()}
+            {@render spaceBetween()}
+            {@render minimizeButton()}
+        {:else if position === "right"}
+            {@render minimizeButton()}
+            {@render spaceBetween()}
+            {@render closeButton()}
+        {/if}
     </div>
 {/if}

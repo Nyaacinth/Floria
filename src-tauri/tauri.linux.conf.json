@@ -1,4 +1,5 @@
 {
+    "$schema": "https://schema.tauri.app/config/2",
     "app": {
         "windows": [
             {
@@ -9,6 +10,14 @@
                 "minHeight": 600,
                 "resizable": true,
                 "fullscreen": false,
+                "decorations": false,
+                "transparent": true,
+                "backgroundColor": {
+                    "red": 0,
+                    "green": 0,
+                    "blue": 0,
+                    "alpha": 0
+                },
                 "visible": false
             }
         ]
