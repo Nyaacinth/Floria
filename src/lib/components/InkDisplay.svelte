@@ -208,8 +208,7 @@
                                 }
                             })
                         }}
-                        style="max-height: calc({containerHeight} * 0.4);"
-                        class="aspect-video w-[85%] object-contain object-left"
+                        class="w-full object-contain object-left"
                         src={imageObj.prefix + imageObj.data}
                         alt={imageName}
                     />
