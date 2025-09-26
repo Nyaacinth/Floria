@@ -52,24 +52,21 @@
         inkHistory = []
     }
 
+    let autoScrollInterrupted = false
     onMount(() => {
         const ticket = setInterval(() => {
+            if (autoScrollInterrupted) return
             if (containerRef) {
                 const containerScrollTop = containerRef.scrollTop
                 const targetScrollTop = containerRef.scrollHeight - containerRef.clientHeight
-                if (
-                    containerScrollTop !== 0 &&
-                    targetScrollTop > containerScrollTop &&
-                    targetScrollTop - containerScrollTop <
-                        parseFloat(getComputedStyle(containerRef).height.replace("px", "")) * 0.45
-                ) {
+                if (containerScrollTop !== 0 && targetScrollTop > containerScrollTop) {
                     containerRef.scrollBy({
-                        top: targetScrollTop - containerScrollTop,
+                        top: Math.max(0.5 * (targetScrollTop - containerScrollTop), 0.5),
                         behavior: "smooth"
                     })
                 }
             }
-        }, 300)
+        }, 42)
 
         return () => clearInterval(ticket)
     })
@@ -124,6 +121,11 @@
 </script>
 
 <svelte:window
+    onwheel={(e) => {
+        if (e.deltaY !== 0) {
+            autoScrollInterrupted = true
+        }
+    }}
     onresize={() => {
         if (containerRef) {
             containerHeight = getComputedStyle(containerRef).height
@@ -166,6 +168,7 @@
                             difference < parseFloat(getComputedStyle(containerRef).height.replace("px", "")) * 0.25
                         ) {
                             containerRef.scrollTop += 1
+                            autoScrollInterrupted = false
                         }
                     }
                 })
