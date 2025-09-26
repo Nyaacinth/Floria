@@ -11,7 +11,7 @@ const notSetSymbol = "::<not-set>::"
 
 let defaultPosition = notSetSymbol
 
-export function evaluateDefaultTrafficLightPosition() {
+function evaluateDefaultTrafficLightPosition() {
     const currentPlatform = isTauri() ? platform() : "web"
     switch (currentPlatform) {
         case "windows":
