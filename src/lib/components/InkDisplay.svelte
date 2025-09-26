@@ -151,6 +151,9 @@
 <div
     bind:this={containerRef}
     class="scrollbar-semitrans customized-font-serif h-full w-full overflow-x-hidden overflow-y-auto"
+    ontouchmove={(e) => {
+        autoScrollInterrupted = true
+    }}
 >
     {#each inkHistory as historyItem, index}
         {@const isTheMostRecentLine =
