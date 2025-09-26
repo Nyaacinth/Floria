@@ -36,15 +36,15 @@
 
     let background: CSSColor | ImageBackground = $state(defaultStoryBackground)
 
-    let containerRef = $state<HTMLDivElement>()
+    let pageRef = $state<HTMLDivElement>()
 
     let autoMode = $state(false)
 
     const uniqueId = $props.id()
 
-    function shakeContainer() {
-        if (!containerRef) return
-        containerRef.animate(
+    function shakePage() {
+        if (!pageRef) return
+        pageRef.animate(
             [
                 {
                     transform: "translate(0, 0)"
@@ -72,6 +72,7 @@
 </svelte:head>
 
 <div
+    bind:this={pageRef}
     class="{isTauri() &&
         platform() === 'linux' &&
         'overflow-hidden rounded-lg border-1 border-[#00000044]'} h-full w-full bg-white"
@@ -93,11 +94,10 @@
             {/if}
         </div>
         <div
-            bind:this={containerRef}
             class="absolute top-12 right-3 h-[calc(100%-5rem)] w-[37%] rounded-sm bg-[#ffffffcf] p-4 shadow-2xl backdrop-blur-lg"
         >
             {#key storyArchive}
-                <InkDisplay bind:this={inkDisplay} {storyArchive} {autoMode} bind:background onshake={shakeContainer} />
+                <InkDisplay bind:this={inkDisplay} {storyArchive} {autoMode} bind:background onshake={shakePage} />
             {/key}
         </div>
         <div class="absolute bottom-0 h-5 w-full bg-[#000000cf] px-2 text-[0.8rem] text-[#ffffffef]">
