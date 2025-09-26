@@ -2,27 +2,15 @@
     import ChevronDownIcon from "~icons/gravity-ui/chevron-down"
     import XmarkIcon from "~icons/gravity-ui/xmark"
 
-    import { isTauri } from "@tauri-apps/api/core"
+    import { getDefaultTrafficLightPosition } from "$lib/utils/getDefaultTrafficLightPosition"
     import { getCurrentWindow } from "@tauri-apps/api/window"
-    import { platform } from "@tauri-apps/plugin-os"
 
     let { forcePosition }: { forcePosition?: "left" | "right" } = $props()
 
     const position = $derived.by(() => {
         let position = forcePosition
         if (position) return position
-        const currentPlatform = isTauri() ? platform() : "web"
-        switch (currentPlatform) {
-            case "windows":
-            case "linux":
-                return "right"
-            case "macos":
-                return /* "left" */ "none"
-            case "web":
-                return "none"
-        }
-        console.warn(`Unsupported platform: "${currentPlatform}"; defaulting to right for window controls position`)
-        return "right"
+        return getDefaultTrafficLightPosition()
     })
 </script>
 

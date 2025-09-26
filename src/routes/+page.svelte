@@ -13,6 +13,7 @@
     import type { CSSColor, ImageBackground } from "$lib/utils/background"
     import { isCSSColor, isImageBackground } from "$lib/utils/background"
     import { downloadTextFile } from "$lib/utils/downloadTextFile"
+    import { getDefaultTrafficLightPosition } from "$lib/utils/getDefaultTrafficLightPosition"
     import {
         getStoryArchiveFromZip_Fetch,
         getStoryArchiveFromZip_File,
@@ -94,7 +95,9 @@
             {/if}
         </div>
         <div
-            class="absolute top-12 right-3 h-[calc(100%-5rem)] w-[37%] rounded-sm bg-[#ffffffcf] p-4 shadow-2xl backdrop-blur-lg"
+            class="absolute right-3 {getDefaultTrafficLightPosition() === 'right'
+                ? 'top-12 h-[calc(100%-5rem)]'
+                : 'top-3 h-[calc(100%-1rem)]'} w-[37%] rounded-sm bg-[#ffffffcf] p-4 shadow-2xl backdrop-blur-lg"
         >
             {#key storyArchive}
                 <InkDisplay bind:this={inkDisplay} {storyArchive} {autoMode} bind:background onshake={shakePage} />
