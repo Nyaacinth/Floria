@@ -80,9 +80,10 @@
 >
     <div class="pattern2-background relative h-full w-full" data-tauri-drag-region>
         <div
-            class="pattern-background pointer-events-none relative h-full w-[calc(63%-2*0.75rem)] bg-white transition-colors duration-500"
+            class="pointer-events-none relative h-full w-[calc(63%-2*0.75rem)] bg-white transition-colors duration-500"
             style:background-color={isCSSColor(background) ? background : "white"}
         >
+            <div class="pattern-background absolute inset-0 top-[-2px] left-[-2px] z-0"></div>
             {#if isImageBackground(background)}
                 {@const imageName = background.substring(4).trim()}
                 {@const imageObj = storyArchive.images[imageName]}
@@ -220,20 +221,11 @@
 <style>
     .pattern-background {
         background-image:
-            linear-gradient(#ffffff4c 3.2px, transparent 3.2px),
-            linear-gradient(90deg, #ffffff4c 3.2px, transparent 3.2px),
-            linear-gradient(#ffffff4c 1.6px, transparent 1.6px),
-            linear-gradient(90deg, #ffffff4c 1.6px, transparent 1.6px);
-        background-size:
-            80px 80px,
-            80px 80px,
-            16px 16px,
-            16px 16px;
-        background-position:
-            -3.2px -3.2px,
-            -3.2px -3.2px,
-            -1.6px -1.6px,
-            -1.6px -1.6px;
+            linear-gradient(to right, #ffffffcf 1px, transparent 1px),
+            linear-gradient(to bottom, #ffffffcf 1px, transparent 1px);
+        background-size: 32px 32px;
+        -webkit-mask-image: radial-gradient(ellipse 80% 80% at 0% 0%, #000 50%, transparent 90%);
+        mask-image: radial-gradient(ellipse 80% 80% at 0% 0%, #000 50%, transparent 90%);
     }
     .pattern2-background {
         background-color: #cfcfcf;
