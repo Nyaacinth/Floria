@@ -87,12 +87,14 @@
             {#if isImageBackground(background)}
                 {@const imageName = background.substring(4).trim()}
                 {@const imageObj = storyArchive.images[imageName]}
-                <img
-                    transition:fade={{ duration: 500 }}
-                    class="pointer-events-none absolute h-full w-full object-cover"
-                    src={imageObj.prefix + imageObj.data}
-                    alt={imageName}
-                />
+                {#key imageName}
+                    <img
+                        transition:fade={{ duration: 500 }}
+                        class="pointer-events-none absolute h-full w-full object-cover"
+                        src={imageObj.prefix + imageObj.data}
+                        alt={imageName}
+                    />
+                {/key}
             {/if}
         </div>
         <div
