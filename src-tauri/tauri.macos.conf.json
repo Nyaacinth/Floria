@@ -11,6 +11,13 @@
                 "resizable": true,
                 "fullscreen": false,
                 "visible": false,
+                "transparent": true,
+                "backgroundColor": {
+                    "red": 0,
+                    "green": 0,
+                    "blue": 0,
+                    "alpha": 0
+                },
                 "decorations": false,
                 "shadow": true
             }

@@ -75,7 +75,7 @@
 <div
     bind:this={pageRef}
     class="{isTauri() &&
-        platform() === 'linux' &&
+        (platform() === 'linux' || platform() === 'macos') &&
         'overflow-hidden rounded-lg border-1 border-[#00000044]'} h-full w-full bg-white"
 >
     <div class="pattern2-background relative h-full w-full" data-tauri-drag-region>
