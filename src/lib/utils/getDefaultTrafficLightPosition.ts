@@ -1,24 +1,26 @@
 import { isTauri } from "@tauri-apps/api/core"
 import { platform } from "@tauri-apps/plugin-os"
 
-export function getDefaultTrafficLightPosition() {
-    if (defaultPosition != notSetSymbol) return defaultPosition
+export type TrafficLightPosition = "left" | "right" | "none"
+
+export function getDefaultTrafficLightPosition(): TrafficLightPosition {
+    if (defaultPosition != notSetSymbol) return defaultPosition as TrafficLightPosition
     defaultPosition = evaluateDefaultTrafficLightPosition()
-    return defaultPosition
+    return defaultPosition as TrafficLightPosition
 }
 
 const notSetSymbol = "::<not-set>::"
 
 let defaultPosition = notSetSymbol
 
-function evaluateDefaultTrafficLightPosition() {
+function evaluateDefaultTrafficLightPosition(): TrafficLightPosition {
     const currentPlatform = isTauri() ? platform() : "web"
     switch (currentPlatform) {
         case "windows":
         case "linux":
             return "right"
         case "macos":
-            return /* "left" */ "none"
+            return "left"
         case "web":
             return "none"
     }
