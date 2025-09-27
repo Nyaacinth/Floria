@@ -54,21 +54,44 @@
 
     let autoScrollInterrupted = false
     onMount(() => {
-        const ticket = setInterval(() => {
-            if (autoScrollInterrupted) return
+        let animationId: number
+        let lastTime = 0
+        let abortSignal = false
+        const autoScrollInterval = 12
+
+        function autoScroll(currentTime: number) {
+            if (abortSignal) return
+            // Throttle to approximately 100ms intervals
+            if (currentTime - lastTime < autoScrollInterval) {
+                animationId = requestAnimationFrame(autoScroll)
+                return
+            }
+            lastTime = currentTime
+
+            if (autoScrollInterrupted) {
+                animationId = requestAnimationFrame(autoScroll)
+                return
+            }
             if (containerRef) {
                 const containerScrollTop = containerRef.scrollTop
                 const targetScrollTop = containerRef.scrollHeight - containerRef.clientHeight
                 if (containerScrollTop !== 0 && targetScrollTop > containerScrollTop) {
                     containerRef.scrollBy({
-                        top: Math.max(0.5 * (targetScrollTop - containerScrollTop), 0.5),
+                        top: Math.max(0.3 * (targetScrollTop - containerScrollTop), 0.01),
                         behavior: "smooth"
                     })
                 }
             }
-        }, 42)
 
-        return () => clearInterval(ticket)
+            animationId = requestAnimationFrame(autoScroll)
+        }
+
+        animationId = requestAnimationFrame(autoScroll)
+
+        return () => {
+            cancelAnimationFrame(animationId)
+            abortSignal = true
+        }
     })
 
     onMount(() => {
