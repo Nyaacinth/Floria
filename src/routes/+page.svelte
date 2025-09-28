@@ -14,13 +14,13 @@
     import { isCSSColor, isImageBackground } from "$lib/utils/background"
     import { downloadTextFile } from "$lib/utils/downloadTextFile"
     import { getDefaultTrafficLightPosition } from "$lib/utils/getDefaultTrafficLightPosition"
+    import { getTextFromFile_Tauri } from "$lib/utils/getTextFromFile_Tauri"
     import {
         getStoryArchiveFromZip_Fetch,
         getStoryArchiveFromZip_File,
         getStoryArchiveFromZip_Tauri,
         type StoryArchive
-    } from "$lib/utils/getStoryArchiveFromZip"
-    import { getTextFromFile_Tauri } from "$lib/utils/getTextFromFile_Tauri"
+    } from "$lib/utils/StoryArchive"
     import { isTauri } from "@tauri-apps/api/core"
     import { platform } from "@tauri-apps/plugin-os"
     import { fade } from "svelte/transition"

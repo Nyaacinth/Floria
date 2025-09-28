@@ -19,6 +19,44 @@ export type StoryArchive = {
     }
 }
 
+export function defineBuiltinStoryArchive({
+    storyContent,
+    images,
+    audio
+}: {
+    storyContent: string
+    images: {
+        [imageName: string]: {
+            url: string
+        }
+    }
+    audio: {
+        [audioName: string]: {
+            url: string
+        }
+    }
+}): StoryArchive {
+    const targetImages: Record<string, { data: string; prefix: string }> = {}
+    Object.entries(images).forEach(([imageName, { url }]) => {
+        targetImages[imageName] = {
+            data: url,
+            prefix: ""
+        }
+    })
+    const targetAudio: Record<string, { data: string; prefix: string }> = {}
+    Object.entries(audio).forEach(([audioName, { url }]) => {
+        targetAudio[audioName] = {
+            data: url,
+            prefix: ""
+        }
+    })
+    return {
+        storyContent,
+        images: targetImages,
+        audio: targetAudio
+    }
+}
+
 export async function getStoryArchiveFromZip(zipData: unknown) {
     const zip = await JSZip.loadAsync(zipData)
 

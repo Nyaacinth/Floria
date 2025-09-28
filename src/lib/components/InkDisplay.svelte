@@ -2,7 +2,7 @@
     import { defaultStoryBackground } from "$lib/constants"
     import { ReactiveInkStory } from "$lib/models/InkStory.svelte"
     import { getPureTextLength } from "$lib/utils/getPureTextLength"
-    import type { StoryArchive } from "$lib/utils/getStoryArchiveFromZip"
+    import type { StoryArchive } from "$lib/utils/StoryArchive"
     import DOMPurify from "dompurify"
     import { onMount, tick } from "svelte"
     import { fade, fly } from "svelte/transition"
