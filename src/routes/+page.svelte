@@ -230,10 +230,21 @@
         mask-image: radial-gradient(ellipse 80% 80% at 0% 0%, #000 50%, transparent 90%);
     }
     .pattern2-background {
-        background-color: #cfcfcf;
-        opacity: 0.8;
+        background-color: #ececec;
         background-image:
-            repeating-radial-gradient(circle at 0 0, transparent 0, #cfcfcf 16px),
-            repeating-linear-gradient(#44444455, #444444);
+            linear-gradient(30deg, #a4a4a4 12%, transparent 12.5%, transparent 87%, #a4a4a4 87.5%, #a4a4a4),
+            linear-gradient(150deg, #a4a4a4 12%, transparent 12.5%, transparent 87%, #a4a4a4 87.5%, #a4a4a4),
+            linear-gradient(30deg, #a4a4a4 12%, transparent 12.5%, transparent 87%, #a4a4a4 87.5%, #a4a4a4),
+            linear-gradient(150deg, #a4a4a4 12%, transparent 12.5%, transparent 87%, #a4a4a4 87.5%, #a4a4a4),
+            linear-gradient(60deg, #a4a4a477 25%, transparent 25.5%, transparent 75%, #a4a4a477 75%, #a4a4a477),
+            linear-gradient(60deg, #a4a4a477 25%, transparent 25.5%, transparent 75%, #a4a4a477 75%, #a4a4a477);
+        background-size: 40px 70px;
+        background-position:
+            0 0,
+            0 0,
+            20px 35px,
+            20px 35px,
+            0 0,
+            20px 35px;
     }
 </style>
