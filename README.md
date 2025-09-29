@@ -45,7 +45,7 @@ Set Background Color
 VAR background = "<css_color>"
 ```
 
-Set Background Image: {name}.jpg
+Set Background Image: {img_name}.jpg
 
 ```
 VAR background = "img:img_name"
@@ -57,7 +57,7 @@ HTML Rich Text (sanitized)
 ::html::<span>HTML Rich Text</span>
 ```
 
-Show Image: {name}.jpg
+Show Image: {img_name}.jpg
 
 ```
 ::img::img_name
