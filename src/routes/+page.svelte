@@ -230,21 +230,21 @@
         mask-image: radial-gradient(ellipse 80% 80% at 0% 0%, #000 50%, transparent 90%);
     }
     .pattern2-background {
-        background-color: #ececec;
+        background-color: #ffffff;
         background-image:
-            linear-gradient(30deg, #a4a4a4 12%, transparent 12.5%, transparent 87%, #a4a4a4 87.5%, #a4a4a4),
-            linear-gradient(150deg, #a4a4a4 12%, transparent 12.5%, transparent 87%, #a4a4a4 87.5%, #a4a4a4),
-            linear-gradient(30deg, #a4a4a4 12%, transparent 12.5%, transparent 87%, #a4a4a4 87.5%, #a4a4a4),
-            linear-gradient(150deg, #a4a4a4 12%, transparent 12.5%, transparent 87%, #a4a4a4 87.5%, #a4a4a4),
-            linear-gradient(60deg, #a4a4a477 25%, transparent 25.5%, transparent 75%, #a4a4a477 75%, #a4a4a477),
-            linear-gradient(60deg, #a4a4a477 25%, transparent 25.5%, transparent 75%, #a4a4a477 75%, #a4a4a477);
-        background-size: 40px 70px;
+            linear-gradient(30deg, #c9c9c9 12%, transparent 12.5%, transparent 87%, #c9c9c9 87.5%, #c9c9c9),
+            linear-gradient(150deg, #c9c9c9 12%, transparent 12.5%, transparent 87%, #c9c9c9 87.5%, #c9c9c9),
+            linear-gradient(30deg, #c9c9c9 12%, transparent 12.5%, transparent 87%, #c9c9c9 87.5%, #c9c9c9),
+            linear-gradient(150deg, #c9c9c9 12%, transparent 12.5%, transparent 87%, #c9c9c9 87.5%, #c9c9c9),
+            linear-gradient(60deg, #c9c9c977 25%, transparent 25.5%, transparent 75%, #c9c9c977 75%, #c9c9c977),
+            linear-gradient(60deg, #c9c9c977 25%, transparent 25.5%, transparent 75%, #c9c9c977 75%, #c9c9c977);
+        background-size: 32px 56px;
         background-position:
             0 0,
             0 0,
-            20px 35px,
-            20px 35px,
+            16px 28px,
+            16px 28px,
             0 0,
-            20px 35px;
+            16px 28px;
     }
 </style>
