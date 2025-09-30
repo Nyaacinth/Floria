@@ -27,7 +27,7 @@
         }
     })
 
-    export const story = ReactiveInkStory.new(storyArchive.storyContent)
+    export const story = ReactiveInkStory.fromStoryContent(storyArchive.storyContent)
 
     let inkHistory: string[] = $state([])
 

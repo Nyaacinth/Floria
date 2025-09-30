@@ -26,7 +26,7 @@ export class ReactiveInkStory {
         this.story[1].onError = this.defaultHandler_onError
     }
 
-    static new(storyContent: string) {
+    static fromStoryContent(storyContent: string) {
         return new ReactiveInkStory(storyContent)
     }
 
