@@ -89,7 +89,7 @@
                 {@const imageObj = storyArchive.images[imageName]}
                 {#key imageName}
                     <img
-                        transition:fade={{ duration: 500 }}
+                        transition:fade|global={{ duration: 500 }}
                         class="pointer-events-none absolute h-full w-full object-cover"
                         src={imageObj.prefix + imageObj.data}
                         alt={imageName}
