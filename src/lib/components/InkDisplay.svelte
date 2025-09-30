@@ -77,7 +77,7 @@
                 const targetScrollTop = containerRef.scrollHeight - containerRef.clientHeight
                 if (containerScrollTop !== 0 && targetScrollTop > containerScrollTop) {
                     containerRef.scrollBy({
-                        top: Math.max(0.3 * (targetScrollTop - containerScrollTop), 0.01),
+                        top: Math.max(0.4 * (targetScrollTop - containerScrollTop), 0.01),
                         behavior: "smooth"
                     })
                 }
