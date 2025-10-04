@@ -14,6 +14,11 @@ function downloadTextFile_Browser(filename: string, text: string) {
 }
 
 async function downloadTextFile_Tauri(filename: string, text: string) {
+    if (!isTauri()) {
+        console.warn("Called Tauri-specific function but not in Tauri")
+        return
+    }
+
     const selectedPath = await save({
         defaultPath: await homeDir(),
         filters: [

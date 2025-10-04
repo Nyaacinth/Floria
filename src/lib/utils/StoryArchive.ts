@@ -1,3 +1,4 @@
+import { isTauri } from "@tauri-apps/api/core"
 import { homeDir } from "@tauri-apps/api/path"
 import { open } from "@tauri-apps/plugin-dialog"
 import { readFile } from "@tauri-apps/plugin-fs"
@@ -130,6 +131,11 @@ export async function getStoryArchiveFromZip_File(file: File) {
 }
 
 export async function getStoryArchiveFromZip_Tauri() {
+    if (!isTauri()) {
+        console.warn("Called Tauri-specific function but not in Tauri")
+        return
+    }
+
     const selectedPath = await open({
         multiple: false,
         directory: false,
