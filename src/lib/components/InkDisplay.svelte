@@ -19,14 +19,6 @@
 
     let containerRef = $state<HTMLDivElement>()
 
-    let containerHeight = $state("0px")
-
-    $effect(() => {
-        if (containerRef) {
-            containerHeight = getComputedStyle(containerRef).height
-        }
-    })
-
     export const story = ReactiveInkStory.fromStoryContent(storyArchive.storyContent)
 
     let inkHistory: string[] = $state([])
@@ -149,11 +141,6 @@
             autoScrollInterrupted = true
         }
     }}
-    onresize={() => {
-        if (containerRef) {
-            containerHeight = getComputedStyle(containerRef).height
-        }
-    }}
     onkeydown={(e) => {
         if (e.key === "Enter" && !e.ctrlKey && !e.shiftKey && !e.altKey && !e.metaKey && !e.repeat) {
             if (!enterPressed && !inkTweening) {
@@ -174,11 +161,11 @@
 <div
     bind:this={containerRef}
     class="scrollbar-semitrans customized-font-serif h-full w-full overflow-x-hidden overflow-y-auto"
-    ontouchmove={(e) => {
+    ontouchmove={() => {
         autoScrollInterrupted = true
     }}
 >
-    {#each inkHistory as historyItem, index}
+    {#each inkHistory as historyItem, index (historyItem)}
         {@const isTheMostRecentLine =
             (story.canContinue || story.currentChoices.length > 0 || inkTweening) && index === inkHistory.length - 1}
         <div
@@ -208,7 +195,7 @@
                                 continueStoryAndPushStack()
                                 inkTweening = false
                             },
-                            getPureTextLength(historyItem.replace(/^\>\>\>\:\:[A-z]+\:\:/gm, "")) * 100 + 220
+                            getPureTextLength(historyItem.replace(/^>>>::[A-z]+::/gm, "")) * 100 + 220
                         )
                     })
                 } else {
@@ -242,9 +229,10 @@
                         alt={imageName}
                     />
                 {:else}
-                    <p>{">>>"} Image Not Found: {imageName}</p>
+                    <p>&gt;&gt;&gt; Image Not Found: {imageName}</p>
                 {/if}
             {:else if historyItem.startsWith("::html::")}
+                // eslint-disable-next-line svelte/no-at-html-tags : Sanitized
                 {@html DOMPurify.sanitize(historyItem.substring(8))}
             {/if}
         </div>
@@ -266,7 +254,7 @@
                         <!-- <span>Continue</span> -->
                     </button>
                 {:else if story.currentChoices.length > 0}
-                    {#each story.currentChoices as choice}
+                    {#each story.currentChoices as choice (choice.index + choice.text)}
                         <button
                             class="m-1 rounded-[0.875rem] border border-gray-300 bg-gray-50 p-1 px-3 text-left text-sm text-black transition-all duration-300 hover:bg-gray-200"
                             onclick={() => {
