@@ -33,6 +33,7 @@ export class ChromeDevToolsExtension implements AppModule {
         if (!this.shouldInstall) return
         await app.whenReady()
         await ElectronDevToolsInstaller.installExtension(this.extensions, this.options)
+        await ElectronDevToolsInstaller.installExtension(this.extensions, this.options) // Extension Workaround for Electron >= 35
     }
 }
 
