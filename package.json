@@ -1,0 +1,34 @@
+{
+    "name": "work.nyaacinth.floria",
+    "description": "Floria App",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "main": "packages/entry-point.js",
+    "packageManager": "bun@1.2.11",
+    "workspaces": [
+        "packages/*"
+    ],
+    "scripts": {
+        "build": "bun run package:build",
+        "package:build": "bun wsrun --exclude-missing package:build",
+        "compile": "bun run build && electron-builder build --config electron-builder.js",
+        "test": "bun x playwright test ./tests/e2e.spec.ts",
+        "start": "bun run packages/dev-mode.js",
+        "typecheck": "bun wsrun --exclude-missing typecheck"
+    },
+    "devDependencies": {
+        "@npmcli/map-workspaces": "5.0.3",
+        "@playwright/test": "1.57.0",
+        "@types/node": "25.0.9",
+        "electron": "40.0.0",
+        "electron-builder": "26.4.0",
+        "glob": "13.0.0",
+        "playwright": "^1.57.0",
+        "prettier": "^3.8.0",
+        "wsrun-ng": "^1.0.5"
+    },
+    "dependencies": {
+        "@app/main": "*"
+    }
+}

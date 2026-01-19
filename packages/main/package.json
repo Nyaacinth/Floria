@@ -1,0 +1,26 @@
+{
+    "name": "@app/main",
+    "type": "module",
+    "scripts": {
+        "package:build": "vite build",
+        "typecheck": "tsc --noEmit"
+    },
+    "exports": {
+        ".": {
+            "types": "./src/index.ts",
+            "default": "./dist/index.js"
+        }
+    },
+    "dependencies": {
+        "@app/preload": "*",
+        "@app/renderer": "*",
+        "electron-updater": "6.6.2",
+        "unzip-crx-3": "^0.2.0"
+    },
+    "devDependencies": {
+        "@app/electron-versions": "*",
+        "electron-serve": "^2.1.1",
+        "typescript": "5.8.3",
+        "vite": "6.3.4"
+    }
+}
