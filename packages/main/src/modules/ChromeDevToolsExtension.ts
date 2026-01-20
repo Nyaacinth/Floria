@@ -1,28 +1,21 @@
-import { app, Extension, LoadExtensionOptions, Session, session } from "electron"
-import * as fs from "fs"
-import * as https from "https"
-import * as path from "path"
 import { AppModule } from "../AppModule"
 import { ModuleContext } from "../ModuleContext"
 
-// @ts-expect-error
-import unzip from "unzip-crx-3"
+export type ExtensionReference = ExtensionInstaller.ExtensionReference
 
-export type ExtensionReference = ElectronDevToolsInstaller.ExtensionReference
-
-export interface ChromeDevToolsExtensionInstallOptions extends ElectronDevToolsInstaller.InstallExtensionOptions {
+export interface ChromeDevToolsExtensionInstallOptions extends ExtensionInstaller.ExtensionOptions {
     installEvenInProduction?: boolean
 }
 
 export class ChromeDevToolsExtension implements AppModule {
-    private readonly options?: ElectronDevToolsInstaller.InstallExtensionOptions
+    private readonly options?: ExtensionInstaller.ExtensionOptions
     private readonly shouldInstall: boolean
 
     constructor(
         private readonly extensions:
-            | ElectronDevToolsInstaller.ExtensionReference
+            | ExtensionInstaller.ExtensionReference
             | string
-            | (ElectronDevToolsInstaller.ExtensionReference | string)[],
+            | (ExtensionInstaller.ExtensionReference | string)[],
         options?: ChromeDevToolsExtensionInstallOptions
     ) {
         this.options = options
@@ -32,8 +25,7 @@ export class ChromeDevToolsExtension implements AppModule {
     async enable({ app }: ModuleContext): Promise<void> {
         if (!this.shouldInstall) return
         await app.whenReady()
-        await ElectronDevToolsInstaller.installExtension(this.extensions, this.options)
-        await ElectronDevToolsInstaller.installExtension(this.extensions, this.options) // Extension Workaround for Electron >= 35
+        await ExtensionInstaller.installExtension(this.extensions, this.options)
     }
 }
 
@@ -66,16 +58,16 @@ export const MOBX_DEVTOOLS: ExtensionReference = {
     id: "pfgnfdagidkfgccljigdamigbcnndkod"
 }
 
-/* -------------------------------- */
+//#region electron-extension-installer by JonLuca De Caro
 
 /**
- * @description Originated from https://github.com/MarshallOfSound/electron-devtools-installer.
- * Fixed deprecations, modernized, fit in one namespace
+ * @description Originated from https://github.com/jonluca/electron-extension-installer
+ * Fixed Manifest V3 Compatibility
  *
  * @license MIT
  *
  * The MIT License (MIT)
- * Copyright (c) 2016 Samuel Attard
+ * Copyright (c) 2023-present JonLuca De Caro
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -94,175 +86,146 @@ export const MOBX_DEVTOOLS: ExtensionReference = {
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
  * IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-namespace ElectronDevToolsInstaller {
-    export interface ExtensionReference {
-        /**
-         * Extension ID
-         */
-        id: string
-    }
 
-    export interface InstallExtensionOptions {
-        /**
-         * Ignore whether the extension is already downloaded and redownload every time
-         */
-        forceDownload?: boolean
-        /**
-         * Options passed to session.loadExtension
-         */
-        loadExtensionOptions?: LoadExtensionOptions
-        /**
-         * Optionally specify the session to install devtools into, by default devtools
-         * will be installed into the "defaultSession". See the Electron Session docs
-         * for more info.
-         *
-         * https://electronjs.org/docs/api/session
-         */
-        session?: Session
-    }
+import type { LoadExtensionOptions, Session } from "electron"
+import { app, net, session } from "electron"
+import fs from "fs"
+import fsp from "fs/promises"
+import jszip from "jszip"
+import path from "path"
 
-    /**
-     * @param extensionReference Extension or extensions to install
-     * @param options Installation options
-     * @returns A promise resolving with the name or names of the extensions installed
-     */
-    export async function installExtension(
-        extensionReference: ExtensionReference | string | (ExtensionReference | string)[],
-        options: InstallExtensionOptions = {}
-    ): Promise<Extension[]> {
-        const extensionsNeedingProcess: string[] = []
-        if (Array.isArray(extensionReference)) {
-            for (const singleRefOrId of extensionReference) {
-                let id: string
-                if (typeof singleRefOrId != "string") {
-                    id = singleRefOrId.id
-                } else {
-                    id = singleRefOrId
-                }
-                extensionsNeedingProcess.push(id)
+namespace ExtensionInstaller {
+    namespace Unzip {
+        // Credits for the original function go to Rob--W
+        // https://github.com/Rob--W/crxviewer/blob/master/src/lib/crx-to-zip.js
+        function calcLength(a: number, b: number, c: number, d: number) {
+            let length = 0
+
+            length += a << 0
+            length += b << 8
+            length += c << 16
+            length += (d << 24) >>> 0
+            return length
+        }
+
+        function crxToZip(buf: Buffer) {
+            // 50 4b 03 04
+            // This is actually a zip file
+            if (buf[0] === 80 && buf[1] === 75 && buf[2] === 3 && buf[3] === 4) {
+                return buf
             }
-        } else {
-            if (typeof extensionReference == "string") {
-                extensionsNeedingProcess.push(extensionReference)
-            } else {
-                extensionsNeedingProcess.push(extensionReference.id)
+
+            // 43 72 32 34 (Cr24)
+            if (buf[0] !== 67 || buf[1] !== 114 || buf[2] !== 50 || buf[3] !== 52) {
+                throw new Error("Invalid header: Does not start with Cr24")
             }
-        }
-        return Promise.all(extensionsNeedingProcess.map((id) => installIndividualExtension(id, options)))
-    }
 
-    async function installIndividualExtension(
-        chromeStoreID: string,
-        options: InstallExtensionOptions
-    ): Promise<Extension> {
-        const { forceDownload, loadExtensionOptions, session: _session } = options
-        const targetSession = _session || session.defaultSession
+            // 02 00 00 00
+            // or
+            // 03 00 00 00
+            const isV3 = buf[4] === 3
+            const isV2 = buf[4] === 2
 
-        if (process.type !== "browser") {
-            return Promise.reject(new Error("electron-devtools-installer can only be used from the main process"))
-        }
-
-        const installedExtension = targetSession.extensions.getAllExtensions().find((e) => e.id === chromeStoreID)
-
-        if (!forceDownload && installedExtension) {
-            return installedExtension
-        }
-        const extensionFolder = await downloadChromeExtension(chromeStoreID, {
-            forceDownload: forceDownload || false
-        })
-        // Use forceDownload, but already installed
-        if (installedExtension?.id) {
-            const unloadPromise = new Promise<void>((resolve) => {
-                const handler = (_: unknown, ext: Extension) => {
-                    if (ext.id === installedExtension.id) {
-                        targetSession.removeListener("extension-unloaded", handler)
-                        resolve()
-                    }
-                }
-                targetSession.on("extension-unloaded", handler)
-            })
-            targetSession.extensions.removeExtension(installedExtension.id)
-            await unloadPromise
-        }
-
-        return targetSession.extensions.loadExtension(extensionFolder, loadExtensionOptions)
-    }
-
-    export const downloadChromeExtension = async (
-        chromeStoreID: string,
-        {
-            forceDownload = false,
-            attempts = 5
-        }: {
-            forceDownload?: boolean
-            attempts?: number
-        } = {}
-    ): Promise<string> => {
-        const extensionsStore = Utils.getPath()
-        if (!fs.existsSync(extensionsStore)) {
-            await fs.promises.mkdir(extensionsStore, { recursive: true })
-        }
-        const extensionFolder = path.resolve(`${extensionsStore}/${chromeStoreID}`)
-
-        if (!fs.existsSync(extensionFolder) || forceDownload) {
-            if (fs.existsSync(extensionFolder)) {
-                await fs.promises.rm(extensionFolder, {
-                    recursive: true
-                })
+            if ((!isV2 && !isV3) || buf[5] || buf[6] || buf[7]) {
+                throw new Error("Unexpected crx format version number.")
             }
-            const fileURL = `https://clients2.google.com/service/update2/crx?response=redirect&acceptformat=crx2,crx3&x=id%3D${chromeStoreID}%26uc&prodversion=${process.versions.chrome}` // eslint-disable-line
-            const filePath = path.resolve(`${extensionFolder}.crx`)
+
+            if (isV2) {
+                const publicKeyLength = calcLength(buf[8], buf[9], buf[10], buf[11])
+                const signatureLength = calcLength(buf[12], buf[13], buf[14], buf[15])
+
+                // 16 = Magic number (4), CRX format version (4), lengths (2x4)
+                const zipStartOffset = 16 + publicKeyLength + signatureLength
+
+                return buf.subarray(zipStartOffset, buf.length)
+            }
+            // v3 format has header size and then header
+            const headerSize = calcLength(buf[8], buf[9], buf[10], buf[11])
+            const zipStartOffset = 12 + headerSize
+
+            return buf.subarray(zipStartOffset, buf.length)
+        }
+
+        async function ensureDir(dirPath: string) {
             try {
-                await Utils.downloadFile(fileURL, filePath)
-
-                try {
-                    await unzip(filePath, extensionFolder)
-                    Utils.changePermissions(extensionFolder, 755)
-                    return extensionFolder
-                } catch (err) {
-                    if (!fs.existsSync(path.resolve(extensionFolder, "manifest.json"))) {
-                        throw err
-                    }
+                await fsp.mkdir(dirPath, { recursive: true })
+            } catch (error) {
+                // If the directory already exists, that's fine
+                if ((error as NodeJS.ErrnoException).code !== "EEXIST") {
+                    throw error
                 }
-            } catch (err) {
-                console.error(`Failed to fetch extension, trying ${attempts - 1} more times`) // eslint-disable-line
-                if (attempts <= 1) {
-                    throw err
-                }
-                await new Promise<void>((resolve) => setTimeout(resolve, 200))
-
-                return await downloadChromeExtension(chromeStoreID, {
-                    forceDownload,
-                    attempts: attempts - 1
-                })
             }
         }
 
-        return extensionFolder
+        export async function unzip(crxFilePath: string, destination: string) {
+            const filePath = path.resolve(crxFilePath)
+            const extname = path.extname(crxFilePath)
+            const basename = path.basename(crxFilePath, extname)
+            const dirname = path.dirname(crxFilePath)
+
+            destination = destination || path.resolve(dirname, basename)
+            const buf = await fsp.readFile(filePath)
+            const res = await jszip.loadAsync(crxToZip(buf))
+            const { files } = res
+            const zipFileKeys = Object.keys(files)
+
+            return Promise.all(
+                zipFileKeys.map(async (filename) => {
+                    const isFile = !files[filename].dir
+                    const fullPath = path.join(destination, filename)
+                    const directory = (isFile && path.dirname(fullPath)) || fullPath
+                    const content = await files[filename].async("nodebuffer")
+
+                    await ensureDir(directory)
+                    if (isFile) {
+                        await fsp.writeFile(fullPath, content)
+                    }
+                })
+            )
+        }
     }
 
     namespace Utils {
-        export const getPath = () => {
+        export const getExtensionPath = () => {
             const savePath = app.getPath("userData")
-            return path.resolve(`${savePath}/extensions`)
+            return path.resolve(`${savePath}/chrome-extensions`)
         }
 
-        export const downloadFile = (from: string, to: string) => {
+        export const fetchCrxFile = async (from: string, to: string): Promise<void> => {
             return new Promise<void>((resolve, reject) => {
-                const req = https.request(from)
-                req.on("response", (res) => {
-                    // Shouldn't handle redirect with `electron.net`, this is for https.get fallback
-                    if (res.statusCode && res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
-                        return downloadFile(res.headers.location, to).then(resolve).catch(reject)
+                const request = net.request(from)
+
+                request.on("response", (response) => {
+                    if (response.statusCode !== 200) {
+                        reject(new Error(`Failed to download file. Status code: ${response.statusCode}`))
+                        return
                     }
-                    res.pipe(fs.createWriteStream(to)).on("close", resolve)
-                    res.on("error", reject)
+
+                    const fileStream = fs.createWriteStream(to)
+                    // @ts-ignore - pipe exists here, not sure why the type is wrong
+                    response.pipe(fileStream)
+
+                    fileStream.on("finish", () => {
+                        fileStream.close()
+                        resolve()
+                    })
+
+                    fileStream.on("error", (err) => {
+                        fs.unlink(to, () => reject(err))
+                    })
+
+                    response.on("error", (err: any) => {
+                        fs.unlink(to, () => reject(err))
+                    })
                 })
-                req.on("error", reject)
-                req.end()
+
+                request.on("error", (err) => {
+                    reject(err)
+                })
+
+                request.end()
             })
         }
-
         export const changePermissions = (dir: string, mode: string | number) => {
             const files = fs.readdirSync(dir)
             files.forEach((file) => {
@@ -273,5 +236,174 @@ namespace ElectronDevToolsInstaller {
                 }
             })
         }
+        const getIDMapPath = () => path.resolve(getExtensionPath(), "IDMap.json")
+        export const getIdMap = () => {
+            if (fs.existsSync(getIDMapPath())) {
+                try {
+                    return JSON.parse(fs.readFileSync(getIDMapPath(), "utf8"))
+                } catch (err) {
+                    console.error("electron-devtools-assembler: Invalid JSON present in the IDMap file")
+                }
+            }
+            return {}
+        }
     }
+
+    namespace Index {
+        const { unzip } = Unzip
+        const { changePermissions, fetchCrxFile, getExtensionPath, getIdMap } = Utils
+
+        async function ensureDir(dirPath: string) {
+            try {
+                await fsp.mkdir(dirPath, { recursive: true })
+            } catch (error) {
+                // If the directory already exists, that's fine
+                if ((error as NodeJS.ErrnoException).code !== "EEXIST") {
+                    throw error
+                }
+            }
+        }
+
+        async function exists(filePath: string): Promise<boolean> {
+            try {
+                await fsp.access(filePath)
+                return true
+            } catch {
+                return false
+            }
+        }
+
+        async function downloadChromeExtension(
+            chromeStoreID: string,
+            forceDownload: boolean,
+            attempts = 5
+        ): Promise<string> {
+            try {
+                const extensionsStore = getExtensionPath()
+                await ensureDir(extensionsStore)
+                const extensionFolder = path.resolve(`${extensionsStore}/${chromeStoreID}`)
+                const extensionDirExists = await exists(extensionFolder)
+                if (!extensionDirExists || forceDownload) {
+                    if (extensionDirExists) {
+                        await fsp.rm(extensionFolder, { recursive: true, force: true })
+                    }
+                    const chromeVersion = process.versions.chrome || 32
+                    let fileURL = `https://clients2.google.com/service/update2/crx?response=redirect&acceptformat=crx2,crx3&x=id%3D${chromeStoreID}%26uc&prodversion=${chromeVersion}`
+
+                    const filePath = path.resolve(`${extensionFolder}.crx`)
+                    await fetchCrxFile(fileURL, filePath)
+
+                    try {
+                        await unzip(filePath, extensionFolder)
+                        changePermissions(extensionFolder, 755)
+                        return extensionFolder
+                    } catch (err: any) {
+                        if (!(await exists(path.resolve(extensionFolder, "manifest.json")))) {
+                            throw err
+                        }
+                    }
+                } else {
+                    return extensionFolder
+                }
+            } catch (err) {
+                console.log(`Failed to fetch extension, trying ${attempts - 1} more times`)
+                if (attempts <= 1) {
+                    throw err
+                }
+                await new Promise((resolve) => setTimeout(resolve, 200))
+                return downloadChromeExtension(chromeStoreID, forceDownload, attempts - 1)
+            }
+
+            throw new Error("Failed to fetch extension")
+        }
+
+        export interface ExtensionReference {
+            /**
+             * Extension ID
+             */
+            id: string
+        }
+
+        export interface ExtensionOptions {
+            /**
+             * Ignore whether the extension is already downloaded and redownload every time
+             */
+            forceDownload?: boolean
+            /**
+             * Options passed to session.loadExtension
+             */
+            loadExtensionOptions?: LoadExtensionOptions
+            /**
+             * The target session on which the extension shall be installed
+             */
+            session?: string | Session
+        }
+
+        /**
+         * @param extensionReference Extension or extensions to install
+         * @param options Installation options
+         * @returns A promise resolving with the name or names of the extensions installed
+         */
+        export const installExtension = async (
+            extensionReference: ExtensionReference | string | Array<ExtensionReference | string>,
+            options: ExtensionOptions = {}
+        ): Promise<string | string[]> => {
+            const targetSession =
+                typeof options.session === "string"
+                    ? session.fromPartition(options.session)
+                    : options.session || session.defaultSession
+            const { forceDownload, loadExtensionOptions } = options
+
+            if (process.type !== "browser") {
+                throw new Error("electron-devtools-assembler can only be used from the main process")
+            }
+
+            if (Array.isArray(extensionReference)) {
+                const installed = await Promise.all(
+                    extensionReference.map((extension) => installExtension(extension, options))
+                )
+                return installed.flat()
+            }
+            let chromeStoreID: string
+            if (typeof extensionReference === "object" && extensionReference.id) {
+                chromeStoreID = extensionReference.id
+            } else if (typeof extensionReference === "string") {
+                chromeStoreID = extensionReference
+            } else {
+                throw new Error(`Invalid extensionReference passed in: "${extensionReference}"`)
+            }
+
+            const IDMap = getIdMap()
+            const extensionName = IDMap[chromeStoreID]
+            // todo - should we check id here?
+            const installedExtension = targetSession.extensions.getAllExtensions().find((e) => e.name === extensionName)
+
+            if (!forceDownload && installedExtension) {
+                return IDMap[chromeStoreID]
+            }
+
+            const extensionFolder = await downloadChromeExtension(chromeStoreID, Boolean(forceDownload))
+            // Use forceDownload, but already installed
+            if (installedExtension) {
+                targetSession.extensions.removeExtension(installedExtension.id)
+            }
+
+            const ext = await targetSession.extensions.loadExtension(extensionFolder, loadExtensionOptions)
+
+            await new Promise((resolve) => setTimeout(resolve, 1000))
+
+            const manifest = ext.manifest
+            if (manifest.manifest_version === 3 && manifest?.background?.service_worker) {
+                await targetSession.serviceWorkers.startWorkerForScope(ext.url)
+            }
+
+            return ext.name
+        }
+    }
+
+    export type ExtensionReference = Index.ExtensionReference
+    export type ExtensionOptions = Index.ExtensionOptions
+    export const installExtension = Index.installExtension
 }
+
+//#endregion
