@@ -29,6 +29,6 @@
         "wsrun-ng": "^1.0.5"
     },
     "dependencies": {
-        "@app/main": "*"
+        "@app/main": "workspace:*"
     }
 }
