@@ -14,12 +14,12 @@
     "dependencies": {
         "@app/preload": "workspace:*",
         "@app/renderer": "workspace:*",
-        "electron-updater": "6.6.2"
+        "electron-updater": "6.7.3"
     },
     "devDependencies": {
         "@app/electron-versions": "workspace:*",
-        "electron-serve": "^2.1.1",
-        "typescript": "5.8.3",
-        "vite": "6.3.4"
+        "electron-serve": "3.0.0",
+        "typescript": "5.9.3",
+        "vite": "7.3.1"
     }
 }
