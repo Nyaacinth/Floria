@@ -12,6 +12,9 @@ export default {
         buildResources: "buildResources"
     },
     generateUpdatesFilesForAllChannels: true,
+    win: {
+        target: ["nsis"]
+    },
     linux: {
         target: ["AppImage"]
     },
