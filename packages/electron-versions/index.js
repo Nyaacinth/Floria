@@ -1,14 +1,31 @@
 import { execSync } from "node:child_process"
+import { resolve as resolvePath } from "node:path"
 
 function getElectronEnv() {
-    return JSON.parse(
-        execSync(`bun run electron -p "JSON.stringify(process.versions)"`, {
-            encoding: "utf-8",
+    if (globalThis.Bun && Bun.spawnSync) {
+        const { stdout } = Bun.spawnSync({
+            cmd: [resolvePath(__dirname, "../../node_modules/.bin/electron"), "-p", "JSON.stringify(process.versions)"],
+            stdout: "pipe",
+            stderr: "ignore",
             env: {
                 ELECTRON_RUN_AS_NODE: 1
             }
         })
-    )
+
+        return JSON.parse(stdout.toString())
+    } else {
+        return JSON.parse(
+            execSync(
+                `"${resolvePath(import.meta.dirname, "../../node_modules/.bin/electron")}" -p "JSON.stringify(process.versions)"`,
+                {
+                    encoding: "utf-8",
+                    env: {
+                        ELECTRON_RUN_AS_NODE: 1
+                    }
+                }
+            )
+        )
+    }
 }
 
 function createElectronEnvLoader() {
