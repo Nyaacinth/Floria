@@ -14,17 +14,17 @@ function getElectronEnv() {
 
         return JSON.parse(stdout.toString())
     } else {
-        return JSON.parse(
-            execSync(
-                `"${resolvePath(import.meta.dirname, "../../node_modules/.bin/electron")}" -p "JSON.stringify(process.versions)"`,
-                {
-                    encoding: "utf-8",
-                    env: {
-                        ELECTRON_RUN_AS_NODE: 1
-                    }
+        const stdout = execSync(
+            `"${resolvePath(import.meta.dirname, "../../node_modules/.bin/electron")}" -p "JSON.stringify(process.versions)"`,
+            {
+                encoding: "utf-8",
+                env: {
+                    ELECTRON_RUN_AS_NODE: 1
                 }
-            )
+            }
         )
+
+        return JSON.parse(stdout)
     }
 }
 
