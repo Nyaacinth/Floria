@@ -6,12 +6,12 @@ import { ModuleContext } from "../ModuleContext"
 class WindowManager implements AppModule {
     private readonly preload: { path: string }
     private readonly renderer: { path: string } | URL
-    private readonly openDevTools
+    private readonly withDevTools
 
-    constructor({ initConfig, openDevTools = false }: { initConfig: AppInitConfig; openDevTools?: boolean }) {
+    constructor({ initConfig, withDevTools = false }: { initConfig: AppInitConfig; withDevTools?: boolean }) {
         this.preload = initConfig.preload
         this.renderer = initConfig.renderer
-        this.openDevTools = openDevTools
+        this.withDevTools = withDevTools
     }
 
     async enable({ app }: ModuleContext): Promise<void> {
@@ -27,7 +27,7 @@ class WindowManager implements AppModule {
             webPreferences: {
                 nodeIntegration: false,
                 contextIsolation: true,
-                sandbox: false, // Sandbox disabled because the demo of preload script depend on the Node.js api
+                sandbox: false, // Sandbox disabled due to Node.js API dependency
                 webviewTag: false, // The webview tag is not recommended. Consider alternatives like an iframe or Electron's BrowserView. @see https://www.electronjs.org/docs/latest/api/webview-tag#warning
                 preload: this.preload.path
             }
@@ -57,10 +57,10 @@ class WindowManager implements AppModule {
             window.restore()
         }
 
-        window?.show()
+        window.show()
 
-        if (this.openDevTools) {
-            window?.webContents.openDevTools({ mode: "detach" })
+        if (this.withDevTools) {
+            window.webContents.openDevTools({ mode: "detach" })
         }
 
         window.focus()

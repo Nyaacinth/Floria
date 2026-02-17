@@ -6,18 +6,18 @@ import { autoUpdater } from "./modules/AutoUpdater"
 import { allowInternalOrigins } from "./modules/BlockNotAllowdOrigins"
 import { allowExternalUrls } from "./modules/ExternalUrls"
 import { hardwareAccelerationMode } from "./modules/HardwareAccelerationModule"
-import { initApplicationMenu } from "./modules/InitApplicationMenu"
+import { setApplicationMenu } from "./modules/SetApplicationMenu"
 import { disallowMultipleAppInstance } from "./modules/SingleInstanceApp"
 import { createWindowManagerModule } from "./modules/WindowManager"
 
 export async function initApp(initConfig: AppInitConfig) {
     const moduleRunner = createModuleRunner()
         .init(appServe(initConfig))
-        .init(createWindowManagerModule({ initConfig, openDevTools: import.meta.env.DEV }))
+        .init(createWindowManagerModule({ initConfig, withDevTools: import.meta.env.DEV }))
         .init(disallowMultipleAppInstance())
         .init(terminateAppOnLastWindowClose())
         .init(hardwareAccelerationMode({ enable: true }))
-        .init(initApplicationMenu(null))
+        .init(setApplicationMenu(null))
         .init(autoUpdater())
 
         // Security
