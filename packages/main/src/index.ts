@@ -6,6 +6,7 @@ import { autoUpdater } from "./modules/AutoUpdater"
 import { allowInternalOrigins } from "./modules/BlockNotAllowdOrigins"
 import { allowExternalUrls } from "./modules/ExternalUrls"
 import { hardwareAccelerationMode } from "./modules/HardwareAccelerationModule"
+import { initApplicationMenu } from "./modules/InitApplicationMenu"
 import { disallowMultipleAppInstance } from "./modules/SingleInstanceApp"
 import { createWindowManagerModule } from "./modules/WindowManager"
 
@@ -16,6 +17,7 @@ export async function initApp(initConfig: AppInitConfig) {
         .init(disallowMultipleAppInstance())
         .init(terminateAppOnLastWindowClose())
         .init(hardwareAccelerationMode({ enable: true }))
+        .init(initApplicationMenu(null))
         .init(autoUpdater())
 
         // Security
