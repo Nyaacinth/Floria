@@ -11,7 +11,7 @@
     },
     "scripts": {
         "dev": "vite",
-        "package:build": "run-p type-check lint \"build-only {@}\" --",
+        "build": "run-p type-check lint \"build-only {@}\" --",
         "preview": "vite preview",
         "build-only": "vite build",
         "type-check": "vue-tsc --build",

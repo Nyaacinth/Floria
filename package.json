@@ -5,17 +5,16 @@
     "private": true,
     "type": "module",
     "main": "packages/entry-point.js",
-    "packageManager": "bun@1.3.5",
+    "packageManager": "bun@1.3.9",
     "workspaces": [
         "packages/*"
     ],
     "scripts": {
-        "build": "bun run package:build",
-        "package:build": "bun wsrun --exclude-missing package:build",
+        "build": "bun run --workspaces --if-present build",
         "compile": "bun run build && electron-builder build --config electron-builder.js",
-        "test": "bun x playwright test ./tests/e2e.spec.ts",
+        "test": "bun run playwright test ./tests/e2e.spec.ts",
         "start": "bun run packages/dev-mode.js",
-        "typecheck": "bun wsrun --exclude-missing typecheck"
+        "typecheck": "bun run --workspaces --if-present typecheck"
     },
     "devDependencies": {
         "@npmcli/map-workspaces": "5.0.3",
@@ -25,8 +24,7 @@
         "electron-builder": "26.7.0",
         "glob": "13.0.5",
         "playwright": "1.58.2",
-        "prettier": "3.8.1",
-        "wsrun-ng": "1.0.5"
+        "prettier": "3.8.1"
     },
     "dependencies": {
         "@app/main": "workspace:*"
