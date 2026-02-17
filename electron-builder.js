@@ -105,6 +105,10 @@ async function getListOfFilesFromEachWorkspace() {
 
         let patterns = workspacePkg.files || ["dist/**", "package.json"]
 
+        if (!(patterns.includes("package.json") || patterns.includes("./package.json"))) {
+            patterns.push("package.json")
+        }
+
         patterns = patterns.map((p) => join("node_modules", name, p))
         allFilesToInclude.push(...patterns)
     }

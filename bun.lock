@@ -47,10 +47,6 @@
     "packages/renderer": {
       "name": "@app/renderer",
       "version": "1.0.0",
-      "dependencies": {
-        "vue": "3.5.28",
-        "vue-router": "5.0.2",
-      },
       "devDependencies": {
         "@tsconfig/node24": "24.0.4",
         "@types/node": "25.2.3",
@@ -66,6 +62,8 @@
         "typescript": "5.9.3",
         "vite": "7.3.1",
         "vite-plugin-vue-devtools": "8.0.6",
+        "vue": "3.5.28",
+        "vue-router": "5.0.2",
         "vue-tsc": "3.2.4",
       },
     },
