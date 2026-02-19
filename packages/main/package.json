@@ -15,7 +15,7 @@
         "@app/preload": "workspace:*",
         "@app/renderer": "workspace:*",
         "electron-serve": "3.0.1",
-        "electron-updater": "6.7.3"
+        "electron-updater": "6.8.3"
     },
     "devDependencies": {
         "@app/electron-versions": "workspace:*",
