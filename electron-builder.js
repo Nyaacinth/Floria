@@ -1,5 +1,5 @@
 import mapWorkspaces from "@npmcli/map-workspaces"
-import { join } from "node:path"
+import { join as pathJoin } from "node:path"
 import { pathToFileURL } from "node:url"
 import pkg from "./package.json" with { type: "json" }
 
@@ -100,7 +100,7 @@ async function getListOfFilesFromEachWorkspace() {
     const allFilesToInclude = []
 
     for (const [name, path] of workspaces) {
-        const pkgPath = join(path, "package.json")
+        const pkgPath = pathJoin(path, "package.json")
         const { default: workspacePkg } = await import(pathToFileURL(pkgPath), { with: { type: "json" } })
 
         let patterns = workspacePkg.files || ["dist/**", "package.json"]
@@ -109,7 +109,7 @@ async function getListOfFilesFromEachWorkspace() {
             patterns.push("package.json")
         }
 
-        patterns = patterns.map((p) => join("node_modules", name, p))
+        patterns = patterns.map((p) => pathJoin("node_modules", name, p))
         allFilesToInclude.push(...patterns)
     }
 
