@@ -105,7 +105,7 @@ async function getListOfFilesFromEachWorkspace() {
 
         let patterns = workspacePkg.files || ["dist/**", "package.json"]
 
-        if (!(patterns.includes("package.json") || patterns.includes("./package.json"))) {
+        if (patterns.length !== 0 && !(patterns.includes("package.json") || patterns.includes("./package.json"))) {
             patterns.push("package.json")
         }
 
