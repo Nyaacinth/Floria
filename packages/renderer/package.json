@@ -18,7 +18,8 @@
         "preview": "vite preview",
         "build-only": "vite build",
         "type-check": "vue-tsc --build",
-        "lint": "eslint ."
+        "lint": "eslint .",
+        "fetch-data:EastAsianWidth.txt": "bun run ./scripts/get-latest-east-asian-chars-from-ucd.ts"
     },
     "devDependencies": {
         "@tailwindcss/vite": "4.2.1",
@@ -37,6 +38,7 @@
         "tailwindcss": "4.2.1",
         "type-fest": "5.4.4",
         "typescript": "5.9.3",
+        "unplugin-macros": "0.18.7",
         "vite": "7.3.1",
         "vite-plugin-vue-devtools": "8.0.6",
         "vue": "3.5.29",
