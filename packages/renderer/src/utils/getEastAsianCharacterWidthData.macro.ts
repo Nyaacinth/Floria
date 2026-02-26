@@ -15,11 +15,12 @@ import { resolve as resolvePath } from "node:path"
 import type { Simplify } from "type-fest"
 
 export type EastAsianCharacterWidthData = {
-    ambiguousRanges: number[]
-    fullwidthRanges: number[]
-    halfwidthRanges: number[]
-    narrowRanges: number[]
-    wideRanges: number[]
+    version: string
+    ambiguous: number[]
+    fullwidth: number[]
+    halfwidth: number[]
+    narrow: number[]
+    wide: number[]
 }
 
 /**
@@ -28,7 +29,7 @@ export type EastAsianCharacterWidthData = {
  * @copyright Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
  * @license MIT
  */
-export async function $getEastAsianCharacterWidthData() {
+export async function $getEastAsianCharacterWidthData(): Promise<EastAsianCharacterWidthData> {
     const resolvedDatabasePath = resolvePath(__dirname, "../../scripts-data/EastAsianWidth.txt")
     if (!existsSync(resolvedDatabasePath))
         throw new Error(
