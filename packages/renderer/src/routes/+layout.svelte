@@ -1,12 +1,12 @@
 <script lang="ts">
-    import { doTauriInit } from "$lib/utils/doTauriInit"
+    import { doAppInit } from "$lib/utils/doAppInit"
     import { onMount } from "svelte"
     import "../app.css"
 
     let { children } = $props()
 
     onMount(() => {
-        return doTauriInit()
+        return doAppInit()
     })
 </script>
 

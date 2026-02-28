@@ -24,6 +24,8 @@
         "fetch-data:EastAsianWidth.txt": "bun run ./scripts/get-latest-east-asian-chars-from-ucd.ts"
     },
     "devDependencies": {
+        "@bbob/html": "4.3.1",
+        "@bbob/preset-html5": "4.3.1",
         "@eslint/compat": "2.0.2",
         "@eslint/js": "10.0.1",
         "@iconify-json/gravity-ui": "1.2.11",
@@ -31,8 +33,7 @@
         "@sveltejs/kit": "2.53.4",
         "@sveltejs/vite-plugin-svelte": "6.2.4",
         "@tailwindcss/vite": "4.2.1",
-        "@tsconfig/bun": "^1.0.10",
-        "@types/bun": "^1.3.9",
+        "@types/bun": "1.3.9",
         "dompurify": "3.3.1",
         "eslint": "10.0.2",
         "eslint-config-prettier": "10.1.8",
@@ -45,11 +46,11 @@
         "svelte": "5.53.6",
         "svelte-check": "4.4.4",
         "tailwindcss": "4.2.1",
-        "type-fest": "^5.4.4",
+        "type-fest": "5.4.4",
         "typescript": "5.9.3",
         "typescript-eslint": "8.56.1",
         "unplugin-icons": "23.0.1",
-        "unplugin-macros": "^0.19.0",
+        "unplugin-macros": "0.19.0",
         "vite": "7.3.1"
     }
 }

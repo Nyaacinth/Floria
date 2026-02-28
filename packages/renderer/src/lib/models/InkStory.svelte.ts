@@ -1,33 +1,29 @@
 import { Story } from "inkjs"
 import { ErrorType } from "inkjs/engine/Error"
 
-export class ReactiveInkStory {
+export type { InkStory }
+
+export function createInkStory(...args: ConstructorParameters<typeof InkStory>) {
+    return new InkStory(...args)
+}
+
+class InkStory {
     private story: [version: number, Story] = $state.raw([0, null as unknown as Story /* Init in Ctor */])
 
-    getInnerStoryWithoutReactivity() {
+    __getRawStory() {
         return this.story[1]
     }
 
-    private markStateAsDirty() {
+    __markStateAsDirty() {
         const newState: [version: number, Story] = [...this.story]
         newState[0]++
         if (newState[0] > 255) newState[0] = 0
         this.story = newState
     }
 
-    markStateAsDirtyFromExternal({ Justification }: { Justification: string }) {
-        if (typeof Justification !== "string" || Justification.length <= 3)
-            throw new Error("You need your justification to mark the state as dirty from external libs")
-        this.markStateAsDirty()
-    }
-
-    private constructor(storyContent: string) {
+    constructor(storyContent: string) {
         this.story[1] = new Story(storyContent)
         this.story[1].onError = this.defaultHandler_onError
-    }
-
-    static new(storyContent: string) {
-        return new ReactiveInkStory(storyContent)
     }
 
     private defaultHandler_onError = (message: string, type: ErrorType) => {
@@ -56,7 +52,7 @@ export class ReactiveInkStory {
     }
 
     continue() {
-        this.markStateAsDirty()
+        this.__markStateAsDirty()
         return this.story[1].Continue()
     }
 
@@ -65,7 +61,7 @@ export class ReactiveInkStory {
     }
 
     chooseChoiceIndex(choiceIdx: number) {
-        this.markStateAsDirty()
+        this.__markStateAsDirty()
         return this.story[1].ChooseChoiceIndex(choiceIdx)
     }
 
@@ -82,14 +78,14 @@ export class ReactiveInkStory {
     }
 
     warning(message: string) {
-        this.markStateAsDirty()
+        this.__markStateAsDirty()
         this.story[1].Warning(message)
     }
 
     // Justification: To mimic the original behavior, here we choose `any[]` for the `args` parameter.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     choosePathString(path: string, resetCallstack?: boolean, args?: any[]) {
-        this.markStateAsDirty()
+        this.__markStateAsDirty()
         this.story[1].ChoosePathString(path, resetCallstack, args)
     }
 
@@ -100,7 +96,7 @@ export class ReactiveInkStory {
     // Justification: To mimic the original behavior, here we choose `any` for the `value` parameter.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setVariableState(name: string, value: any) {
-        this.markStateAsDirty()
+        this.__markStateAsDirty()
         return this.story[1].variablesState.$(name, value)
     }
 
@@ -115,7 +111,7 @@ export class ReactiveInkStory {
     // Justification: To mimic the original behavior, here we choose `any[]` for the `args` parameter.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     evaluateFunction(functionName: string, args?: any[], returnTextOutput?: boolean) {
-        this.markStateAsDirty()
+        this.__markStateAsDirty()
         return this.story[1].EvaluateFunction(functionName, args, returnTextOutput)
     }
 
@@ -130,7 +126,7 @@ export class ReactiveInkStory {
     }
 
     recoverFromStateJson(json: string) {
-        this.markStateAsDirty()
+        this.__markStateAsDirty()
         return this.story[1].state.LoadJson(json)
     }
 }

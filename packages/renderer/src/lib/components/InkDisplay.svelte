@@ -1,8 +1,8 @@
 <script lang="ts">
     import { defaultStoryBackground } from "$lib/constants"
     import { ReactiveInkStory } from "$lib/models/InkStory.svelte"
+    import type { StoryArchive } from "$lib/utils/createStoryArchive"
     import { getPureTextLength } from "$lib/utils/getPureTextLength"
-    import type { StoryArchive } from "$lib/utils/getStoryArchiveFromZip"
     import DOMPurify from "dompurify"
     import { onMount, tick } from "svelte"
     import { fade, fly } from "svelte/transition"

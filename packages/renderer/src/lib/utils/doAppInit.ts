@@ -1,6 +1,3 @@
-import { isTauri } from "@tauri-apps/api/core"
-import { getCurrentWindow } from "@tauri-apps/api/window"
-
 const editableSelectors = [
     'input[type="text"]',
     'input[type="password"]',
@@ -57,8 +54,7 @@ function isEditableElement(elm: HTMLElement) {
 }
 
 /** @returns Cleanup function */
-export function doTauriInit(): (() => void) | undefined {
-    if (!isTauri()) return
+export function doAppInit(): (() => void) | undefined {
     // Inject stylesheet that nativefies tauri webview
     const styleElement = document.createElement("style")
     styleElement.innerHTML = webviewNativefyCSS
@@ -78,11 +74,6 @@ export function doTauriInit(): (() => void) | undefined {
         event.preventDefault()
     }
     document.addEventListener("contextmenu", contextMenuHandler)
-
-    // Paired with `"visible": false` in `tauri.conf.json` to show window after page loaded to avoid flickers
-    const thisWindow = getCurrentWindow()
-    thisWindow.show()
-    thisWindow.setFocus()
 
     return () => {
         // Remove the injected stylesheet

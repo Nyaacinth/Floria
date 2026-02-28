@@ -4,7 +4,7 @@
  * @license MIT
  */
 
-import { $getEastAsianCharacterWidthData } from "./getEastAsianCharacterWidthData.macro" with { type: "macro" }
+import { $getEastAsianCharacterWidthData } from "./$getEastAsianCharacterWidthData.macro" with { type: "macro" }
 
 export const eastAsianCharacterWidthData = await $getEastAsianCharacterWidthData()
 

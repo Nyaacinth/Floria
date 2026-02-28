@@ -30,7 +30,7 @@ export type EastAsianCharacterWidthData = {
  * @license MIT
  */
 export async function $getEastAsianCharacterWidthData(): Promise<EastAsianCharacterWidthData> {
-    const resolvedDatabasePath = resolvePath(__dirname, "../../scripts-data/EastAsianWidth.txt")
+    const resolvedDatabasePath = resolvePath(__dirname, "../../../scripts-data/EastAsianWidth.txt")
     if (!existsSync(resolvedDatabasePath))
         throw new Error(
             'Error: could not find EastAsianWidth.txt, please run script "fetch-data:EastAsianWidth.txt" first.'
