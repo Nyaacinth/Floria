@@ -10,8 +10,6 @@
         "scripts/*"
     ],
     "compilerOptions": {
-        "noEmit": true,
-        "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
         "types": ["bun"]
     }
 }
