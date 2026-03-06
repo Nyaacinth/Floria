@@ -26,6 +26,6 @@ export class AppServe implements AppModule {
  * Mutates the `initConfig` object if successfully enabled electron-serve, in that case it will be set to URL: `app://-`
  * Must be placed before any other module that requires `initConfig.renderer`.
  */
-export function appServe(initConfig: AppInitConfig): AppModule {
+export function serveStatics(initConfig: AppInitConfig): AppModule {
     return new AppServe(initConfig)
 }

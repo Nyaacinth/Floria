@@ -14,6 +14,6 @@ export class SetApplicationMenu implements AppModule {
     }
 }
 
-export function setApplicationMenu(menu: Menu | null) {
-    return new SetApplicationMenu(menu)
+export function initWithGivenMenu(...args: ConstructorParameters<typeof SetApplicationMenu>) {
+    return new SetApplicationMenu(...args)
 }
