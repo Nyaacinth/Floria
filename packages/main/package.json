@@ -1,5 +1,6 @@
 {
     "name": "@app/main",
+    "private": true,
     "type": "module",
     "scripts": {
         "build": "vite build",

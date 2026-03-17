@@ -1,8 +1,8 @@
 {
     "name": "work.nyaacinth.floria",
+    "private": true,
     "description": "Floria App",
     "version": "1.0.0",
-    "private": true,
     "type": "module",
     "main": "packages/entry-point.js",
     "packageManager": "bun@1.3.9",

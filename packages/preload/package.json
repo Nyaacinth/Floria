@@ -1,5 +1,6 @@
 {
     "name": "@app/preload",
+    "private": true,
     "type": "module",
     "scripts": {
         "build": "vite build",
