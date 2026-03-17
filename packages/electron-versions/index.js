@@ -2,12 +2,21 @@ import { execSync } from "node:child_process"
 import { resolve as resolvePath } from "node:path"
 
 function getElectronEnv() {
+    const filteredEnv = { ...process.env }
+
+    Object.keys(filteredEnv).forEach((v) => {
+        if (v.startsWith("NODE_") || v.startsWith("ELECTRON_")) {
+            delete filteredEnv[v]
+        }
+    })
+
     if (globalThis.Bun && Bun.spawnSync) {
         const { stdout } = Bun.spawnSync({
             cmd: [resolvePath(__dirname, "../../node_modules/.bin/electron"), "-p", "JSON.stringify(process.versions)"],
             stdout: "pipe",
             stderr: "ignore",
             env: {
+                ...filteredEnv,
                 ELECTRON_RUN_AS_NODE: 1
             }
         })
@@ -19,6 +28,7 @@ function getElectronEnv() {
             {
                 encoding: "utf-8",
                 env: {
+                    ...filteredEnv,
                     ELECTRON_RUN_AS_NODE: 1
                 }
             }
