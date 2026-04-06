@@ -87,16 +87,17 @@ export default {
  * │   └── entry-point.js
  * └── package.json
  * ```
+ *
+ * @returns {Promise<string[]>}
  */
 async function getListOfFilesFromEachWorkspace() {
-    /**
-     * @type {Map<string, string>}
-     */
+    /** @type {Map<string, string>} */
     const workspaces = await mapWorkspaces({
         cwd: process.cwd(),
         pkg
     })
 
+    /** @type {string[]} */
     const allFilesToInclude = []
 
     for (const [name, path] of workspaces) {
