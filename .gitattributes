@@ -1,5 +1,4 @@
 .github/actions/**/*.js linguist-detectable=false
 scripts/*.js linguist-detectable=false
-*.config.js linguist-detectable=false
-*.config.ts linguist-detectable=false
+*.config.* linguist-detectable=false
 * text=auto eol=lf
