@@ -14,11 +14,9 @@
     },
     "scripts": {
         "dev": "vite",
-        "build": "run-p type-check lint \"build-only {@}\" --",
+        "build": "vite build",
         "preview": "vite preview",
-        "build-only": "vite build",
-        "type-check": "vue-tsc --build",
-        "lint": "eslint ."
+        "lint": "tsc --build --noEmit && eslint ."
     },
     "devDependencies": {
         "@tsconfig/node24": "24.0.4",

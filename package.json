@@ -12,9 +12,8 @@
     "scripts": {
         "build": "bun run --workspaces --if-present build",
         "compile": "bun run build && electron-builder build --config electron-builder.js",
-        "test": "bun run playwright test ./tests/e2e.spec.ts",
         "start": "bun run packages/dev-mode.js",
-        "typecheck": "bun run --workspaces --if-present typecheck"
+        "lint": "bun run --workspaces --if-present lint"
     },
     "devDependencies": {
         "@npmcli/map-workspaces": "5.0.3",

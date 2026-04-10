@@ -1,5 +1,10 @@
 {
+    "include": ["src/**/*.ts", "../../types/**/*.d.ts"],
+    "exclude": ["**/*.spec.ts", "**/*.test.ts"],
     "compilerOptions": {
+        "noEmit": true,
+        "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
+
         "allowSyntheticDefaultImports": true,
         "module": "ESNext",
         "target": "ESNext",
@@ -13,7 +18,5 @@
             "@app/preload": ["../preload"],
             "@app/renderer": ["../renderer"]
         }
-    },
-    "include": ["src/**/*.ts", "../../types/**/*.d.ts"],
-    "exclude": ["**/*.spec.ts", "**/*.test.ts"]
+    }
 }
