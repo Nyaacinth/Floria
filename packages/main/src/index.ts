@@ -15,7 +15,7 @@ export async function initApp(initConfig: AppInitConfig) {
         .init(serveStatics(initConfig))
         .init(createWindowManagerModule({ initConfig, withDevTools: import.meta.env.DEV }))
         .init(disallowMultipleAppInstance())
-        .init(terminateAppOnLastWindowClose())
+        .init(terminateAppOnLastWindowClose({ terminateOnDarwin: true }))
         .init(hardwareAccelerationMode({ enable: true }))
         .init(initWithGivenMenu(null))
         .init(autoUpdater())
