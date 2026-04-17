@@ -1,3 +1,5 @@
+import pluginOxc from "@prettier/plugin-oxc"
+
 /** @type {import("prettier").Config} */
 export default {
     printWidth: 120,
@@ -14,5 +16,6 @@ export default {
     vueIndentScriptAndStyle: true,
     endOfLine: "lf",
     embeddedLanguageFormatting: "auto",
-    singleAttributePerLine: false
+    singleAttributePerLine: false,
+    plugins: [pluginOxc]
 }
