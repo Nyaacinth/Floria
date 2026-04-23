@@ -3,7 +3,7 @@ import { join as pathJoin } from "node:path"
 import { pathToFileURL } from "node:url"
 import pkg from "./package.json" with { type: "json" }
 
-/** @type import('electron-builder').Configuration */
+/** @type {import('electron-builder').Configuration} */
 export default {
     productName: "Floria",
     appId: "work.nyaacinth.floria",
