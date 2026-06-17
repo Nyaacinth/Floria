@@ -10,32 +10,18 @@ function getElectronEnv() {
         }
     })
 
-    if (globalThis.Bun && Bun.spawnSync) {
-        const { stdout } = Bun.spawnSync({
-            cmd: [resolvePath(__dirname, "../../node_modules/.bin/electron"), "-p", "JSON.stringify(process.versions)"],
-            stdout: "pipe",
-            stderr: "ignore",
+    const stdout = execSync(
+        `"${resolvePath(import.meta.dirname, "../../node_modules/.bin/electron")}" -p "JSON.stringify(process.versions)"`,
+        {
+            encoding: "utf-8",
             env: {
                 ...filteredEnv,
                 ELECTRON_RUN_AS_NODE: 1
             }
-        })
+        }
+    )
 
-        return JSON.parse(stdout.toString())
-    } else {
-        const stdout = execSync(
-            `"${resolvePath(import.meta.dirname, "../../node_modules/.bin/electron")}" -p "JSON.stringify(process.versions)"`,
-            {
-                encoding: "utf-8",
-                env: {
-                    ...filteredEnv,
-                    ELECTRON_RUN_AS_NODE: 1
-                }
-            }
-        )
-
-        return JSON.parse(stdout)
-    }
+    return JSON.parse(stdout)
 }
 
 function createElectronEnvLoader() {

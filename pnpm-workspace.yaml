@@ -1,0 +1,7 @@
+shamefullyHoist: true
+hoistWorkspacePackages: true
+allowBuilds:
+    electron-winstaller: true
+
+packages:
+    - "packages/*"
