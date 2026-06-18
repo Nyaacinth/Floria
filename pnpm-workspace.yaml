@@ -1,5 +1,6 @@
 shamefullyHoist: true
 hoistWorkspacePackages: true
+
 allowBuilds:
     electron-winstaller: true
 
