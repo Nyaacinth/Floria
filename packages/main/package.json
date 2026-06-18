@@ -16,11 +16,11 @@
         "@app/preload": "workspace:*",
         "@app/renderer": "workspace:*",
         "electron-serve": "3.0.1",
-        "electron-updater": "6.8.3"
+        "electron-updater": "6.8.9"
     },
     "devDependencies": {
         "@app/electron-versions": "workspace:*",
         "typescript": "6.0.3",
-        "vite": "8.0.11"
+        "vite": "8.0.16"
     }
 }
