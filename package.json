@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "type": "module",
     "main": "packages/entry-point.js",
-    "packageManager": "pnpm@11.7.0",
+    "packageManager": "pnpm@11.8.0",
     "engines": {
         "node": ">=26"
     },
