@@ -1,11 +1,11 @@
 import { getChromeMajorVersion } from "@app/electron-versions"
 import { resolveModuleExportNames } from "mlly"
+import type { Plugin, ViteDevServer } from "vite"
 
-/**
- * @type {import('vite').UserConfig}
- * @see https://vitejs.dev/config/
- */
-export default {
+import { defineConfig } from "vite"
+
+/** @see https://vitejs.dev/config/ */
+export default defineConfig({
     build: {
         ssr: true,
         sourcemap: "inline",
@@ -28,7 +28,7 @@ export default {
         reportCompressedSize: false
     },
     plugins: [mockExposed(), handleHotReload()]
-}
+})
 
 /**
  * This plugin creates a browser (renderer) version of `preload` package.
@@ -47,7 +47,7 @@ export default {
  * export const someVar = globalThis[<hash>] // 'my-value'
  * ```
  */
-function mockExposed() {
+function mockExposed(): Plugin {
     const virtualModuleId = "virtual:browser.js"
     const resolvedVirtualModuleId = "\0" + virtualModuleId
 
@@ -76,13 +76,9 @@ function mockExposed() {
     }
 }
 
-/**
- * Implement Electron webview reload when some file was changed
- * @return {import('vite').Plugin}
- */
-function handleHotReload() {
-    /** @type {import('vite').ViteDevServer|null} */
-    let rendererWatchServer = null
+/** Implement Electron webview reload when some file was changed */
+function handleHotReload(): Plugin {
+    let rendererWatchServer: ViteDevServer | null = null
 
     return {
         name: "@app/preload-process-hot-reload",
@@ -92,9 +88,9 @@ function handleHotReload() {
                 return
             }
 
-            const rendererWatchServerProvider = config.plugins.find(
-                (p) => p.name === "@app/renderer-watch-server-provider"
-            )
+            const rendererWatchServerProvider = config.plugins!.find(
+                (p) => (p as Plugin).name === "@app/renderer-watch-server-provider"
+            ) as Plugin
             if (!rendererWatchServerProvider) {
                 throw new Error("Renderer watch server provider not found")
             }

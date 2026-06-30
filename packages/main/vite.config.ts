@@ -1,12 +1,12 @@
 import { getNodeMajorVersion } from "@app/electron-versions"
-import { spawn } from "child_process"
+import { ChildProcess, spawn } from "child_process"
 import electronPath from "electron"
+import type { Plugin, ViteDevServer } from "vite"
 
-/**
- * @type {import('vite').UserConfig}
- * @see https://vitejs.dev/config/
- */
-export default {
+import { defineConfig } from "vite"
+
+/** @see https://vitejs.dev/config/ */
+export default defineConfig({
     build: {
         ssr: true,
         sourcemap: "inline",
@@ -26,18 +26,13 @@ export default {
         reportCompressedSize: false
     },
     plugins: [handleHotReload()]
-}
+})
 
-/**
- * Implement Electron app reload when some file was changed
- * @return {import('vite').Plugin}
- */
-function handleHotReload() {
-    /** @type {ChildProcess} */
-    let electronApp = null
+/** Implement Electron app reload when some file was changed */
+function handleHotReload(): Plugin {
+    let electronApp: ChildProcess | null = null
 
-    /** @type {import('vite').ViteDevServer|null} */
-    let rendererWatchServer = null
+    let rendererWatchServer: ViteDevServer | null = null
 
     return {
         name: "@app/main-process-hot-reload",
@@ -47,16 +42,16 @@ function handleHotReload() {
                 return
             }
 
-            const rendererWatchServerProvider = config.plugins.find(
-                (p) => p.name === "@app/renderer-watch-server-provider"
-            )
+            const rendererWatchServerProvider = config.plugins!.find(
+                (p) => (p as Plugin).name === "@app/renderer-watch-server-provider"
+            ) as Plugin
             if (!rendererWatchServerProvider) {
                 throw new Error("Renderer watch server provider not found")
             }
 
             rendererWatchServer = rendererWatchServerProvider.api.provideRendererWatchServer()
 
-            process.env.VITE_DEV_SERVER_URL = rendererWatchServer.resolvedUrls.local[0]
+            process.env.VITE_DEV_SERVER_URL = rendererWatchServer!.resolvedUrls!.local[0]
 
             return {
                 build: {
