@@ -2,8 +2,7 @@ import type { AppInitConfig } from "./AppInitConfig"
 import { createModuleRunner } from "./ModuleRunner"
 import { terminateAppOnLastWindowClose } from "./modules/ApplicationTerminatorOnLastWindowClose"
 import { serveStatics } from "./modules/AppServe"
-import { autoUpdater } from "./modules/AutoUpdater"
-import { allowInternalOrigins } from "./modules/BlockNotAllowdOrigins"
+import { allowInternalOrigins } from "./modules/BlockNotAllowedOrigins"
 import { allowExternalUrls } from "./modules/ExternalUrls"
 import { hardwareAccelerationMode } from "./modules/HardwareAccelerationModule"
 import { initWithGivenMenu } from "./modules/SetApplicationMenu"
@@ -18,7 +17,6 @@ export async function initApp(initConfig: AppInitConfig) {
         .init(terminateAppOnLastWindowClose({ terminateOnDarwin: true }))
         .init(hardwareAccelerationMode({ enable: true }))
         .init(initWithGivenMenu(null))
-        .init(autoUpdater())
 
         // Security
         .init(allowInternalOrigins(new Set(initConfig.renderer instanceof URL ? [initConfig.renderer.origin] : [])))
