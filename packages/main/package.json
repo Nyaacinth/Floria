@@ -2,15 +2,15 @@
     "name": "@app/main",
     "private": true,
     "type": "module",
-    "scripts": {
-        "build": "vite build",
-        "lint": "tsc --build --noEmit"
-    },
     "exports": {
         ".": {
             "types": "./src/index.ts",
             "default": "./dist/index.js"
         }
+    },
+    "scripts": {
+        "build": "vite build",
+        "lint": "tsc --build --noEmit"
     },
     "dependencies": {
         "@app/preload": "workspace:*",
@@ -21,6 +21,6 @@
     "devDependencies": {
         "@app/electron-versions": "workspace:*",
         "typescript": "7.0.2",
-        "vite": "8.1.4"
+        "vite": "8.2.0"
     }
 }

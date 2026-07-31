@@ -1,5 +1,7 @@
-import { shell } from "electron"
 import { URL } from "node:url"
+
+import { shell } from "electron"
+
 import { AppModule } from "../AppModule"
 import { ModuleContext } from "../ModuleContext"
 

@@ -1,8 +1,8 @@
-import { getNodeMajorVersion } from "@app/electron-versions"
 import { ChildProcess, spawn } from "child_process"
+
+import { getNodeMajorVersion } from "@app/electron-versions"
 import electronPath from "electron"
 import type { Plugin, ViteDevServer } from "vite"
-
 import { defineConfig } from "vite"
 
 /** @see https://vitejs.dev/config/ */

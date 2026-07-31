@@ -1,7 +1,10 @@
-import pluginOxc from "@prettier/plugin-oxc"
+import { defineConfig } from "oxfmt"
 
-/** @type {import("prettier").Config} */
-export default {
+export default defineConfig({
+    sortImports: true,
+    sortPackageJson: {
+        sortScripts: true
+    },
     printWidth: 120,
     tabWidth: 4,
     useTabs: false,
@@ -17,5 +20,5 @@ export default {
     endOfLine: "lf",
     embeddedLanguageFormatting: "auto",
     singleAttributePerLine: false,
-    plugins: [pluginOxc]
-}
+    ignorePatterns: []
+})

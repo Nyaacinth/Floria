@@ -1,21 +1,14 @@
 import { getChromeMajorVersion } from "@app/electron-versions"
-import { fileURLToPath, URL } from "node:url"
-
-import vue from "@vitejs/plugin-vue"
-import vueDevTools from "vite-plugin-vue-devtools"
-
+import babel from "@rolldown/plugin-babel"
+import tailwindcss from "@tailwindcss/vite"
+import react, { reactCompilerPreset } from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
 
-/** @see https://vite.dev/config/ */
+// https://vite.dev/config/
 export default defineConfig({
     build: {
         target: `chrome${getChromeMajorVersion()}`,
         emptyOutDir: true
     },
-    plugins: [vue(), vueDevTools()],
-    resolve: {
-        alias: {
-            "@": fileURLToPath(new URL("./src", import.meta.url))
-        }
-    }
+    plugins: [react(), babel({ presets: [reactCompilerPreset()] }), tailwindcss()]
 })

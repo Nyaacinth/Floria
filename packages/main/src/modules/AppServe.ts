@@ -1,5 +1,7 @@
-import serve from "electron-serve"
 import path from "node:path"
+
+import serve from "electron-serve"
+
 import type { AppInitConfig } from "../AppInitConfig"
 import { AppModule } from "../AppModule"
 

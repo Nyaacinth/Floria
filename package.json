@@ -1,28 +1,28 @@
 {
     "name": "work.nyaacinth.floria",
+    "version": "1.0.0",
     "private": true,
     "description": "Floria App",
-    "version": "1.0.0",
+    "workspaces": [
+        "packages/*"
+    ],
     "type": "module",
     "main": "packages/entry-point.js",
     "scripts": {
         "build": "pnpm -r run build",
         "compile": "pnpm run build && electron-builder build --config electron-builder.js",
-        "start": "node packages/dev-mode.js",
-        "lint": "pnpm -r run lint"
-    },
-    "devDependencies": {
-        "@npmcli/map-workspaces": "6.0.0",
-        "@playwright/test": "1.61.1",
-        "@prettier/plugin-oxc": "^0.2.0",
-        "@types/node": "26.1.1",
-        "electron": "43.1.0",
-        "electron-builder": "26.15.3",
-        "glob": "13.0.6",
-        "playwright": "1.61.1",
-        "prettier": "3.9.5"
+        "lint": "pnpm -r run lint",
+        "start": "node packages/dev-mode.js"
     },
     "dependencies": {
         "@app/main": "workspace:*"
+    },
+    "devDependencies": {
+        "@npmcli/map-workspaces": "6.0.0",
+        "@types/node": "26.1.2",
+        "electron": "43.2.0",
+        "electron-builder": "26.15.3",
+        "glob": "13.0.6",
+        "oxfmt": "^0.61.0"
     }
 }

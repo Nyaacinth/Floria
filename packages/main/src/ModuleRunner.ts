@@ -1,4 +1,5 @@
 import { app } from "electron"
+
 import { AppModule } from "./AppModule"
 import { ModuleContext } from "./ModuleContext"
 

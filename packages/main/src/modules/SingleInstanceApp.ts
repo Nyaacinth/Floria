@@ -1,4 +1,5 @@
 import * as Electron from "electron"
+
 import { AppModule } from "../AppModule"
 
 class SingleInstanceApp implements AppModule {

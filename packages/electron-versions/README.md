@@ -4,6 +4,8 @@
 
 A set of helper functions to get the versions of internal components bundled within Electron.
 
+Should not be bundled in production build.
+
 ## Installation
 
 To install this package, use the following command:

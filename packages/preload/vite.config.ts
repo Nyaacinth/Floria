@@ -1,7 +1,6 @@
 import { getChromeMajorVersion } from "@app/electron-versions"
 import { resolveModuleExportNames } from "mlly"
 import type { Plugin, ViteDevServer } from "vite"
-
 import { defineConfig } from "vite"
 
 /** @see https://vitejs.dev/config/ */

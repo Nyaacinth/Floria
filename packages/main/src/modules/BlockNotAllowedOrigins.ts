@@ -1,5 +1,7 @@
-import * as Electron from "electron"
 import { URL } from "node:url"
+
+import * as Electron from "electron"
+
 import { AbstractSecurityRule } from "./AbstractSecurityModule"
 
 /**

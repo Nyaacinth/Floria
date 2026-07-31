@@ -1,4 +1,5 @@
 import { BrowserWindow } from "electron"
+
 import type { AppInitConfig } from "../AppInitConfig"
 import type { AppModule } from "../AppModule"
 import { ModuleContext } from "../ModuleContext"

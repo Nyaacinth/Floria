@@ -1,6 +1,8 @@
-import mapWorkspaces from "@npmcli/map-workspaces"
 import { join as pathJoin } from "node:path"
 import { pathToFileURL } from "node:url"
+
+import mapWorkspaces from "@npmcli/map-workspaces"
+
 import pkg from "./package.json" with { type: "json" }
 
 /** @type {import('electron-builder').Configuration} */
