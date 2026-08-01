@@ -3,6 +3,7 @@ hoistWorkspacePackages: true
 minimumReleaseAge: 0
 
 allowBuilds:
+    electron: true
     electron-winstaller: true
 
 packages:
