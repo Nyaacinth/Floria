@@ -1,1 +1,6 @@
-{ "tab_size": 4 }
+{
+    "tab_size": 4,
+    "format_on_save": "on",
+    "prettier": { "allowed": false },
+    "formatter": [{ "language_server": { "name": "oxfmt" } }]
+}
