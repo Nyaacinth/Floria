@@ -23,6 +23,6 @@
         "electron": "43.2.0",
         "electron-builder": "26.15.3",
         "glob": "13.0.6",
-        "oxfmt": "^0.61.0"
+        "oxfmt": "0.61.0"
     }
 }
