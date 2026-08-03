@@ -1,6 +1,5 @@
 shamefullyHoist: true
 hoistWorkspacePackages: true
-minimumReleaseAge: 0
 
 allowBuilds:
     electron: true
