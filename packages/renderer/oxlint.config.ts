@@ -6,6 +6,7 @@ export default defineConfig({
     rules: {
         "react/rules-of-hooks": "error",
         "react/exhaustive-deps": "warn",
+        "react/jsx-key": "warn",
         "react/only-export-components": ["warn", { allowConstantExport: true }]
     }
 })
