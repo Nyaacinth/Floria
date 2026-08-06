@@ -1,7 +1,6 @@
 import { defineConfig } from "oxlint"
 
 export default defineConfig({
-    options: { typeAware: true },
     plugins: ["react", "typescript", "oxc"],
     rules: {
         "react/rules-of-hooks": "error",

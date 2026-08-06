@@ -20,9 +20,12 @@
     "devDependencies": {
         "@npmcli/map-workspaces": "6.0.0",
         "@types/node": "26.1.2",
-        "electron": "43.2.0",
+        "electron": "43.3.0",
         "electron-builder": "26.15.3",
         "glob": "13.0.6",
-        "oxfmt": "0.62.0"
+        "oxfmt": "0.62.0",
+        "oxlint": "1.77.0",
+        "oxlint-tsgolint": "7.0.2001",
+        "typescript": "7.0.2"
     }
 }
