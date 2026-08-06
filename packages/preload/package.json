@@ -14,7 +14,11 @@
     },
     "scripts": {
         "build": "vite build",
-        "lint": "tsc --build --noEmit"
+        "lint": "tsc --build --noEmit && oxlint"
+    },
+    "dependencies": {
+        "oxlint": "1.77.0",
+        "oxlint-tsgolint": "7.0.2001"
     },
     "devDependencies": {
         "@app/electron-versions": "workspace:*",

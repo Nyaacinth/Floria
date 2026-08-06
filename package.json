@@ -11,6 +11,7 @@
     "scripts": {
         "build": "pnpm -r run build",
         "compile": "pnpm run build && pnpm electron-builder build --config electron-builder.js",
+        "format": "oxfmt .",
         "lint": "pnpm -r run lint",
         "start": "node packages/dev-mode.js"
     },
