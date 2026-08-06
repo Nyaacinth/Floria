@@ -56,16 +56,16 @@ importers:
       electron-updater:
         specifier: 6.8.9
         version: 6.8.9(supports-color@7.2.0)
+    devDependencies:
+      '@app/electron-versions':
+        specifier: workspace:*
+        version: link:../electron-versions
       oxlint:
         specifier: 1.77.0
         version: 1.77.0(oxlint-tsgolint@7.0.2001)
       oxlint-tsgolint:
         specifier: 7.0.2001
         version: 7.0.2001
-    devDependencies:
-      '@app/electron-versions':
-        specifier: workspace:*
-        version: link:../electron-versions
       typescript:
         specifier: 7.0.2
         version: 7.0.2
@@ -74,13 +74,6 @@ importers:
         version: 8.2.0(@types/node@26.1.2)(jiti@2.7.0)(yaml@2.9.0)
 
   packages/preload:
-    dependencies:
-      oxlint:
-        specifier: 1.77.0
-        version: 1.77.0(oxlint-tsgolint@7.0.2001)
-      oxlint-tsgolint:
-        specifier: 7.0.2001
-        version: 7.0.2001
     devDependencies:
       '@app/electron-versions':
         specifier: workspace:*
@@ -88,6 +81,12 @@ importers:
       mlly:
         specifier: 1.8.2
         version: 1.8.2
+      oxlint:
+        specifier: 1.77.0
+        version: 1.77.0(oxlint-tsgolint@7.0.2001)
+      oxlint-tsgolint:
+        specifier: 7.0.2001
+        version: 7.0.2001
       typescript:
         specifier: 7.0.2
         version: 7.0.2
