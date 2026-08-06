@@ -9,6 +9,9 @@
         },
         "TSX": {
             "language_servers": ["typescript-ls", "oxlint", "!vtsls", "!typescript-language-server", "..."]
+        },
+        "JavaScript": {
+            "language_servers": ["typescript-ls", "oxlint", "!vtsls", "!typescript-language-server", "..."]
         }
     }
 }
