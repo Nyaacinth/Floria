@@ -14,7 +14,7 @@ export default defineConfig({
         lib: {
             entry: ["src/exposed.ts", "virtual:browser.js"]
         },
-        rollupOptions: {
+        rolldownOptions: {
             output: [
                 {
                     // ESM preload scripts must have the .mjs extension
