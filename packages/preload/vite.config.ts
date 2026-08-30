@@ -30,17 +30,19 @@ export default defineConfig({
 })
 
 /**
- * This plugin creates a browser (renderer) version of `preload` package.
- * Basically, it just read all nominals you exported from package and define it as globalThis properties
- * expecting that real values were exposed by `electron.contextBridge.exposeInMainWorld()`
+ * This plugin creates a browser (renderer) version of `preload` package. Basically, it just read all nominals you
+ * exported from package and define it as globalThis properties expecting that real values were exposed by
+ * `electron.contextBridge.exposeInMainWorld()`
  *
  * Example:
+ *
  * ```ts
  * // index.ts
- * export const someVar = 'my-value';
+ * export const someVar = "my-value"
  * ```
  *
  * Output
+ *
  * ```js
  * // _virtual_browser.mjs
  * export const someVar = globalThis[<hash>] // 'my-value'
