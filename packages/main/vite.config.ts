@@ -67,17 +67,23 @@ function handleHotReload(): Plugin {
 
             /** Kill electron if a process already exists */
             if (electronApp !== null) {
+                // Reason: `process.exit` does not use `this` in its invocation
+                // oxlint-disable-next-line typescript/unbound-method
                 electronApp.removeListener("exit", process.exit)
                 electronApp.kill("SIGINT")
                 electronApp = null
             }
 
             /** Spawn a new electron process */
+            // Reason: `electron` actually has its own `toString` handler
+            // oxlint-disable-next-line typescript/no-base-to-string
             electronApp = spawn(String(electronPath), ["--inspect", "."], {
                 stdio: "inherit"
             })
 
             /** Stops the watch script when the application has been quit */
+            // Reason: `process.exit` does not use `this` in its invocation
+            // oxlint-disable-next-line typescript/unbound-method
             electronApp.addListener("exit", process.exit)
         }
     }

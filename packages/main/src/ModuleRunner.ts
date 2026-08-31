@@ -10,9 +10,12 @@ class ModuleRunner implements PromiseLike<void> {
         this.currentPromise = Promise.resolve()
     }
 
+    // Reason: It is meant to be awaitable so that we are confident that the app is fully initialized after the `init`
+    // chain call and awaiting of the returned value
+    // oxlint-disable-next-line unicorn/no-thenable
     then<TResult1 = void, TResult2 = never>(
-        onfulfilled?: ((value: void) => TResult1 | PromiseLike<TResult1>) | null | undefined,
-        onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | null | undefined
+        onfulfilled?: ((value: void) => TResult1 | PromiseLike<TResult1>) | null,
+        onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | null
     ): PromiseLike<TResult1 | TResult2> {
         return this.currentPromise.then(onfulfilled, onrejected)
     }

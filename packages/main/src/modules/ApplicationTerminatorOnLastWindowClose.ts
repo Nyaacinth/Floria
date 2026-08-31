@@ -4,7 +4,7 @@ import { ModuleContext } from "../ModuleContext"
 class ApplicationTerminatorOnLastWindowClose implements AppModule {
     private terminateOnDarwin: boolean
 
-    constructor({ terminateOnDarwin = false }: { terminateOnDarwin: boolean }) {
+    constructor({ terminateOnDarwin = false }: { terminateOnDarwin?: boolean } = {}) {
         this.terminateOnDarwin = terminateOnDarwin
     }
 

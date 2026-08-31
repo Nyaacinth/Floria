@@ -18,7 +18,7 @@ if (process.env.NODE_ENV === "development" || process.env.PLAYWRIGHT_TEST === "t
  * design. This allows fewer dependencies and better separation of concerns in '@app/main'. Thus, the main module
  * remains simplistic and efficient as it receives initialization instructions rather than direct module imports.
  */
-initApp({
+void initApp({
     renderer:
         process.env.MODE === "development" && !!process.env.VITE_DEV_SERVER_URL
             ? new URL(process.env.VITE_DEV_SERVER_URL)
