@@ -1,9 +1,12 @@
+import { readFileSync } from "node:fs"
 import { join as pathJoin } from "node:path"
 import { pathToFileURL } from "node:url"
 
 import mapWorkspaces from "@npmcli/map-workspaces"
+import { parseYAML } from "confbox"
 
 import pkg from "./package.json" with { type: "json" }
+const pnpmWorkspaceConfig = parseYAML(readFileSync(pathJoin(import.meta.dirname, "pnpm-workspace.yaml"), "utf8"))
 
 /** @type {import("electron-builder").Configuration} */
 export default {
@@ -92,7 +95,7 @@ async function getListOfFilesFromEachWorkspace() {
     /** @type {Map<string, string>} */
     const workspaces = await mapWorkspaces({
         cwd: process.cwd(),
-        pkg
+        pkg: { ...pkg, workspaces: pnpmWorkspaceConfig.packages }
     })
 
     /** @type {string[]} */

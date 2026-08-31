@@ -3,9 +3,6 @@
     "version": "1.0.0",
     "private": true,
     "description": "Floria App",
-    "workspaces": [
-        "packages/*"
-    ],
     "type": "module",
     "main": "packages/entry-point.js",
     "scripts": {
@@ -21,6 +18,7 @@
     "devDependencies": {
         "@npmcli/map-workspaces": "6.0.0",
         "@types/node": "26.4.0",
+        "confbox": "^0.2.4",
         "electron": "44.0.0",
         "electron-builder": "26.15.3",
         "glob": "13.0.6",
