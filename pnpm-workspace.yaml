@@ -1,6 +1,6 @@
 publicHoistPattern: ["*"] # For workspace mapper of electron-builder
 hoistWorkspacePackages: true # Same as above
-packages: ["packages/*"] # Same content as package.json#workspaces, to satisfy both pnpm and electron-builder
+packages: ["packages/*"]
 
 allowBuilds:
     electron: true
