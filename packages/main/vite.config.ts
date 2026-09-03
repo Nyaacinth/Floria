@@ -1,4 +1,5 @@
-import { ChildProcess, spawn } from "child_process"
+import { ChildProcess, spawn } from "node:child_process"
+import { exit } from "node:process"
 
 import { getNodeMajorVersion } from "@app/electron-versions"
 import electronPath from "electron"
@@ -67,9 +68,7 @@ function handleHotReload(): Plugin {
 
             /** Kill electron if a process already exists */
             if (electronApp !== null) {
-                // Reason: `process.exit` does not use `this` in its invocation
-                // oxlint-disable-next-line typescript/unbound-method
-                electronApp.removeListener("exit", process.exit)
+                electronApp.removeListener("exit", exit)
                 electronApp.kill("SIGINT")
                 electronApp = null
             }
@@ -82,9 +81,7 @@ function handleHotReload(): Plugin {
             })
 
             /** Stops the watch script when the application has been quit */
-            // Reason: `process.exit` does not use `this` in its invocation
-            // oxlint-disable-next-line typescript/unbound-method
-            electronApp.addListener("exit", process.exit)
+            electronApp.addListener("exit", exit)
         }
     }
 }
