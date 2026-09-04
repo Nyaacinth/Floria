@@ -25,7 +25,7 @@ export function useInkStory(storyArchiveJson: string) {
         }
     }, [storyArchiveJson])
 
-    // markDirty
+    // markDirty, don't expose forceUpdate
     const [, forceUpdate] = useState(0)
     const markDirty = useCallback(() => {
         forceUpdate((prev) => (!(prev > 255) ? prev + 1 : 0))
@@ -230,7 +230,7 @@ export function useInkStory(storyArchiveJson: string) {
          */
         getCurrentVisitCountAtPathString,
 
-        /** Add a variable observer, you usually need this for integration */
+        /** Add a variable observer, you would usually need this for integration */
         addVariableObserver,
 
         /**
