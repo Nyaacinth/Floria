@@ -28,7 +28,7 @@ export function useInkStory(storyArchiveJson: string) {
     // markDirty, don't expose forceUpdate
     const [, forceUpdate] = useState(0)
     const markDirty = useCallback(() => {
-        forceUpdate((prev) => (!(prev > 255) ? prev + 1 : 0))
+        forceUpdate((prev) => (prev < 256 ? prev + 1 : 0))
     }, [])
 
     const continueStory = useCallback(() => {
