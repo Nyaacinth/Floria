@@ -19,8 +19,6 @@
     "devDependencies": {
         "@app/electron-versions": "workspace:*",
         "mlly": "1.8.2",
-        "oxlint": "1.81.0",
-        "oxlint-tsgolint": "7.0.2001",
         "typescript": "7.0.2",
         "vite": "8.2.2"
     }

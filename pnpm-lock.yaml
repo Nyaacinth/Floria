@@ -63,12 +63,6 @@ importers:
       '@app/electron-versions':
         specifier: workspace:*
         version: link:../electron-versions
-      oxlint:
-        specifier: 1.81.0
-        version: 1.81.0(oxlint-tsgolint@7.0.2001)
-      oxlint-tsgolint:
-        specifier: 7.0.2001
-        version: 7.0.2001
       typescript:
         specifier: 7.0.2
         version: 7.0.2
@@ -84,12 +78,6 @@ importers:
       mlly:
         specifier: 1.8.2
         version: 1.8.2
-      oxlint:
-        specifier: 1.81.0
-        version: 1.81.0(oxlint-tsgolint@7.0.2001)
-      oxlint-tsgolint:
-        specifier: 7.0.2001
-        version: 7.0.2001
       typescript:
         specifier: 7.0.2
         version: 7.0.2
