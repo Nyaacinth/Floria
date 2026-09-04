@@ -28,7 +28,7 @@ export function useInkStory(storyArchiveJson: string) {
     // markDirty
     const [, forceUpdate] = useState(0)
     const markDirty = useCallback(() => {
-        forceUpdate((prev) => prev + 1)
+        forceUpdate((prev) => (!(prev > 255) ? prev + 1 : 0))
     }, [])
 
     const continueStory = useCallback(() => {
@@ -136,36 +136,122 @@ export function useInkStory(storyArchiveJson: string) {
 
     const returnValue = {
         // Raw access
+
+        /** Non-reactive inner story instance, see also: `markDirty()` */
         get story() {
             return story
         },
         set story(value) {
             setStory(value)
         },
+        /** Mark state as dirty after external non-reactive changes */
         markDirty,
 
         // Properties
+
+        /**
+         * Current text, possibly null or empty before calling first `continue()` or at the end or in other
+         * circumstances
+         */
         currentText,
+
+        /**
+         * True if `continue()` can be called. Please check this before calling `continue()`, otherwise error would be
+         * thrown in ink instance and text/choices would be empty
+         */
         canContinue,
+
+        /** Current choice instances, empty if no choices (e.g. plain text plot) */
         currentChoices,
+
+        /**
+         * Global story tags, not knot tags, you can include (for example) top level story metadata there
+         *
+         * Example Ink Script Snippet:
+         *
+         * ```plaintext
+         * # author: Joseph Humfrey
+         * # title: My Wonderful Ink Story
+         * ```
+         */
         globalTags,
+
+        /**
+         * Current story tags in scope
+         *
+         * Example Ink Script Snippet:
+         *
+         * ```plaintext
+         * Ipsum Lorem... # theTags
+         * ```
+         */
         currentTags,
 
         // Mutating methods
+
+        /** Continue, please check `canContinue` before calling */
         continue: continueStory,
+
+        /** Choose a choice with a choice index, you can get those from `currentChoices` */
         chooseChoiceIndex,
+
+        /**
+         * Choose a path defined in story (by knot tags)
+         *
+         * Example Ink Script Snippet:
+         *
+         * ```plaintext
+         * === Munich ==
+         * Ipsum Lorum...
+         * ```
+         */
         choosePathString,
+
+        /** Add a warning in story, by default will be logged in browser console */
         warning,
+
+        /** Modify an ink variable reactively */
         setVariableState,
+
+        /** Evaluate a ink function in current scope reactively */
         evaluateFunction,
+
+        /** Recover from saved state and refresh hook state, would be used in S/L */
         recoverFromStateJson,
 
         // Non-mutating methods
+
+        /** Get the value of a ink variable */
         getVariableState,
+
+        /**
+         * Get the times of encountering for a path in story, returns `yourKnot` for knots, and `yourKnot.yourStitch`
+         * for stitches
+         */
         getCurrentVisitCountAtPathString,
+
+        /** Add a variable observer, you usually need this for integration */
         addVariableObserver,
+
+        /**
+         * Bind an external function handler for corresponding ink function, be aware that ink function needs to be
+         * defined in ink story as external
+         */
         bindExternalFunction,
+
+        /** Get a saved state of current story progress, would be used in S/L */
         saveToStateJson,
+
+        /**
+         * Get the knot tags for specified path
+         *
+         * Example Ink Script Snippet:
+         *
+         * ```plaintext
+         * === Munich ==
+         * Ipsum Lorum...
+         * ```
+         */
         getTagsForContentAtPath
     }
 
