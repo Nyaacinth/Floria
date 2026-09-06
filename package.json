@@ -17,9 +17,9 @@
     },
     "devDependencies": {
         "@npmcli/map-workspaces": "6.0.0",
+        "@std/yaml": "jsr:1.2.0",
         "@types/node": "26.4.1",
-        "confbox": "0.3.0",
-        "electron": "44.1.1",
+        "electron": "44.2.0",
         "electron-builder": "26.15.3",
         "glob": "13.0.6",
         "oxfmt": "0.66.0",

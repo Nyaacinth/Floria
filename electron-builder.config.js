@@ -3,9 +3,9 @@ import { join as pathJoin } from "node:path"
 import { pathToFileURL } from "node:url"
 
 import mapWorkspaces from "@npmcli/map-workspaces"
-import { parseYAML } from "confbox"
+import { parse as parseYAML } from "@std/yaml"
 
-import pkg from "./package.json" with { type: "json" }
+import packageConfig from "./package.json" with { type: "json" }
 const pnpmWorkspaceConfig = parseYAML(readFileSync(pathJoin(import.meta.dirname, "pnpm-workspace.yaml"), "utf8"))
 
 /** @type {import("electron-builder").Configuration} */
@@ -32,7 +32,7 @@ export default {
      * unpredictably change during deployment, making them impossible to locate and download for update.
      */
     artifactName: "${productName}-${version}-${os}-${arch}.${ext}",
-    files: ["LICENSE*", pkg.main, "!node_modules/@app/**", ...(await getListOfFilesFromEachWorkspace())]
+    files: ["LICENSE*", packageConfig.main, "!node_modules/@app/**", ...(await getListOfFilesFromEachWorkspace())]
 }
 
 /**
@@ -95,7 +95,7 @@ async function getListOfFilesFromEachWorkspace() {
     /** @type {Map<string, string>} */
     const workspaces = await mapWorkspaces({
         cwd: process.cwd(),
-        pkg: { ...pkg, workspaces: pnpmWorkspaceConfig.packages }
+        pkg: { ...packageConfig, workspaces: pnpmWorkspaceConfig.packages }
     })
 
     /** @type {string[]} */

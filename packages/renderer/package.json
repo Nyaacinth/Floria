@@ -25,7 +25,7 @@
         "@types/babel__core": "7.20.5",
         "@types/node": "26.4.1",
         "@types/react": "19.2.18",
-        "@types/react-dom": "19.2.5",
+        "@types/react-dom": "19.2.7",
         "@vitejs/plugin-react": "6.1.1",
         "babel-plugin-react-compiler": "1.0.0",
         "inkjs": "^2.4.0",
@@ -41,7 +41,7 @@
         "type-fest": "^5.9.0",
         "typescript": "7.0.2",
         "vite": "8.2.2",
-        "wouter": "3.10.0",
+        "wouter": "3.11.0",
         "zod": "4.5.4"
     }
 }
