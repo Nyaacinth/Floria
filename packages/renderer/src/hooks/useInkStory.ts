@@ -5,6 +5,13 @@ import type { SetReadonly } from "type-fest"
 
 export type InkStoryRct = ReturnType<typeof useInkStory>
 
+/**
+ * Create a ink story instance and wire it up with React
+ *
+ * @param storyArchiveJson Ink story json exported by ink compiler
+ * @param historyHandler Usually a history recorder returned by `useInkMessageCollection`
+ * @returns InkStoryRct, you shall not destruct that
+ */
 export function useInkStory(storyArchiveJson: string, historyHandler: (newText: string) => void = () => {}) {
     const storyArchiveJsonRef = useRef(storyArchiveJson) // traces storyArchiveJson
 

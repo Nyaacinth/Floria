@@ -5,7 +5,7 @@ import { parseBBCode } from "../utils/parseBBCode"
 export interface InkMessageItemText {
     type: "text"
     author?: string
-    elmTree: React.ReactNode
+    elmTree: React.ReactNode[]
 }
 
 export interface InkMessageItemImage {
@@ -70,6 +70,28 @@ function matchAgainstCommonMessageRegex(value: string) {
     }
 }
 
+/**
+ * Parses ink lines of text with customized semantics
+ *
+ * Currently with media messages:
+ *
+ * ```plaintext
+ * `[msgType] <Optional Message Author> "values..."
+ * ```
+ *
+ * (Escape from media message matching with initial double backtick)
+ *
+ * ...and common messages:
+ *
+ * ```plaintext
+ * <Optional Message Author> Messages...
+ * ```
+ *
+ * (Escape author matching with initial single backtick)
+ *
+ * @param msg The message to parse
+ * @returns The parsed ink message item for message history insertion
+ */
 export function parseInkMessage(msg: string): InkMessageItem {
     const mediaMessageMatched = matchAgainstMediaMessageRegex(msg)
     if (mediaMessageMatched !== false) {
@@ -101,6 +123,12 @@ export function parseInkMessage(msg: string): InkMessageItem {
     throw new TypeError(`Ink message cannot be parsed: "${JSON.stringify(msg)}"`)
 }
 
+/**
+ * Creates a ink message collection (a.k.a. history) for later use, you should probably pass `handleNewMessage` to
+ * `useInkStory()`
+ *
+ * @returns The ink message collection, the new message handler and related functions. Destruct it if you want
+ */
 export function useInkMessageCollection() {
     const [collection, setCollection] = useState<InkMessageCollection>([])
     const addToCollection = useCallback(
@@ -127,11 +155,16 @@ export function useInkMessageCollection() {
         },
         [addToCollection]
     )
-    return [collection, handleNewMessage, clearCollection, addToCollection, setCollection] as [
-        messageCollection: InkMessageCollection,
-        handleNewMessage: (message: string) => void,
-        clear: () => void,
-        pushMessage: (message: InkMessageItem) => void,
-        setMessageCollection: React.Dispatch<React.SetStateAction<InkMessageCollection>>
-    ]
+    return {
+        /** The ink message collection */
+        messageCollection: collection,
+        /** You should probably pass this to `useInkStory()` */
+        handleNewMessage,
+        /** Clear the collection */
+        clear: clearCollection,
+        /** Write a new (external) message to the collection */
+        pushMessage: addToCollection,
+        /** The original setter for the ink message collection */
+        setMessageCollection: setCollection
+    }
 }
