@@ -5,7 +5,7 @@ import type { SetReadonly } from "type-fest"
 
 export type InkStoryRct = ReturnType<typeof useInkStory>
 
-export function useInkStory(storyArchiveJson: string) {
+export function useInkStory(storyArchiveJson: string, historyHandler: (newText: string) => void = () => {}) {
     const storyArchiveJsonRef = useRef(storyArchiveJson) // traces storyArchiveJson
 
     // late init
@@ -30,58 +30,81 @@ export function useInkStory(storyArchiveJson: string) {
     const markDirty = useCallback(() => {
         forceUpdate((prev) => (prev < 256 ? prev + 1 : 0))
     }, [])
+    const prevText = useRef<string>(null)
+    const tryRecordHistory = useCallback(() => {
+        if (story.currentText !== null && story.currentText !== "") {
+            if (prevText.current !== story.currentText) {
+                historyHandler(story.currentText)
+            }
+            prevText.current = story.currentText
+        }
+    }, [historyHandler, story.currentText])
 
     const continueStory = useCallback(() => {
         markDirty()
-        return story.Continue()
-    }, [story, markDirty])
+        const ret = story.Continue()
+        tryRecordHistory()
+        return ret
+    }, [story, markDirty, tryRecordHistory])
 
     const chooseChoiceIndex = useCallback(
         (choiceIdx: number) => {
             markDirty()
-            return story.ChooseChoiceIndex(choiceIdx)
+            const ret = story.ChooseChoiceIndex(choiceIdx)
+            tryRecordHistory()
+            return ret
         },
-        [story, markDirty]
+        [story, markDirty, tryRecordHistory]
     )
 
     const choosePathString = useCallback(
         (path: string, resetCallstack?: boolean, args?: any[]) => {
             markDirty()
-            story.ChoosePathString(path, resetCallstack, args)
+            const ret = story.ChoosePathString(path, resetCallstack, args)
+            tryRecordHistory()
+            return ret
         },
-        [story, markDirty]
+        [story, markDirty, tryRecordHistory]
     )
 
     const warning = useCallback(
         (message: string) => {
             markDirty()
-            story.Warning(message)
+            const ret = story.Warning(message)
+            tryRecordHistory()
+            return ret
         },
-        [story, markDirty]
+        [story, markDirty, tryRecordHistory]
     )
 
     const setVariableState = useCallback(
         (name: string, value: any) => {
             markDirty()
-            return story.variablesState.$(name, value)
+            const ret = story.variablesState.$(name, value)
+            tryRecordHistory()
+            return ret
         },
-        [story, markDirty]
+        [story, markDirty, tryRecordHistory]
     )
 
     const evaluateFunction = useCallback(
         (functionName: string, args?: any[], returnTextOutput?: boolean) => {
             markDirty()
-            return story.EvaluateFunction(functionName, args, returnTextOutput)
+            const ret = story.EvaluateFunction(functionName, args, returnTextOutput)
+            tryRecordHistory()
+            return ret
         },
-        [story, markDirty]
+        [story, markDirty, tryRecordHistory]
     )
 
     const recoverFromStateJson = useCallback(
         (json: string) => {
             markDirty()
-            return story.state.LoadJson(json)
+            const ret = story.state.LoadJson(json)
+            tryRecordHistory()
+            return ret
         },
-        [story, markDirty]
+        [story, markDirty, tryRecordHistory]
     )
 
     // Non-mutating methods that only read from the story – no state update needed
@@ -144,8 +167,18 @@ export function useInkStory(storyArchiveJson: string) {
         set story(value) {
             setStory(value)
         },
-        /** Mark state as dirty after external non-reactive changes */
+        /**
+         * Mark state as dirty after external non-reactive changes, please pair it with a `tryRecordHistory()` after the
+         * mutation if called outside
+         */
         markDirty,
+
+        /**
+         * Pair it with external mutations (where you would call `markDirty()`) or anywhere that you suspect will
+         * generate a new `currentText`, this function will not record if `currentText` doesn't change, so if in doubt,
+         * use it
+         */
+        tryRecordHistory,
 
         // Properties
 
