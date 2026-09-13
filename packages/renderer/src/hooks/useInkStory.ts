@@ -10,7 +10,8 @@ export type InkStoryRct = ReturnType<typeof useInkStory>
  *
  * @param storyArchiveJson Ink story json exported by ink compiler
  * @param historyHandler Usually a history recorder returned by `useInkMessageCollection`
- * @returns InkStoryRct, you shall not destruct that
+ * @returns A story wrapper wired up with React with raw access (`story`, `setStory()`), destructuring is not
+ *   recommended because most of the time you would use everything it contains
  */
 export function useInkStory(storyArchiveJson: string, historyHandler: (newText: string) => void = () => {}) {
     const storyArchiveJsonRef = useRef(storyArchiveJson) // traces storyArchiveJson
@@ -168,12 +169,11 @@ export function useInkStory(storyArchiveJson: string, historyHandler: (newText: 
         // Raw access
 
         /** Non-reactive inner story instance, see also: `markDirty()` */
-        get story() {
-            return story
-        },
-        set story(value) {
-            setStory(value)
-        },
+        story,
+
+        /** Non-reactive inner story instance, see also: `markDirty()` */
+        setStory,
+
         /**
          * Mark state as dirty after external non-reactive changes, please pair it with a `tryRecordHistory()` after the
          * mutation if called outside
@@ -297,7 +297,7 @@ export function useInkStory(storyArchiveJson: string, historyHandler: (newText: 
 
     type InkStoryRct = SetReadonly<
         typeof returnValue,
-        "currentText" | "canContinue" | "currentChoices" | "globalTags" | "currentTags"
+        "story" | "currentText" | "canContinue" | "currentChoices" | "globalTags" | "currentTags"
     >
 
     return returnValue as InkStoryRct
@@ -313,6 +313,7 @@ const defaultHandlerOnError = (message: string, errorType: ErrorType) => {
             break
         case ErrorType.Error:
             console.error(`Ink Error: ${message}`)
+            alert(`Ink Runtime Error: ${message}`)
             break
     }
 }
