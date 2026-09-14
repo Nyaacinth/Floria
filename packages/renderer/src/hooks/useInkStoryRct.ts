@@ -10,8 +10,7 @@ export type InkStoryRct = ReturnType<typeof useInkStoryRct>
  *
  * @param storyArchiveJson Ink story json exported by ink compiler
  * @param historyHandler Usually a history recorder returned by `useInkMessageCollection`
- * @returns A story wrapper wired up with React with raw access (`story`, `setStory()`), destructuring is not
- *   recommended because most of the time you would use everything it contains
+ * @returns A story wrapper wired up with React with raw access (`story`, `setStory()`)
  */
 export function useInkStoryRct(storyArchiveJson: string, historyHandler: (newText: string) => void = () => {}) {
     const storyArchiveJsonRef = useRef(storyArchiveJson) // traces storyArchiveJson
@@ -22,16 +21,6 @@ export function useInkStoryRct(storyArchiveJson: string, historyHandler: (newTex
         s.onError = defaultHandlerOnError
         return s
     })
-
-    // traces & re-init
-    useEffect(() => {
-        if (storyArchiveJson !== storyArchiveJsonRef.current) {
-            const newStory = new Story(storyArchiveJson)
-            newStory.onError = defaultHandlerOnError
-            setStory(newStory)
-            storyArchiveJsonRef.current = storyArchiveJson
-        }
-    }, [storyArchiveJson])
 
     // markDirty, don't expose forceUpdate
     const [, forceUpdate] = useState(0)
@@ -47,6 +36,17 @@ export function useInkStoryRct(storyArchiveJson: string, historyHandler: (newTex
             prevText.current = story.currentText
         }
     }, [historyHandler, story.currentText])
+
+    // traces & re-init
+    useEffect(() => {
+        if (storyArchiveJson !== storyArchiveJsonRef.current) {
+            const newStory = new Story(storyArchiveJson)
+            newStory.onError = defaultHandlerOnError
+            setStory(newStory)
+            prevText.current = null
+            storyArchiveJsonRef.current = storyArchiveJson
+        }
+    }, [storyArchiveJson])
 
     const continueStory = useCallback(() => {
         markDirty()
@@ -237,7 +237,7 @@ export function useInkStoryRct(storyArchiveJson: string, historyHandler: (newTex
         // Mutating methods
 
         /** Continue, please check `canContinue` before calling */
-        continue: continueStory,
+        continueStory,
 
         /** Choose a choice with a choice index, you can get those from `currentChoices` */
         chooseChoiceIndex,

@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useShallowCompareEffect } from "react-use"
 
 import { useInkMessageCollection, type InkMediaMessageType } from "./useInkMessageCollection"
 import { useInkStoryRct } from "./useInkStoryRct"
@@ -38,7 +38,7 @@ export function useInkIntegration(storyDef: StoryDefinition, fnHandlers: { [key:
     const messages = useInkMessageCollection((type, value) => resolveSrc(storyDef, type, value))
     const story = useInkStoryRct(storyDef.entry, messages.handleNewMessage)
 
-    useEffect(() => {
+    useShallowCompareEffect(() => {
         for (const [key, handler] of Object.entries(fnHandlers)) {
             story.bindExternalFunction(key, handler)
         }

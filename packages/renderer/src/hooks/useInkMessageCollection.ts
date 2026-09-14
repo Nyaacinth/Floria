@@ -124,7 +124,7 @@ export function parseInkMessage(msg: string, srcResolver: MediaMessageSrcResolve
  * Creates a ink message collection (a.k.a. history) for later use, you should probably pass `handleNewMessage` to
  * `useInkStory()`
  *
- * @returns The ink message collection, the new message handler and related functions. Destruct it if you want
+ * @returns The ink message collection, the new message handler and related functions
  */
 export function useInkMessageCollection(srcResolver: MediaMessageSrcResolver) {
     const [collection, setCollection] = useState<InkMessageCollection>([])
@@ -158,9 +158,9 @@ export function useInkMessageCollection(srcResolver: MediaMessageSrcResolver) {
         /** You should probably pass this to `useInkStory()` */
         handleNewMessage,
         /** Clear the collection */
-        clear: clearCollection,
+        clearMessageCollection: clearCollection,
         /** Write a new (external) message to the collection */
-        pushMessage: addToCollection,
+        pushMessageToCollection: addToCollection,
         /** The original setter for the ink message collection */
         setMessageCollection: setCollection
     }
