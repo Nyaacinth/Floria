@@ -3,7 +3,7 @@ import { ErrorType } from "inkjs/engine/Error"
 import { useCallback, useEffect, useRef, useState } from "react"
 import type { SetReadonly } from "type-fest"
 
-export type InkStoryRct = ReturnType<typeof useInkStory>
+export type InkStoryRct = ReturnType<typeof useInkStoryRct>
 
 /**
  * Create a ink story instance and wire it up with React
@@ -13,7 +13,7 @@ export type InkStoryRct = ReturnType<typeof useInkStory>
  * @returns A story wrapper wired up with React with raw access (`story`, `setStory()`), destructuring is not
  *   recommended because most of the time you would use everything it contains
  */
-export function useInkStory(storyArchiveJson: string, historyHandler: (newText: string) => void = () => {}) {
+export function useInkStoryRct(storyArchiveJson: string, historyHandler: (newText: string) => void = () => {}) {
     const storyArchiveJsonRef = useRef(storyArchiveJson) // traces storyArchiveJson
 
     // late init
@@ -140,6 +140,13 @@ export function useInkStory(storyArchiveJson: string, historyHandler: (newText: 
     const bindExternalFunction = useCallback(
         (functionName: string, externalFunction: (...args: any[]) => any, lookaheadSafe?: boolean) => {
             return story.BindExternalFunction(functionName, externalFunction, lookaheadSafe)
+        },
+        [story]
+    )
+
+    const unbindExternalFunction = useCallback(
+        (functionName: string) => {
+            story.UnbindExternalFunction(functionName)
         },
         [story]
     )
@@ -278,6 +285,9 @@ export function useInkStory(storyArchiveJson: string, historyHandler: (newText: 
          * defined in ink story as external
          */
         bindExternalFunction,
+
+        /** Unbinds an existing function handler */
+        unbindExternalFunction,
 
         /** Get a saved state of current story progress, would be used in S/L */
         saveToStateJson,

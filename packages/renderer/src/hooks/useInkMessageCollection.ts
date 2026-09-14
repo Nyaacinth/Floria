@@ -11,24 +11,20 @@ export interface InkMessageItemText {
 export interface InkMessageItemImage {
     type: "image"
     author?: string
-    value: string
+    src: string
 }
 
-export interface InkMessageItemMotion {
-    type: "motion"
+export interface InkMessageItemSound {
+    type: "sound"
     author?: string
-    value: string
+    src: string
 }
 
-export interface InkMessageItemAudio {
-    type: "audio"
-    author?: string
-    value: string
-}
-
-export type InkMessageItem = InkMessageItemText | InkMessageItemImage | InkMessageItemMotion | InkMessageItemAudio
+export type InkMessageItem = InkMessageItemText | InkMessageItemImage | InkMessageItemSound
 
 export type InkMessageType = InkMessageItem["type"]
+
+export type InkMediaMessageType = Exclude<InkMessageType, "text">
 
 export type InkMessageCollection = InkMessageItem[]
 
@@ -70,6 +66,8 @@ function matchAgainstCommonMessageRegex(value: string) {
     }
 }
 
+export type MediaMessageSrcResolver = (type: InkMediaMessageType, value: string) => string
+
 /**
  * Parses ink lines of text with customized semantics
  *
@@ -92,18 +90,17 @@ function matchAgainstCommonMessageRegex(value: string) {
  * @param msg The message to parse
  * @returns The parsed ink message item for message history insertion
  */
-export function parseInkMessage(msg: string): InkMessageItem {
+export function parseInkMessage(msg: string, srcResolver: MediaMessageSrcResolver): InkMessageItem {
     const mediaMessageMatched = matchAgainstMediaMessageRegex(msg)
     if (mediaMessageMatched !== false) {
         switch (mediaMessageMatched.msgType) {
             case "image":
-            case "motion":
-            case "audio": {
+            case "sound": {
                 return {
                     type: mediaMessageMatched.msgType,
                     author: mediaMessageMatched.author,
-                    value: mediaMessageMatched.value
-                } as InkMessageItemImage | InkMessageItemMotion | InkMessageItemAudio
+                    src: srcResolver(mediaMessageMatched.msgType, mediaMessageMatched.value)
+                } as InkMessageItemImage | InkMessageItemSound
             }
             default: {
                 throw new TypeError(
@@ -129,7 +126,7 @@ export function parseInkMessage(msg: string): InkMessageItem {
  *
  * @returns The ink message collection, the new message handler and related functions. Destruct it if you want
  */
-export function useInkMessageCollection() {
+export function useInkMessageCollection(srcResolver: MediaMessageSrcResolver) {
     const [collection, setCollection] = useState<InkMessageCollection>([])
     const addToCollection = useCallback(
         (value: InkMessageItem) => {
@@ -143,9 +140,9 @@ export function useInkMessageCollection() {
     const handleNewMessage = useCallback(
         (newText: string) => {
             try {
-                addToCollection(parseInkMessage(newText))
+                addToCollection(parseInkMessage(newText, srcResolver))
             } catch (e) {
-                if (e instanceof TypeError) {
+                if (e instanceof Error) {
                     alert(e.message)
                     throw e
                 } else {
@@ -153,7 +150,7 @@ export function useInkMessageCollection() {
                 }
             }
         },
-        [addToCollection]
+        [addToCollection, srcResolver]
     )
     return {
         /** The ink message collection */
