@@ -41,19 +41,16 @@ export function useInkIntegration(storyDef: StoryDefinition, fnHandlers: { [key:
     )
     const { story: unwrappedStory, ...story } = useInkStoryWrapper(storyDef.entry, handleNewMessage)
 
-    const boundHandlers = useRef<{ [key: string]: (...args: any[]) => any }>({})
-
     useShallowCompareEffect(() => {
-        for (const [key, handler] of Object.entries(fnHandlers)) {
+        const boundHandlers = { ...fnHandlers }
+        for (const [key, handler] of Object.entries(boundHandlers)) {
             unwrappedStory.BindExternalFunction(key, handler)
         }
-        boundHandlers.current = { ...fnHandlers }
 
         return () => {
-            for (const [key] of Object.entries(boundHandlers.current)) {
+            for (const [key] of Object.entries(boundHandlers)) {
                 unwrappedStory.UnbindExternalFunction(key)
             }
-            boundHandlers.current = {}
         }
     }, [{ story: unwrappedStory }, fnHandlers])
 
