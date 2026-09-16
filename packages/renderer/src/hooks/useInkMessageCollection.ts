@@ -33,10 +33,9 @@ export type InkMessageCollection = InkMessageItem[]
  *
  * Matches `{ msgType: string; author?: string; message: string }`
  */
-const mediaMessageRegex = /^`\[(?<msgType>[a-zA-Z_]+)\]\s(<(?<author>.{1,256})>\s)?"(?<value>[!-~]+)"\s*$/m
+const mediaMessageRegex = /^`\[(?<msgType>[a-zA-Z_]+)\]\s((?<author>.{1,256}):\s)?"(?<value>[!-~]+)"\s*$/m
 function matchAgainstMediaMessageRegex(value: string) {
     const groups = mediaMessageRegex.exec(value)?.groups
-    console.log(groups)
     if (groups === undefined) {
         return false
     } else {
@@ -53,7 +52,7 @@ function matchAgainstMediaMessageRegex(value: string) {
  *
  * Matches `{ author?: string; message: string }`
  */
-const commonMessageRegex = /^(<(?<author>.{1,256})>\s)?`?(?<message>[\s\S]+)$/m
+const commonMessageRegex = /^((?<author>[^`]{1,256}):\s)?`?(?<message>[\s\S]+)$/m
 function matchAgainstCommonMessageRegex(value: string) {
     const groups = commonMessageRegex.exec(value)?.groups
     if (groups === undefined) {
@@ -74,7 +73,9 @@ export type MediaMessageSrcResolver = (type: InkMediaMessageType, value: string)
  * Currently with media messages:
  *
  * ```plaintext
- * `[msgType] <Optional Message Author> "values..."
+ * `[msgType] Optional Message Author: "values..."
+ *
+ * ``[etc] "Etc" <- This is plain text message with no author now
  * ```
  *
  * (Escape from media message matching with initial double backtick)
@@ -82,7 +83,9 @@ export type MediaMessageSrcResolver = (type: InkMediaMessageType, value: string)
  * ...and common messages:
  *
  * ```plaintext
- * <Optional Message Author> Messages...
+ * Optional Message Author: Messages...
+ *
+ * `Not Author: Some text... <- This is plain text message with no author now
  * ```
  *
  * (Escape author matching with initial single backtick)
@@ -122,7 +125,7 @@ export function parseInkMessage(msg: string, srcResolver: MediaMessageSrcResolve
 
 /**
  * Creates a ink message collection (a.k.a. history) for later use, you should probably pass `handleNewMessage` to
- * `useInkStory()`
+ * `useInkStoryWrapper()`
  *
  * @returns The ink message collection, the new message handler and related functions
  */
@@ -155,7 +158,7 @@ export function useInkMessageCollection(srcResolver: MediaMessageSrcResolver) {
     return {
         /** The ink message collection */
         messageCollection: collection,
-        /** You should probably pass this to `useInkStory()` */
+        /** You should probably pass this to `useInkStoryWrapper()` */
         handleNewMessage,
         /** Clear the collection */
         clearMessageCollection: clearCollection,

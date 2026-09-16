@@ -1,7 +1,8 @@
+import { useEffect, useRef } from "react"
 import { useShallowCompareEffect } from "react-use"
 
 import { useInkMessageCollection, type InkMediaMessageType } from "./useInkMessageCollection"
-import { useInkStoryRct } from "./useInkStoryRct"
+import { useInkStoryWrapper } from "./useInkStoryWrapper"
 
 export interface StoryDefinition {
     /** Exported json string from ink compiler */
@@ -35,22 +36,41 @@ function resolveSrc(storyDef: StoryDefinition, type: InkMediaMessageType, value:
 }
 
 export function useInkIntegration(storyDef: StoryDefinition, fnHandlers: { [key: string]: (...args: any[]) => any }) {
-    const messages = useInkMessageCollection((type, value) => resolveSrc(storyDef, type, value))
-    const story = useInkStoryRct(storyDef.entry, messages.handleNewMessage)
+    const { handleNewMessage, clearMessageCollection, ...messages } = useInkMessageCollection((type, value) =>
+        resolveSrc(storyDef, type, value)
+    )
+    const { story: unwrappedStory, ...story } = useInkStoryWrapper(storyDef.entry, handleNewMessage)
+
+    const boundHandlers = useRef<{ [key: string]: (...args: any[]) => any }>({})
 
     useShallowCompareEffect(() => {
         for (const [key, handler] of Object.entries(fnHandlers)) {
-            story.bindExternalFunction(key, handler)
+            unwrappedStory.BindExternalFunction(key, handler)
         }
+        boundHandlers.current = { ...fnHandlers }
+
         return () => {
-            for (const key of Object.keys(fnHandlers)) {
-                story.unbindExternalFunction(key)
+            for (const [key] of Object.entries(boundHandlers.current)) {
+                unwrappedStory.UnbindExternalFunction(key)
             }
+            boundHandlers.current = {}
         }
-    }, [story, fnHandlers])
+    }, [{ story: unwrappedStory }, fnHandlers])
+
+    const prevStory = useRef(unwrappedStory)
+
+    useEffect(() => {
+        if (prevStory.current !== unwrappedStory) {
+            clearMessageCollection()
+            prevStory.current = unwrappedStory
+        }
+    }, [unwrappedStory, clearMessageCollection])
 
     return {
         ...messages,
-        ...story
-    }
+        handleNewMessage,
+        clearMessageCollection,
+        ...story,
+        story: unwrappedStory
+    } satisfies ReturnType<typeof useInkMessageCollection> & ReturnType<typeof useInkStoryWrapper>
 }

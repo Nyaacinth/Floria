@@ -1,9 +1,9 @@
-import { Story } from "inkjs"
+import { InkList, Story } from "inkjs"
 import { ErrorType } from "inkjs/engine/Error"
+import type { Path as InkPath } from "inkjs/engine/Path"
 import { useCallback, useEffect, useRef, useState } from "react"
-import type { SetReadonly } from "type-fest"
 
-export type InkStoryRct = ReturnType<typeof useInkStoryRct>
+const noOpHandler = () => {}
 
 /**
  * Create a ink story instance and wire it up with React
@@ -12,7 +12,7 @@ export type InkStoryRct = ReturnType<typeof useInkStoryRct>
  * @param historyHandler Usually a history recorder returned by `useInkMessageCollection`
  * @returns A story wrapper wired up with React with raw access (`story`, `setStory()`)
  */
-export function useInkStoryRct(storyArchiveJson: string, historyHandler: (newText: string) => void = () => {}) {
+export function useInkStoryWrapper(storyArchiveJson: string, historyHandler: (newText: string) => void = noOpHandler) {
     const storyArchiveJsonRef = useRef(storyArchiveJson) // traces storyArchiveJson
 
     // late init
@@ -27,15 +27,6 @@ export function useInkStoryRct(storyArchiveJson: string, historyHandler: (newTex
     const markDirty = useCallback(() => {
         forceUpdate((prev) => (prev < 256 ? prev + 1 : 0))
     }, [])
-    const prevText = useRef<string>(null)
-    const tryRecordHistory = useCallback(() => {
-        if (story.currentText !== null && story.currentText !== "") {
-            if (prevText.current !== story.currentText) {
-                historyHandler(story.currentText)
-            }
-            prevText.current = story.currentText
-        }
-    }, [historyHandler, story.currentText])
 
     // traces & re-init
     useEffect(() => {
@@ -43,7 +34,6 @@ export function useInkStoryRct(storyArchiveJson: string, historyHandler: (newTex
             const newStory = new Story(storyArchiveJson)
             newStory.onError = defaultHandlerOnError
             setStory(newStory)
-            prevText.current = null
             storyArchiveJsonRef.current = storyArchiveJson
         }
     }, [storyArchiveJson])
@@ -51,68 +41,68 @@ export function useInkStoryRct(storyArchiveJson: string, historyHandler: (newTex
     const continueStory = useCallback(() => {
         markDirty()
         const ret = story.Continue()
-        tryRecordHistory()
+        if (ret != null && ret.trim() !== "") historyHandler(ret)
         return ret
-    }, [story, markDirty, tryRecordHistory])
+    }, [story, markDirty, historyHandler])
 
     const chooseChoiceIndex = useCallback(
-        (choiceIdx: number) => {
+        (...args: Parameters<(typeof story)["ChooseChoiceIndex"]>) => {
             markDirty()
-            const ret = story.ChooseChoiceIndex(choiceIdx)
-            tryRecordHistory()
-            return ret
+            return story.ChooseChoiceIndex(...args)
         },
-        [story, markDirty, tryRecordHistory]
+        [story, markDirty]
     )
 
     const choosePathString = useCallback(
-        (path: string, resetCallstack?: boolean, args?: any[]) => {
+        (...args: Parameters<(typeof story)["ChoosePathString"]>) => {
             markDirty()
-            const ret = story.ChoosePathString(path, resetCallstack, args)
-            tryRecordHistory()
-            return ret
+            return story.ChoosePathString(...args)
         },
-        [story, markDirty, tryRecordHistory]
+        [story, markDirty]
     )
 
     const warning = useCallback(
-        (message: string) => {
+        (...args: Parameters<(typeof story)["Warning"]>) => {
             markDirty()
-            const ret = story.Warning(message)
-            tryRecordHistory()
-            return ret
+            return story.Warning(...args)
         },
-        [story, markDirty, tryRecordHistory]
+        [story, markDirty]
+    )
+
+    const error = useCallback(
+        (...args: Parameters<(typeof story)["Error"]>) => {
+            markDirty()
+            return story.Error(...args)
+        },
+        [story, markDirty]
     )
 
     const setVariableState = useCallback(
-        (name: string, value: any) => {
+        (name: string, value: boolean | string | number | InkList | InkPath | null) => {
             markDirty()
-            const ret = story.variablesState.$(name, value)
-            tryRecordHistory()
-            return ret
+            return story.variablesState.$(name, value)
         },
-        [story, markDirty, tryRecordHistory]
+        [story, markDirty]
     )
 
     const evaluateFunction = useCallback(
-        (functionName: string, args?: any[], returnTextOutput?: boolean) => {
+        (...args: Parameters<(typeof story)["EvaluateFunction"]>) => {
             markDirty()
-            const ret = story.EvaluateFunction(functionName, args, returnTextOutput)
-            tryRecordHistory()
-            return ret
+            return story.EvaluateFunction(...args)
         },
-        [story, markDirty, tryRecordHistory]
+        [story, markDirty]
     )
 
     const recoverFromStateJson = useCallback(
-        (json: string) => {
+        (json: string, systemMessageOnLoad = "Loaded from Save File") => {
             markDirty()
             const ret = story.state.LoadJson(json)
-            tryRecordHistory()
+            historyHandler(systemMessageOnLoad)
+            const currentText = story.currentText
+            if (currentText != null && currentText.trim() !== "") historyHandler(currentText)
             return ret
         },
-        [story, markDirty, tryRecordHistory]
+        [story, markDirty, historyHandler]
     )
 
     // Non-mutating methods that only read from the story – no state update needed
@@ -124,43 +114,50 @@ export function useInkStoryRct(storyArchiveJson: string, historyHandler: (newTex
     )
 
     const getCurrentVisitCountAtPathString = useCallback(
-        (pathString: string) => {
-            return story.state.VisitCountAtPathString(pathString)
+        (...args: Parameters<(typeof story)["state"]["VisitCountAtPathString"]>) => {
+            return story.state.VisitCountAtPathString(...args)
         },
         [story]
     )
 
     const addVariableObserver = useCallback(
-        (variableName: string, observer: Story.VariableObserver) => {
-            story.ObserveVariable(variableName, observer)
+        (...args: Parameters<(typeof story)["ObserveVariable"]>) => {
+            story.ObserveVariable(...args)
+        },
+        [story]
+    )
+
+    const removeVariableObserver = useCallback(
+        (...args: Parameters<(typeof story)["RemoveVariableObserver"]>) => {
+            story.RemoveVariableObserver(...args)
         },
         [story]
     )
 
     const bindExternalFunction = useCallback(
-        (functionName: string, externalFunction: (...args: any[]) => any, lookaheadSafe?: boolean) => {
-            return story.BindExternalFunction(functionName, externalFunction, lookaheadSafe)
+        (...args: Parameters<(typeof story)["BindExternalFunction"]>) => {
+            return story.BindExternalFunction(...args)
         },
         [story]
     )
 
     const unbindExternalFunction = useCallback(
-        (functionName: string) => {
-            story.UnbindExternalFunction(functionName)
+        (...args: Parameters<(typeof story)["UnbindExternalFunction"]>) => {
+            return story.UnbindExternalFunction(...args)
         },
         [story]
     )
 
     const saveToStateJson = useCallback(
-        (indented?: boolean) => {
-            return story.state.ToJson(indented)
+        (...args: Parameters<(typeof story)["state"]["ToJson"]>) => {
+            return story.state.ToJson(...args)
         },
         [story]
     )
 
     const getTagsForContentAtPath = useCallback(
-        (path: string) => {
-            return story.TagsForContentAtPath(path)
+        (...args: Parameters<(typeof story)["TagsForContentAtPath"]>) => {
+            return story.TagsForContentAtPath(...args)
         },
         [story]
     )
@@ -172,7 +169,7 @@ export function useInkStoryRct(storyArchiveJson: string, historyHandler: (newTex
     const globalTags = story.globalTags
     const currentTags = story.currentTags
 
-    const returnValue = {
+    return {
         // Raw access
 
         /** Non-reactive inner story instance, see also: `markDirty()` */
@@ -181,18 +178,8 @@ export function useInkStoryRct(storyArchiveJson: string, historyHandler: (newTex
         /** Non-reactive inner story instance, see also: `markDirty()` */
         setStory,
 
-        /**
-         * Mark state as dirty after external non-reactive changes, please pair it with a `tryRecordHistory()` after the
-         * mutation if called outside
-         */
+        /** Mark state as dirty after external non-reactive changes */
         markDirty,
-
-        /**
-         * Pair it with external mutations (where you would call `markDirty()`) or anywhere that you suspect will
-         * generate a new `currentText`, this function will not record if `currentText` doesn't change, so if in doubt,
-         * use it
-         */
-        tryRecordHistory,
 
         // Properties
 
@@ -257,6 +244,9 @@ export function useInkStoryRct(storyArchiveJson: string, historyHandler: (newTex
         /** Add a warning in story, by default will be logged in browser console */
         warning,
 
+        /** Add an error in story, by default will be logged in browser console */
+        error,
+
         /** Modify an ink variable reactively */
         setVariableState,
 
@@ -279,6 +269,9 @@ export function useInkStoryRct(storyArchiveJson: string, historyHandler: (newTex
 
         /** Add a variable observer, you would usually need this for integration */
         addVariableObserver,
+
+        /** Remove a variable observer, you would usually need this for integration */
+        removeVariableObserver,
 
         /**
          * Bind an external function handler for corresponding ink function, be aware that ink function needs to be
@@ -304,26 +297,23 @@ export function useInkStoryRct(storyArchiveJson: string, historyHandler: (newTex
          */
         getTagsForContentAtPath
     }
-
-    type InkStoryRct = SetReadonly<
-        typeof returnValue,
-        "story" | "currentText" | "canContinue" | "currentChoices" | "globalTags" | "currentTags"
-    >
-
-    return returnValue as InkStoryRct
 }
 
 const defaultHandlerOnError = (message: string, errorType: ErrorType) => {
     switch (errorType) {
-        case ErrorType.Warning:
+        case ErrorType.Warning: {
             console.warn(`Ink Warning: ${message}`)
             break
-        case ErrorType.Author:
+        }
+        case ErrorType.Author: {
             console.error(`Ink Error from Author: ${message}`)
             break
-        case ErrorType.Error:
-            console.error(`Ink Error: ${message}`)
-            alert(`Ink Runtime Error: ${message}`)
-            break
+        }
+        case ErrorType.Error: {
+            const oMsg = `Ink Error: ${message}`
+            console.error(oMsg)
+            alert(oMsg)
+            throw new Error(oMsg)
+        }
     }
 }
