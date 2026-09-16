@@ -39,7 +39,11 @@ export function useInkIntegration(storyDef: StoryDefinition, fnHandlers: { [key:
     const { handleNewMessage, clearMessageCollection, ...messages } = useInkMessageCollection((type, value) =>
         resolveSrc(storyDef, type, value)
     )
-    const { story: unwrappedStory, ...story } = useInkStoryWrapper(storyDef.entry, handleNewMessage)
+    const {
+        story: unwrappedStory,
+        markDirty: markStoryDirty,
+        ...story
+    } = useInkStoryWrapper(storyDef.entry, handleNewMessage)
 
     useShallowCompareEffect(() => {
         const boundHandlers = { ...fnHandlers }
@@ -67,8 +71,9 @@ export function useInkIntegration(storyDef: StoryDefinition, fnHandlers: { [key:
         unwrappedStory.ResetCallstack()
         unwrappedStory.ResetGlobals()
         unwrappedStory.ResetState()
+        markStoryDirty()
         clearMessageCollection()
-    }, [unwrappedStory, clearMessageCollection])
+    }, [unwrappedStory, clearMessageCollection, markStoryDirty])
 
     return {
         ...messages,
@@ -76,6 +81,7 @@ export function useInkIntegration(storyDef: StoryDefinition, fnHandlers: { [key:
         clearMessageCollection,
         ...story,
         story: unwrappedStory,
+        markDirty: markStoryDirty,
         resetCurrentStory
     } satisfies ReturnType<typeof useInkMessageCollection> &
         ReturnType<typeof useInkStoryWrapper> & { resetCurrentStory: () => void }
