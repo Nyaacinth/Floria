@@ -66,7 +66,7 @@ export function useInkIntegration(storyDef: StoryDefinition, fnHandlers: { [key:
         }
     }, [unwrappedStory, clearMessageCollection])
 
-    const resetStory = useCallback(() => {
+    const resetCurrentStory = useCallback(() => {
         unwrappedStory.ResetCallstack()
         unwrappedStory.ResetGlobals()
         unwrappedStory.ResetState()
@@ -79,7 +79,7 @@ export function useInkIntegration(storyDef: StoryDefinition, fnHandlers: { [key:
         clearMessageCollection,
         ...story,
         story: unwrappedStory,
-        resetStory
+        resetCurrentStory
     } satisfies ReturnType<typeof useInkMessageCollection> &
-        ReturnType<typeof useInkStoryWrapper> & { resetStory: () => void }
+        ReturnType<typeof useInkStoryWrapper> & { resetCurrentStory: () => void }
 }
