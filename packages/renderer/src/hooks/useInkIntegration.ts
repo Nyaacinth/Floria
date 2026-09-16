@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react"
+import { useCallback, useEffect, useRef } from "react"
 import { useShallowCompareEffect } from "react-use"
 
 import { useInkMessageCollection, type InkMediaMessageType } from "./useInkMessageCollection"
@@ -66,11 +66,20 @@ export function useInkIntegration(storyDef: StoryDefinition, fnHandlers: { [key:
         }
     }, [unwrappedStory, clearMessageCollection])
 
+    const resetStory = useCallback(() => {
+        unwrappedStory.ResetCallstack()
+        unwrappedStory.ResetGlobals()
+        unwrappedStory.ResetState()
+        clearMessageCollection()
+    }, [unwrappedStory, clearMessageCollection])
+
     return {
         ...messages,
         handleNewMessage,
         clearMessageCollection,
         ...story,
-        story: unwrappedStory
-    } satisfies ReturnType<typeof useInkMessageCollection> & ReturnType<typeof useInkStoryWrapper>
+        story: unwrappedStory,
+        resetStory
+    } satisfies ReturnType<typeof useInkMessageCollection> &
+        ReturnType<typeof useInkStoryWrapper> & { resetStory: () => void }
 }
