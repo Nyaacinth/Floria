@@ -64,10 +64,10 @@ importers:
         specifier: workspace:*
         version: link:../electron-versions
       oxlint:
-        specifier: ^1.83.0
+        specifier: 1.83.0
         version: 1.83.0(oxlint-tsgolint@7.0.2001)
       oxlint-tsgolint:
-        specifier: ^7.0.2001
+        specifier: 7.0.2001
         version: 7.0.2001
       typescript:
         specifier: 7.0.2
@@ -85,10 +85,10 @@ importers:
         specifier: 1.8.2
         version: 1.8.2
       oxlint:
-        specifier: ^1.83.0
+        specifier: 1.83.0
         version: 1.83.0(oxlint-tsgolint@7.0.2001)
       oxlint-tsgolint:
-        specifier: ^7.0.2001
+        specifier: 7.0.2001
         version: 7.0.2001
       typescript:
         specifier: 7.0.2
@@ -141,6 +141,9 @@ importers:
       motion:
         specifier: 13.3.0
         version: 13.3.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      oxfmt:
+        specifier: 0.68.0
+        version: 0.68.0
       oxlint:
         specifier: 1.83.0
         version: 1.83.0(oxlint-tsgolint@7.0.2001)
