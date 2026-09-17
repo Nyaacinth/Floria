@@ -94,15 +94,11 @@ export function useInkStoryWrapper(storyArchiveJson: string, historyHandler: (ne
     )
 
     const recoverFromStateJson = useCallback(
-        (json: string, systemMessageOnLoad: string | false = "Loaded from Save File") => {
+        (...args: Parameters<(typeof story)["state"]["LoadJson"]>) => {
             markDirty()
-            const ret = story.state.LoadJson(json)
-            if (systemMessageOnLoad !== false) historyHandler(systemMessageOnLoad)
-            const currentText = story.currentText
-            if (currentText != null && currentText.trim() !== "") historyHandler(currentText)
-            return ret
+            return story.state.LoadJson(...args)
         },
-        [story, markDirty, historyHandler]
+        [story, markDirty]
     )
 
     // Non-mutating methods that only read from the story – no state update needed

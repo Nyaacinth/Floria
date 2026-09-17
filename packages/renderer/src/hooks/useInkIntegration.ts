@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef } from "react"
 import { useShallowCompareEffect } from "react-use"
 
+import { createStorySaveData, type StorySaveData } from "../utils/createStorySaveData"
 import { useInkMessageCollection, type InkMediaMessageType } from "./useInkMessageCollection"
 import { useInkStoryWrapper } from "./useInkStoryWrapper"
 
@@ -36,12 +37,13 @@ function resolveSrc(storyDef: StoryDefinition, type: InkMediaMessageType, value:
 }
 
 export function useInkIntegration(storyDef: StoryDefinition, fnHandlers: { [key: string]: (...args: any[]) => any }) {
-    const { handleNewMessage, clearMessageCollection, ...messages } = useInkMessageCollection((type, value) =>
-        resolveSrc(storyDef, type, value)
-    )
+    const { handleNewMessage, clearMessageCollection, messageCollection, setMessageCollection, ...messages } =
+        useInkMessageCollection((type, value) => resolveSrc(storyDef, type, value))
     const {
         story: unwrappedStory,
         markDirty: markStoryDirty,
+        saveToStateJson,
+        recoverFromStateJson,
         ...story
     } = useInkStoryWrapper(storyDef.entry, handleNewMessage)
 
@@ -75,14 +77,38 @@ export function useInkIntegration(storyDef: StoryDefinition, fnHandlers: { [key:
         clearMessageCollection()
     }, [unwrappedStory, clearMessageCollection, markStoryDirty])
 
+    const createSaveData = useCallback(() => {
+        const inkSavedState = saveToStateJson(false)
+        const messages = structuredClone(messageCollection)
+        return createStorySaveData(inkSavedState, messages)
+    }, [messageCollection, saveToStateJson])
+
+    const loadSaveData = useCallback(
+        (data: StorySaveData) => {
+            recoverFromStateJson(data.inkSavedState)
+            setMessageCollection([...data.messages])
+        },
+        [setMessageCollection, recoverFromStateJson]
+    )
+
     return {
         ...messages,
         handleNewMessage,
         clearMessageCollection,
+        messageCollection,
+        setMessageCollection,
         ...story,
         story: unwrappedStory,
         markDirty: markStoryDirty,
-        resetCurrentStory
+        saveToStateJson,
+        recoverFromStateJson,
+        resetCurrentStory,
+        createSaveData,
+        loadSaveData
     } satisfies ReturnType<typeof useInkMessageCollection> &
-        ReturnType<typeof useInkStoryWrapper> & { resetCurrentStory: () => void }
+        ReturnType<typeof useInkStoryWrapper> & {
+            resetCurrentStory: () => void
+            createSaveData: () => StorySaveData
+            loadSaveData: (data: StorySaveData) => void
+        }
 }
