@@ -32,7 +32,7 @@
         "babel-plugin-react-compiler": "1.0.0",
         "inkjs": "2.4.0",
         "jotai": "3.0.0",
-        "motion": "13.3.0",
+        "motion": "13.4.0",
         "oxfmt": "0.68.0",
         "oxlint": "1.83.0",
         "oxlint-tsgolint": "7.0.2001",

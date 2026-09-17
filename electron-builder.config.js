@@ -16,7 +16,7 @@ export default {
         output: "dist",
         buildResources: "buildResources"
     },
-    generateUpdatesFilesForAllChannels: true,
+    generateUpdatesFilesForAllChannels: false,
     win: {
         target: ["nsis"]
     },
