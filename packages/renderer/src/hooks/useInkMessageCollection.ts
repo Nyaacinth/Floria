@@ -20,7 +20,13 @@ export interface InkMessageItemSound {
     src: string
 }
 
-export type InkMessageItem = InkMessageItemText | InkMessageItemImage | InkMessageItemSound
+export interface InkMessageItemAction {
+    type: "action"
+    author?: string
+    command: string
+}
+
+export type InkMessageItem = InkMessageItemText | InkMessageItemImage | InkMessageItemSound | InkMessageItemAction
 
 export type InkMessageType = InkMessageItem["type"]
 
@@ -104,6 +110,13 @@ export function parseInkMessage(msg: string, srcResolver: MediaMessageSrcResolve
                     author: mediaMessageMatched.author,
                     src: srcResolver(mediaMessageMatched.msgType, mediaMessageMatched.value)
                 } as InkMessageItemImage | InkMessageItemSound
+            }
+            case "action": {
+                return {
+                    type: mediaMessageMatched.msgType,
+                    author: mediaMessageMatched.author,
+                    command: mediaMessageMatched.value
+                } as InkMessageItemAction
             }
             default: {
                 throw new TypeError(
