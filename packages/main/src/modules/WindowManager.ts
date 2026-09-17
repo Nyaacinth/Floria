@@ -2,7 +2,7 @@ import { BrowserWindow } from "electron"
 
 import type { AppInitConfig } from "../AppInitConfig"
 import type { AppModule } from "../AppModule"
-import { ModuleContext } from "../ModuleContext"
+import type { ModuleContext } from "../ModuleContext"
 
 class WindowManager implements AppModule {
     private readonly preload: { path: string }

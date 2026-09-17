@@ -1,22 +1,4 @@
 {
-    "include": ["src/**/*.ts", "../../types/**/*.d.ts"],
-    "exclude": ["**/*.spec.ts", "**/*.test.ts"],
-    "compilerOptions": {
-        "noEmit": true,
-        "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
-
-        "allowSyntheticDefaultImports": true,
-        "module": "ESNext",
-        "target": "ESNext",
-        "sourceMap": false,
-        "moduleResolution": "Bundler",
-        "skipLibCheck": true,
-        "strict": true,
-        "isolatedModules": true,
-        "types": ["node"],
-        "paths": {
-            "@app/main": ["../main"],
-            "@app/renderer": ["../renderer"]
-        }
-    }
+    "files": [],
+    "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }]
 }

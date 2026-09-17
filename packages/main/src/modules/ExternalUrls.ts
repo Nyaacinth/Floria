@@ -2,8 +2,8 @@ import { URL } from "node:url"
 
 import { shell } from "electron"
 
-import { AppModule } from "../AppModule"
-import { ModuleContext } from "../ModuleContext"
+import type { AppModule } from "../AppModule"
+import type { ModuleContext } from "../ModuleContext"
 
 export class ExternalUrls implements AppModule {
     private readonly externalUrls: Set<string>

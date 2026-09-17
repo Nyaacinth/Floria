@@ -1,7 +1,7 @@
 import { app } from "electron"
 
-import { AppModule } from "./AppModule"
-import { ModuleContext } from "./ModuleContext"
+import type { AppModule } from "./AppModule"
+import type { ModuleContext } from "./ModuleContext"
 
 class ModuleRunner implements PromiseLike<void> {
     private currentPromise: Promise<void>

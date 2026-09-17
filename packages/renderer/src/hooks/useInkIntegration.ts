@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useRef } from "react"
 import { useShallowCompareEffect } from "react-use"
 
-import { createStorySaveData, type StorySaveData } from "../utils/createStorySaveData"
-import { useInkMessageCollection, type InkMediaMessageType } from "./useInkMessageCollection"
+import type { StorySaveData } from "../utils/createStorySaveData"
+import { createStorySaveData } from "../utils/createStorySaveData"
+import type { InkMediaMessageType } from "./useInkMessageCollection"
+import { useInkMessageCollection } from "./useInkMessageCollection"
 import { useInkStoryWrapper } from "./useInkStoryWrapper"
 
 export interface StoryDefinition {

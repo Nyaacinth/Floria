@@ -3,7 +3,7 @@ import path from "node:path"
 import serve from "electron-serve"
 
 import type { AppInitConfig } from "../AppInitConfig"
-import { AppModule } from "../AppModule"
+import type { AppModule } from "../AppModule"
 
 export class AppServe implements AppModule {
     private rendererPath?: string

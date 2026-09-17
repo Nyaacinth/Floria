@@ -1,6 +1,6 @@
 import * as Electron from "electron"
 
-import { AppModule } from "../AppModule"
+import type { AppModule } from "../AppModule"
 
 class SingleInstanceApp implements AppModule {
     enable({ app }: { app: Electron.App }): void {

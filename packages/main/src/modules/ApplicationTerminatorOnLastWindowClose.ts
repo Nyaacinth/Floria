@@ -1,5 +1,5 @@
-import { AppModule } from "../AppModule"
-import { ModuleContext } from "../ModuleContext"
+import type { AppModule } from "../AppModule"
+import type { ModuleContext } from "../ModuleContext"
 
 class ApplicationTerminatorOnLastWindowClose implements AppModule {
     private terminateOnDarwin: boolean
