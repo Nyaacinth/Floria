@@ -1,19 +1,31 @@
 import { useCustomCompareEffect } from "@reactuses/core"
+import type { DependencyList, EffectCallback } from "react"
 
-type uCCEParams = Parameters<typeof useCustomCompareEffect>
+const isPlainObject = (val: unknown): val is Record<string, unknown> =>
+    Object.prototype.toString.call(val) === "[object Object]"
 
-export function useShallowCompareEffect(effect: uCCEParams[0], deps: uCCEParams[1]) {
+function shallowEqual(a: unknown, b: unknown): boolean {
+    if (Object.is(a, b)) return true
+
+    if (Array.isArray(a) && Array.isArray(b)) {
+        if (a.length !== b.length) return false
+        return a.every((item, i) => Object.is(item, b[i]))
+    }
+
+    if (isPlainObject(a) && isPlainObject(b)) {
+        const keysA = Object.keys(a)
+        const keysB = Object.keys(b)
+        if (keysA.length !== keysB.length) return false
+
+        return keysA.every((key) => Object.prototype.hasOwnProperty.call(b, key) && Object.is(a[key], b[key]))
+    }
+
+    return false
+}
+
+export function useShallowCompareEffect(effect: EffectCallback, deps: DependencyList) {
     return useCustomCompareEffect(effect, deps, (prev, curr) => {
-        return prev.every((a, index) => {
-            const b = curr[index]
-            if (a === b) return true
-            if (!(a instanceof Object) || !(b instanceof Object)) return false
-            const keys = Object.keys(a)
-            const length = keys.length
-            for (let i = 0; i < length; i++) if (!(keys[i] in b)) return false
-            for (let i = 0; i < length; i++)
-                if ((a as Record<string, unknown>)[keys[i]] !== (b as Record<string, unknown>)[keys[i]]) return false
-            return length === Object.keys(b).length
-        })
+        if (prev.length !== curr.length) return false
+        return prev.every((dep, i) => shallowEqual(dep, curr[i]))
     })
 }
