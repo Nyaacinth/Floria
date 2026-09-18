@@ -33,6 +33,9 @@ function resolveSrc(storyDef: StoryDefinition, type: InkMediaMessageType, value:
             ret = storyDef.sounds[value]
             break
         }
+        case "action": {
+            throw new TypeError('Media message type "action" should not appear here')
+        }
     }
     if (ret == null) throw new RangeError(`Could not resolve type: "${type}", value: "${value}"`)
     return ret

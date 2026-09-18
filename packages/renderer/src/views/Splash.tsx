@@ -21,7 +21,7 @@ export const Splash: FunctionComponent = () => {
     return (
         <div className="h-full w-full overflow-x-hidden overflow-y-auto">
             <button
-                className="m-4 p-2 bg-blue-500 text-white rounded-md"
+                className="m-4 rounded-md bg-blue-500 p-2 text-white"
                 onClick={() => {
                     saveDataRef.current = instance.createSaveData()
                     console.log(saveDataRef.current)
@@ -30,7 +30,7 @@ export const Splash: FunctionComponent = () => {
                 Create Save Data
             </button>
             <button
-                className="m-4 p-2 bg-blue-500 text-white rounded-md"
+                className="m-4 rounded-md bg-blue-500 p-2 text-white"
                 onClick={() => {
                     if (saveDataRef.current) instance.loadSaveData(saveDataRef.current)
                 }}
@@ -51,7 +51,7 @@ export const Splash: FunctionComponent = () => {
                 }
             })}
             {instance.canContinue ? (
-                <button className="m-4 p-2 bg-blue-500 text-white rounded-md" onClick={() => instance.continueStory()}>
+                <button className="m-4 rounded-md bg-blue-500 p-2 text-white" onClick={() => instance.continueStory()}>
                     Continue
                 </button>
             ) : instance.currentChoices.length > 0 ? (
@@ -59,7 +59,7 @@ export const Splash: FunctionComponent = () => {
                     return (
                         <button
                             key={index}
-                            className="m-4 p-2 bg-blue-500 text-white rounded-md"
+                            className="m-4 rounded-md bg-blue-500 p-2 text-white"
                             onClick={() => instance.chooseChoiceIndex(value.index)}
                         >
                             {value.text}
