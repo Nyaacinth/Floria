@@ -7,20 +7,26 @@ import type { AppModule } from "../AppModule"
 
 export class AppServe implements AppModule {
     private rendererPath?: string
+    private hostname?: string
 
     constructor(initConfig: AppInitConfig) {
         const rendererPath = initConfig.renderer
         if (!(rendererPath instanceof URL) && typeof rendererPath.path == "string") {
             this.rendererPath = rendererPath.path
-            initConfig.renderer = new URL("app://-")
+            this.hostname = `nappslocal${Math.round(Math.random() * 1000)}`
+            initConfig.renderer = new URL(`app://${this.hostname}`)
         } else if (import.meta.env.PROD) {
             console.warn("Renderer path is a URL, which is not supported in production mode")
         }
     }
 
     enable(): void {
-        if (import.meta.env.DEV || this.rendererPath === undefined) return
-        serve({ directory: path.dirname(this.rendererPath) })
+        if (import.meta.env.DEV || this.rendererPath === undefined || this.hostname === undefined) return
+        serve({
+            directory: path.dirname(this.rendererPath),
+            scheme: "app",
+            hostname: this.hostname
+        })
     }
 }
 
