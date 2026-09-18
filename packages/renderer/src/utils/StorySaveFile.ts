@@ -1,4 +1,4 @@
-import type { If, IsEqual } from "type-fest"
+import type { If, IsEqual, Tagged } from "type-fest"
 import z from "zod"
 
 import type { InkMessageCollection } from "../hooks/useInkMessageCollection"
@@ -41,7 +41,7 @@ const StorySaveData = z.compile(
 type StorySaveData = If<
     IsEqual<StorySaveDataExpected, z.infer<typeof StorySaveData>>,
     z.infer<typeof StorySaveData>,
-    never
+    Tagged<{}, "Go check StorySaveData, it is no longer the same as StorySaveDataExpected">
 >
 
 export class StorySaveFile implements StorySaveData {
