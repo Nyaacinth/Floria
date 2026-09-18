@@ -22,7 +22,7 @@
         "@babel/core": "8.0.5",
         "@bbob/preset-react": "4.4.1",
         "@bbob/react": "4.4.1",
-        "@reactuses/core": "^6.5.9",
+        "@reactuses/core": "6.5.9",
         "@rolldown/plugin-babel": "0.2.4",
         "@tailwindcss/vite": "4.3.3",
         "@types/babel__core": "7.20.5",
