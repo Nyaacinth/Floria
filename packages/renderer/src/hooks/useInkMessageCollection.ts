@@ -58,7 +58,7 @@ function matchAgainstMediaMessageRegex(value: string) {
  *
  * Matches `{ author?: string; message: string }`
  */
-const commonMessageRegex = /^((?<author>[^`]{1,256}):\s)?`?(?<message>[\s\S]+)$/m
+const commonMessageRegex = /^((?<author>[^`]{1,256}?):\s)?`?(?<message>[\s\S]+)$/m
 function matchAgainstCommonMessageRegex(value: string) {
     const groups = commonMessageRegex.exec(value)?.groups
     if (groups === undefined) {
