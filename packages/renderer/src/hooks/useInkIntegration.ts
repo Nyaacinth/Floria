@@ -1,10 +1,10 @@
 import { useEffect, useRef } from "react"
-import { useShallowCompareEffect } from "react-use"
 
 import { StorySaveFile } from "../utils/StorySaveFile"
 import type { InkMediaMessageType } from "./useInkMessageCollection"
 import { useInkMessageCollection } from "./useInkMessageCollection"
 import { useInkStoryWrapper } from "./useInkStoryWrapper"
+import { useShallowCompareEffect } from "./useShallowCompareEffect"
 
 export interface StoryDefinition {
     /** Exported json string from ink compiler */
