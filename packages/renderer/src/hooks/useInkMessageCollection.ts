@@ -5,7 +5,7 @@ import { parseBBCode } from "../utils/parseBBCode"
 export interface InkMessageItemText {
     type: "text"
     author?: string
-    elmTree: React.ReactNode[]
+    parsable: string
 }
 
 export interface InkMessageItemImage {
@@ -130,7 +130,7 @@ export function parseInkMessage(msg: string, srcResolver: MediaMessageSrcResolve
         return {
             type: "text",
             author: commonMessageMatched.author,
-            elmTree: parseBBCode(commonMessageMatched.message.trim())
+            parsable: commonMessageMatched.message.trim()
         } as InkMessageItemText
     }
     throw new TypeError(`Ink message cannot be parsed: "${JSON.stringify(msg)}"`)

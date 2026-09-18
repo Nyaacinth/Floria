@@ -26,7 +26,7 @@ export class StorySaveFile implements StorySaveData {
     }
 
     private static verify(value: unknown) {
-        return typia.assert<StorySaveData>(value)
+        typia.assert<StorySaveData>(value)
     }
 
     static fromData(data: StorySaveData) {
@@ -45,3 +45,5 @@ export class StorySaveFile implements StorySaveData {
         return JSON.stringify(this.data)
     }
 }
+
+;(globalThis as any).TTTAAA = StorySaveFile

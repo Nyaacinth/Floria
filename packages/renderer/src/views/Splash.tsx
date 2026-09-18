@@ -3,7 +3,8 @@ import { useRef } from "react"
 
 import type { StoryDefinition } from "../hooks/useInkIntegration"
 import { useInkIntegration } from "../hooks/useInkIntegration"
-import type { StorySaveData } from "../utils/createStorySaveData"
+import { parseBBCode } from "../utils/parseBBCode"
+import type { StorySaveFile } from "../utils/StorySaveFile"
 import crimeDetectiveTestEntry from "./data.local/crime-detective-test.json?raw"
 
 const testStoryDef: StoryDefinition = {
@@ -15,7 +16,7 @@ const testStoryDef: StoryDefinition = {
 const fnHandlers = {}
 
 export const Splash: FunctionComponent = () => {
-    const saveDataRef = useRef<StorySaveData>(null)
+    const saveDataRef = useRef<StorySaveFile>(null)
     const instance = useInkIntegration(testStoryDef, fnHandlers)
 
     return (
@@ -23,7 +24,7 @@ export const Splash: FunctionComponent = () => {
             <button
                 className="m-4 rounded-md bg-blue-500 p-2 text-white"
                 onClick={() => {
-                    saveDataRef.current = instance.createSaveData()
+                    saveDataRef.current = instance.createSaveFile()
                     console.log(saveDataRef.current)
                 }}
             >
@@ -32,7 +33,7 @@ export const Splash: FunctionComponent = () => {
             <button
                 className="m-4 rounded-md bg-blue-500 p-2 text-white"
                 onClick={() => {
-                    if (saveDataRef.current) instance.loadSaveData(saveDataRef.current)
+                    if (saveDataRef.current) instance.loadSaveFile(saveDataRef.current)
                 }}
             >
                 Load Save Data
@@ -40,13 +41,16 @@ export const Splash: FunctionComponent = () => {
             {instance.messageCollection.map((item, _index) => {
                 switch (item.type) {
                     case "text": {
-                        return <p key={JSON.stringify(item)}>{item.elmTree}</p>
+                        return <p key={JSON.stringify(item)}>{parseBBCode(item.parsable)}</p>
                     }
                     case "image": {
                         return "Wat? Image?"
                     }
                     case "sound": {
                         return "Wat? Sound?"
+                    }
+                    case "action": {
+                        return "Wat? Action?"
                     }
                 }
             })}
