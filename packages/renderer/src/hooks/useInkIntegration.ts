@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useRef } from "react"
 import { useShallowCompareEffect } from "react-use"
 
-import type { StorySaveData } from "../utils/createStorySaveData"
-import { createStorySaveData } from "../utils/createStorySaveData"
+import { StorySaveFile } from "../utils/StorySaveFile"
 import type { InkMediaMessageType } from "./useInkMessageCollection"
 import { useInkMessageCollection } from "./useInkMessageCollection"
 import { useInkStoryWrapper } from "./useInkStoryWrapper"
@@ -82,16 +81,16 @@ export function useInkIntegration(storyDef: StoryDefinition, fnHandlers: { [key:
         clearMessageCollection()
     }, [unwrappedStory, clearMessageCollection, markStoryDirty])
 
-    const createSaveData = useCallback(() => {
+    const createSaveFile = useCallback(() => {
         const inkSavedState = saveToStateJson(false)
         const messages = structuredClone(messageCollection)
-        return createStorySaveData(inkSavedState, messages)
+        return StorySaveFile.fromData({ inkSavedState, messages })
     }, [messageCollection, saveToStateJson])
 
-    const loadSaveData = useCallback(
-        (data: StorySaveData) => {
+    const loadSaveFile = useCallback(
+        (data: StorySaveFile) => {
             recoverFromStateJson(data.inkSavedState)
-            setMessageCollection([...data.messages])
+            setMessageCollection(structuredClone(data.messages))
         },
         [setMessageCollection, recoverFromStateJson]
     )
@@ -108,12 +107,12 @@ export function useInkIntegration(storyDef: StoryDefinition, fnHandlers: { [key:
         saveToStateJson,
         recoverFromStateJson,
         resetCurrentStory,
-        createSaveData,
-        loadSaveData
+        createSaveFile,
+        loadSaveFile
     } satisfies ReturnType<typeof useInkMessageCollection> &
         ReturnType<typeof useInkStoryWrapper> & {
             resetCurrentStory: () => void
-            createSaveData: () => StorySaveData
-            loadSaveData: (data: StorySaveData) => void
+            createSaveFile: () => StorySaveFile
+            loadSaveFile: (data: StorySaveFile) => void
         }
 }
