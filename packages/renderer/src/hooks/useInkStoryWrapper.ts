@@ -1,7 +1,7 @@
 import { InkList, Story } from "inkjs"
 import { ErrorType } from "inkjs/engine/Error"
 import type { Path as InkPath } from "inkjs/engine/Path"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 const noOpHandler = () => {}
 
@@ -24,9 +24,9 @@ export function useInkStoryWrapper(storyArchiveJson: string, historyHandler: (ne
 
     // markDirty, don't expose forceUpdate
     const [, forceUpdate] = useState(0)
-    const markDirty = useCallback(() => {
+    const markDirty = () => {
         forceUpdate((prev) => (prev < 256 ? prev + 1 : 0))
-    }, [])
+    }
 
     // traces & re-init
     useEffect(() => {
@@ -38,125 +38,82 @@ export function useInkStoryWrapper(storyArchiveJson: string, historyHandler: (ne
         }
     }, [storyArchiveJson])
 
-    const continueStory = useCallback(() => {
+    const continueStory = () => {
         markDirty()
         const ret = story.Continue()
         if (ret != null && ret.trim() !== "") historyHandler(ret)
         return ret
-    }, [story, markDirty, historyHandler])
+    }
 
-    const chooseChoiceIndex = useCallback(
-        (...args: Parameters<(typeof story)["ChooseChoiceIndex"]>) => {
-            markDirty()
-            return story.ChooseChoiceIndex(...args)
-        },
-        [story, markDirty]
-    )
+    const chooseChoiceIndex = (...args: Parameters<(typeof story)["ChooseChoiceIndex"]>) => {
+        markDirty()
+        return story.ChooseChoiceIndex(...args)
+    }
 
-    const choosePathString = useCallback(
-        (...args: Parameters<(typeof story)["ChoosePathString"]>) => {
-            markDirty()
-            return story.ChoosePathString(...args)
-        },
-        [story, markDirty]
-    )
+    const choosePathString = (...args: Parameters<(typeof story)["ChoosePathString"]>) => {
+        markDirty()
+        return story.ChoosePathString(...args)
+    }
 
-    const warning = useCallback(
-        (...args: Parameters<(typeof story)["Warning"]>) => {
-            markDirty()
-            return story.Warning(...args)
-        },
-        [story, markDirty]
-    )
+    const warning = (...args: Parameters<(typeof story)["Warning"]>) => {
+        markDirty()
+        return story.Warning(...args)
+    }
 
-    const error = useCallback(
-        (...args: Parameters<(typeof story)["Error"]>) => {
-            markDirty()
-            return story.Error(...args)
-        },
-        [story, markDirty]
-    )
+    const error = (...args: Parameters<(typeof story)["Error"]>) => {
+        markDirty()
+        return story.Error(...args)
+    }
 
-    const setVariableState = useCallback(
-        (name: string, value: boolean | string | number | InkList | InkPath | null) => {
-            markDirty()
-            return story.variablesState.$(name, value)
-        },
-        [story, markDirty]
-    )
+    const setVariableState = (name: string, value: boolean | string | number | InkList | InkPath | null) => {
+        markDirty()
+        return story.variablesState.$(name, value)
+    }
 
-    const evaluateFunction = useCallback(
-        (...args: Parameters<(typeof story)["EvaluateFunction"]>) => {
-            markDirty()
-            return story.EvaluateFunction(...args)
-        },
-        [story, markDirty]
-    )
+    const evaluateFunction = (...args: Parameters<(typeof story)["EvaluateFunction"]>) => {
+        markDirty()
+        return story.EvaluateFunction(...args)
+    }
 
-    const recoverFromStateJson = useCallback(
-        (...args: Parameters<(typeof story)["state"]["LoadJson"]>) => {
-            markDirty()
-            return story.state.LoadJson(...args)
-        },
-        [story, markDirty]
-    )
+    const recoverFromStateJson = (...args: Parameters<(typeof story)["state"]["LoadJson"]>) => {
+        markDirty()
+        return story.state.LoadJson(...args)
+    }
 
     // Non-mutating methods that only read from the story – no state update needed
-    const getVariableState = useCallback(
-        (name: string) => {
-            return story.variablesState.$(name)
-        },
-        [story]
-    )
+    const getVariableState = (name: string) => {
+        return story.variablesState.$(name)
+    }
 
-    const getCurrentVisitCountAtPathString = useCallback(
-        (...args: Parameters<(typeof story)["state"]["VisitCountAtPathString"]>) => {
-            return story.state.VisitCountAtPathString(...args)
-        },
-        [story]
-    )
+    const getCurrentVisitCountAtPathString = (
+        ...args: Parameters<(typeof story)["state"]["VisitCountAtPathString"]>
+    ) => {
+        return story.state.VisitCountAtPathString(...args)
+    }
 
-    const addVariableObserver = useCallback(
-        (...args: Parameters<(typeof story)["ObserveVariable"]>) => {
-            story.ObserveVariable(...args)
-        },
-        [story]
-    )
+    const addVariableObserver = (...args: Parameters<(typeof story)["ObserveVariable"]>) => {
+        story.ObserveVariable(...args)
+    }
 
-    const removeVariableObserver = useCallback(
-        (...args: Parameters<(typeof story)["RemoveVariableObserver"]>) => {
-            story.RemoveVariableObserver(...args)
-        },
-        [story]
-    )
+    const removeVariableObserver = (...args: Parameters<(typeof story)["RemoveVariableObserver"]>) => {
+        story.RemoveVariableObserver(...args)
+    }
 
-    const bindExternalFunction = useCallback(
-        (...args: Parameters<(typeof story)["BindExternalFunction"]>) => {
-            return story.BindExternalFunction(...args)
-        },
-        [story]
-    )
+    const bindExternalFunction = (...args: Parameters<(typeof story)["BindExternalFunction"]>) => {
+        return story.BindExternalFunction(...args)
+    }
 
-    const unbindExternalFunction = useCallback(
-        (...args: Parameters<(typeof story)["UnbindExternalFunction"]>) => {
-            return story.UnbindExternalFunction(...args)
-        },
-        [story]
-    )
+    const unbindExternalFunction = (...args: Parameters<(typeof story)["UnbindExternalFunction"]>) => {
+        return story.UnbindExternalFunction(...args)
+    }
 
-    const saveToStateJson = useCallback(
-        (...args: Parameters<(typeof story)["state"]["ToJson"]>) => {
-            return story.state.ToJson(...args)
-        },
-        [story]
-    )
+    const saveToStateJson = (...args: Parameters<(typeof story)["state"]["ToJson"]>) => {
+        return story.state.ToJson(...args)
+    }
 
-    const getTagsForContentAtPath = useCallback(
-        (...args: Parameters<(typeof story)["TagsForContentAtPath"]>) => {
-            return story.TagsForContentAtPath(...args)
-        },
-        [story]
-    )
+    const getTagsForContentAtPath = (...args: Parameters<(typeof story)["TagsForContentAtPath"]>) => {
+        return story.TagsForContentAtPath(...args)
+    }
 
     // Deriveds
     const currentText = story.currentText

@@ -1,6 +1,4 @@
-import { useCallback, useState } from "react"
-
-import { parseBBCode } from "../utils/parseBBCode"
+import { useState } from "react"
 
 export interface InkMessageItemText {
     type: "text"
@@ -144,30 +142,24 @@ export function parseInkMessage(msg: string, srcResolver: MediaMessageSrcResolve
  */
 export function useInkMessageCollection(srcResolver: MediaMessageSrcResolver) {
     const [collection, setCollection] = useState<InkMessageCollection>([])
-    const addToCollection = useCallback(
-        (value: InkMessageItem) => {
-            setCollection((coll) => [...coll, value])
-        },
-        [setCollection]
-    )
-    const clearCollection = useCallback(() => {
+    const addToCollection = (value: InkMessageItem) => {
+        setCollection((coll) => [...coll, value])
+    }
+    const clearCollection = () => {
         setCollection([])
-    }, [setCollection])
-    const handleNewMessage = useCallback(
-        (newText: string) => {
-            try {
-                addToCollection(parseInkMessage(newText, srcResolver))
-            } catch (e) {
-                if (e instanceof Error) {
-                    alert(e.message)
-                    throw e
-                } else {
-                    throw e
-                }
+    }
+    const handleNewMessage = (newText: string) => {
+        try {
+            addToCollection(parseInkMessage(newText, srcResolver))
+        } catch (e) {
+            if (e instanceof Error) {
+                alert(e.message)
+                throw e
+            } else {
+                throw e
             }
-        },
-        [addToCollection, srcResolver]
-    )
+        }
+    }
     return {
         /** The ink message collection */
         messageCollection: collection,

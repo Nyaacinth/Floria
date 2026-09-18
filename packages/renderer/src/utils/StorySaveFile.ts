@@ -1,11 +1,48 @@
-import typia from "typia"
+import type { If, IsEqual } from "type-fest"
+import z from "zod"
 
 import type { InkMessageCollection } from "../hooks/useInkMessageCollection"
 
-interface StorySaveData {
+interface StorySaveDataExpected {
     inkSavedState: string
     messages: InkMessageCollection
 }
+
+const StorySaveData = z.compile(
+    z.object({
+        inkSavedState: z.string(),
+        messages: z.array(
+            z.union([
+                z.object({
+                    type: z.literal("text"),
+                    author: z.optional(z.string()),
+                    parsable: z.string()
+                }),
+                z.object({
+                    type: z.literal("image"),
+                    author: z.optional(z.string()),
+                    src: z.string()
+                }),
+                z.object({
+                    type: z.literal("sound"),
+                    author: z.optional(z.string()),
+                    src: z.string()
+                }),
+                z.object({
+                    type: z.literal("action"),
+                    author: z.optional(z.string()),
+                    command: z.string()
+                })
+            ])
+        )
+    })
+)
+
+type StorySaveData = If<
+    IsEqual<StorySaveDataExpected, z.infer<typeof StorySaveData>>,
+    z.infer<typeof StorySaveData>,
+    never
+>
 
 export class StorySaveFile implements StorySaveData {
     private data: StorySaveData
@@ -25,25 +62,19 @@ export class StorySaveFile implements StorySaveData {
         }
     }
 
-    private static verify(value: unknown) {
-        typia.assert<StorySaveData>(value)
+    private static parseData(value: unknown) {
+        return StorySaveData.parse(value)
     }
 
     static fromData(data: StorySaveData) {
-        StorySaveFile.verify(data)
-        return new StorySaveFile(data)
+        return new StorySaveFile(StorySaveFile.parseData(data))
     }
 
     static fromJson(json: string) {
-        const parsed = JSON.parse(json)
-        StorySaveFile.verify(parsed)
-        return new StorySaveFile(parsed)
+        return new StorySaveFile(StorySaveData.parse(JSON.parse(json)))
     }
 
     toJson() {
-        StorySaveFile.verify(this.data)
-        return JSON.stringify(this.data)
+        return JSON.stringify(StorySaveData.parse(this.data))
     }
 }
-
-;(globalThis as any).TTTAAA = StorySaveFile

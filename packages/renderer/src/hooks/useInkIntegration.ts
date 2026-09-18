@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react"
+import { useEffect, useRef } from "react"
 import { useShallowCompareEffect } from "react-use"
 
 import { StorySaveFile } from "../utils/StorySaveFile"
@@ -73,27 +73,24 @@ export function useInkIntegration(storyDef: StoryDefinition, fnHandlers: { [key:
         }
     }, [unwrappedStory, clearMessageCollection])
 
-    const resetCurrentStory = useCallback(() => {
+    const resetCurrentStory = () => {
         unwrappedStory.ResetCallstack()
         unwrappedStory.ResetGlobals()
         unwrappedStory.ResetState()
         markStoryDirty()
         clearMessageCollection()
-    }, [unwrappedStory, clearMessageCollection, markStoryDirty])
+    }
 
-    const createSaveFile = useCallback(() => {
+    const createSaveFile = () => {
         const inkSavedState = saveToStateJson(false)
         const messages = structuredClone(messageCollection)
         return StorySaveFile.fromData({ inkSavedState, messages })
-    }, [messageCollection, saveToStateJson])
+    }
 
-    const loadSaveFile = useCallback(
-        (data: StorySaveFile) => {
-            recoverFromStateJson(data.inkSavedState)
-            setMessageCollection(structuredClone(data.messages))
-        },
-        [setMessageCollection, recoverFromStateJson]
-    )
+    const loadSaveFile = (data: StorySaveFile) => {
+        recoverFromStateJson(data.inkSavedState)
+        setMessageCollection(structuredClone(data.messages))
+    }
 
     return {
         ...messages,
