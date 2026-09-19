@@ -105,7 +105,9 @@ async function getListOfFilesFromEachWorkspace() {
         const pkgPath = pathJoin(path, "package.json")
         const { default: workspacePkg } = await import(pathToFileURL(pkgPath), { with: { type: "json" } })
 
-        let patterns = workspacePkg.files || ["dist/**", "package.json"]
+        let patterns = workspacePkg.files
+        if (Array.isArray(patterns) && patterns.length === 0) continue
+        patterns ||= ["dist/**", "package.json"]
 
         if (patterns.length !== 0 && !(patterns.includes("package.json") || patterns.includes("./package.json"))) {
             patterns.push("package.json")
