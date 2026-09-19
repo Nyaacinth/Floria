@@ -1,10 +1,13 @@
 import { useEffect, useRef } from "react"
 
 import { StorySaveFile } from "../utils/StorySaveFile"
-import type { InkMediaMessageType } from "./useInkMessageCollection"
 import { useInkMessageCollection } from "./useInkMessageCollection"
 import { useInkStoryWrapper } from "./useInkStoryWrapper"
 import { useShallowCompareEffect } from "./useShallowCompareEffect"
+
+export type ResourceResolvables = "image" | "sound" | "music" | "video"
+
+export type StoryResourceResolver = (type: ResourceResolvables, value: string) => string
 
 export interface StoryDefinition {
     /** Exported json string from ink compiler */
@@ -15,13 +18,22 @@ export interface StoryDefinition {
         [key: string]: string
     }
 
-    /** A table of image names and image URLs/URIs */
+    /** A table of sound names and sound URLs/URIs */
     sounds: {
+        [key: string]: string
+    }
+
+    /** A table of music names and music URLs/URIs */
+    music: {
+        [key: string]: string
+    }
+
+    videos: {
         [key: string]: string
     }
 }
 
-function resolveSrc(storyDef: StoryDefinition, type: InkMediaMessageType, value: string) {
+function resolveSrc(storyDef: StoryDefinition, type: ResourceResolvables, value: string) {
     let ret: string
     switch (type) {
         case "image": {
@@ -32,8 +44,12 @@ function resolveSrc(storyDef: StoryDefinition, type: InkMediaMessageType, value:
             ret = storyDef.sounds[value]
             break
         }
-        case "action": {
-            throw new TypeError('Media message type "action" should not appear here')
+        case "music": {
+            ret = storyDef.music[value]
+            break
+        }
+        case "video": {
+            ret = storyDef.videos[value]
         }
     }
     if (ret == null) throw new RangeError(`Could not resolve type: "${type}", value: "${value}"`)
@@ -73,6 +89,8 @@ export function useInkIntegration(storyDef: StoryDefinition, fnHandlers: { [key:
         }
     }, [unwrappedStory, clearMessageCollection])
 
+    const resolveResource = (type: ResourceResolvables, name: string) => resolveSrc(storyDef, type, name)
+
     const resetCurrentStory = () => {
         unwrappedStory.ResetCallstack()
         unwrappedStory.ResetGlobals()
@@ -103,13 +121,12 @@ export function useInkIntegration(storyDef: StoryDefinition, fnHandlers: { [key:
         markDirty: markStoryDirty,
         saveToStateJson,
         recoverFromStateJson,
+        resolveResource,
         resetCurrentStory,
         createSaveFile,
         loadSaveFile
     } satisfies ReturnType<typeof useInkMessageCollection> &
         ReturnType<typeof useInkStoryWrapper> & {
-            resetCurrentStory: () => void
-            createSaveFile: () => StorySaveFile
-            loadSaveFile: (data: StorySaveFile) => void
+            [key: string]: any
         }
 }

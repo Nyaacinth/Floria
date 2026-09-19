@@ -1,5 +1,7 @@
 import { useState } from "react"
 
+import type { StoryResourceResolver } from "./useInkIntegration"
+
 export interface InkMessageItemText {
     type: "text"
     author?: string
@@ -69,8 +71,6 @@ function matchAgainstCommonMessageRegex(value: string) {
     }
 }
 
-export type MediaMessageSrcResolver = (type: InkMediaMessageType, value: string) => string
-
 /**
  * Parses ink lines of text with customized semantics
  *
@@ -97,7 +97,7 @@ export type MediaMessageSrcResolver = (type: InkMediaMessageType, value: string)
  * @param msg The message to parse
  * @returns The parsed ink message item for message history insertion
  */
-export function parseInkMessage(msg: string, srcResolver: MediaMessageSrcResolver): InkMessageItem {
+export function parseInkMessage(msg: string, resResolver: StoryResourceResolver): InkMessageItem {
     const mediaMessageMatched = matchAgainstMediaMessageRegex(msg)
     if (mediaMessageMatched !== false) {
         switch (mediaMessageMatched.msgType) {
@@ -106,7 +106,7 @@ export function parseInkMessage(msg: string, srcResolver: MediaMessageSrcResolve
                 return {
                     type: mediaMessageMatched.msgType,
                     author: mediaMessageMatched.author,
-                    src: srcResolver(mediaMessageMatched.msgType, mediaMessageMatched.value)
+                    src: resResolver(mediaMessageMatched.msgType, mediaMessageMatched.value)
                 } as InkMessageItemImage | InkMessageItemSound
             }
             case "action": {
@@ -140,7 +140,7 @@ export function parseInkMessage(msg: string, srcResolver: MediaMessageSrcResolve
  *
  * @returns The ink message collection, the new message handler and related functions
  */
-export function useInkMessageCollection(srcResolver: MediaMessageSrcResolver) {
+export function useInkMessageCollection(resResolver: StoryResourceResolver) {
     const [collection, setCollection] = useState<InkMessageCollection>([])
     const addToCollection = (value: InkMessageItem) => {
         setCollection((coll) => [...coll, value])
@@ -150,7 +150,7 @@ export function useInkMessageCollection(srcResolver: MediaMessageSrcResolver) {
     }
     const handleNewMessage = (newText: string) => {
         try {
-            addToCollection(parseInkMessage(newText, srcResolver))
+            addToCollection(parseInkMessage(newText, resResolver))
         } catch (e) {
             if (e instanceof Error) {
                 alert(e.message)
