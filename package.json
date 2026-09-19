@@ -19,12 +19,12 @@
         "@npmcli/map-workspaces": "6.0.0",
         "@std/yaml": "jsr:1.2.0",
         "@types/node": "26.6.1",
-        "electron": "44.4.1",
+        "electron": "44.4.2",
         "electron-builder": "26.16.1",
         "glob": "13.0.6",
         "oxfmt": "0.68.0",
         "oxlint": "1.83.0",
-        "oxlint-tsgolint": "7.0.2001",
+        "oxlint-tsgolint": "7.0.2002",
         "typescript": "7.0.2"
     }
 }

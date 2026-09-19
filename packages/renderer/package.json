@@ -19,7 +19,7 @@
         "preview": "vite preview"
     },
     "devDependencies": {
-        "@babel/core": "8.0.5",
+        "@babel/core": "8.0.6",
         "@bbob/preset-react": "4.4.1",
         "@bbob/react": "4.4.1",
         "@reactuses/core": "6.5.9",
@@ -36,7 +36,7 @@
         "motion": "13.4.0",
         "oxfmt": "0.68.0",
         "oxlint": "1.83.0",
-        "oxlint-tsgolint": "7.0.2001",
+        "oxlint-tsgolint": "7.0.2002",
         "react": "19.3.0",
         "react-dom": "19.3.0",
         "swr": "2.5.1",
