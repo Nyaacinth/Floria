@@ -20,8 +20,8 @@
     },
     "devDependencies": {
         "@babel/core": "8.0.6",
-        "@bbob/preset-react": "4.4.1",
-        "@bbob/react": "4.4.1",
+        "@bbob/html": "4.4.1",
+        "@bbob/preset-html5": "4.4.1",
         "@reactuses/core": "6.5.9",
         "@rolldown/plugin-babel": "0.2.4",
         "@tailwindcss/vite": "4.3.3",
@@ -31,6 +31,7 @@
         "@types/react-dom": "19.3.0",
         "@vitejs/plugin-react": "6.1.1",
         "babel-plugin-react-compiler": "1.0.0",
+        "dompurify": "3.4.15",
         "inkjs": "2.4.0",
         "jotai": "3.0.0",
         "motion": "13.4.0",

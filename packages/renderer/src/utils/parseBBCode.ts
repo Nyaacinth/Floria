@@ -1,15 +1,15 @@
-import reactPreset from "@bbob/preset-react"
-import { render } from "@bbob/react"
+import bbobHtml from "@bbob/html"
+import htmlPreset from "@bbob/preset-html5"
 
 /**
  * Parses a BBCode-contained string into React components
  *
  * @param text BBCode string, currently only supports the following tags: `[b]`, `[i]`, `[u]`, `[s]`, `[quote]`,
  *   `[code]`, `[style]`, `[color]`, `[size]`
- * @returns React components for rendering
+ * @returns Parsed HTML string
  */
 export function parseBBCode(text: string) {
-    return render(text, reactPreset(), {
+    return bbobHtml(text, htmlPreset(), {
         onlyAllowTags: ["b", "i", "u", "s", "quote", "code", "style", "color", "size"]
     })
 }

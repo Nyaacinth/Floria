@@ -10,7 +10,9 @@ import crimeDetectiveTestEntry from "./data.local/crime-detective-test.json?raw"
 const testStoryDef: StoryDefinition = {
     entry: crimeDetectiveTestEntry,
     images: {},
-    sounds: {}
+    sounds: {},
+    music: {},
+    videos: {}
 }
 
 const fnHandlers = {}
