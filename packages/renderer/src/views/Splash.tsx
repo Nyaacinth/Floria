@@ -15,11 +15,9 @@ const testStoryDef: StoryDefinition = {
     videos: {}
 }
 
-const fnHandlers = {}
-
 export const Splash: FunctionComponent = () => {
     const saveDataRef = useRef<StorySaveFile>(null)
-    const instance = useInkIntegration(testStoryDef, fnHandlers)
+    const instance = useInkIntegration(testStoryDef, (_actionName, _value) => {})
 
     return (
         <div className="h-full w-full overflow-x-hidden overflow-y-auto">
@@ -62,8 +60,8 @@ export const Splash: FunctionComponent = () => {
                     case "sound": {
                         return "Wat? Sound?"
                     }
-                    case "action": {
-                        return "Wat? Action?"
+                    case "video": {
+                        return "Wat? Video?"
                     }
                 }
             })}

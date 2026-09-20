@@ -29,9 +29,9 @@ const StorySaveData = z.compile(
                     src: z.string()
                 }),
                 z.object({
-                    type: z.literal("action"),
+                    type: z.literal("video"),
                     author: z.optional(z.string()),
-                    command: z.string()
+                    src: z.string()
                 })
             ])
         )

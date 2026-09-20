@@ -3,7 +3,6 @@ import { useEffect, useRef } from "react"
 import { StorySaveFile } from "../utils/StorySaveFile"
 import { useInkMessageCollection } from "./useInkMessageCollection"
 import { useInkStoryWrapper } from "./useInkStoryWrapper"
-import { useShallowCompareEffect } from "./useShallowCompareEffect"
 
 export type ResourceResolvables = "image" | "sound" | "music" | "video"
 
@@ -56,7 +55,7 @@ function resolveSrc(storyDef: StoryDefinition, type: ResourceResolvables, value:
     return ret
 }
 
-export function useInkIntegration(storyDef: StoryDefinition, fnHandlers: { [key: string]: (...args: any[]) => any }) {
+export function useInkIntegration(storyDef: StoryDefinition, onInvoke: (actionName: string, value: string) => void) {
     const { handleNewMessage, clearMessageCollection, messageCollection, setMessageCollection, ...messages } =
         useInkMessageCollection((type, value) => resolveSrc(storyDef, type, value))
     const {
@@ -67,18 +66,11 @@ export function useInkIntegration(storyDef: StoryDefinition, fnHandlers: { [key:
         ...story
     } = useInkStoryWrapper(storyDef.entry, handleNewMessage)
 
-    useShallowCompareEffect(() => {
-        const boundHandlers = { ...fnHandlers }
-        for (const [key, handler] of Object.entries(boundHandlers)) {
-            unwrappedStory.BindExternalFunction(key, handler)
-        }
+    useEffect(() => {
+        unwrappedStory.BindExternalFunction("invoke", onInvoke)
 
-        return () => {
-            for (const [key] of Object.entries(boundHandlers)) {
-                unwrappedStory.UnbindExternalFunction(key)
-            }
-        }
-    }, [{ story: unwrappedStory }, fnHandlers])
+        return () => unwrappedStory.UnbindExternalFunction("invoke")
+    }, [unwrappedStory, onInvoke])
 
     const prevStory = useRef(unwrappedStory)
 
