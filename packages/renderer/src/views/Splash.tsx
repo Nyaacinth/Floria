@@ -48,7 +48,7 @@ export const Splash: FunctionComponent = () => {
                                 {
                                     <Typewriter
                                         richtextHtml={item.html}
-                                        interval={200}
+                                        interval={50}
                                         onTyped={() => console.log("!")}
                                         onTypingEnd={() => console.log("end!")}
                                     />
