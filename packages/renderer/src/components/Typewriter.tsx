@@ -9,7 +9,7 @@ export interface TypewriterProps {
     onTypingEnd: () => void
 }
 
-export const Typewriter: FunctionComponent<TypewriterProps> = ({ richtextHtml, interval, onTyped, onTypingEnd }) => {
+const TypewriterUnkeyed: FunctionComponent<TypewriterProps> = ({ richtextHtml, interval, onTyped, onTypingEnd }) => {
     const htmlIterator = useMemo(() => createHtmlIterator(richtextHtml), [richtextHtml])
     const [currentHtml, setCurrentHtml] = useState("")
     const [done, setDone] = useState(false)
@@ -32,6 +32,10 @@ export const Typewriter: FunctionComponent<TypewriterProps> = ({ richtextHtml, i
     }, [done, onTypingEnd])
 
     return <span dangerouslySetInnerHTML={{ __html: currentHtml }} />
+}
+
+export const Typewriter: FunctionComponent<TypewriterProps> = (props) => {
+    return <TypewriterUnkeyed {...props} key={props.richtextHtml} />
 }
 
 /**
