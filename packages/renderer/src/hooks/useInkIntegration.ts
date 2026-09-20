@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react"
+import { assert } from "@std/assert"
+import { useCallback, useEffect, useRef } from "react"
 
 import { StorySaveFile } from "../utils/StorySaveFile"
 import { useInkMessageCollection } from "./useInkMessageCollection"
@@ -66,11 +67,20 @@ export function useInkIntegration(storyDef: StoryDefinition, onInvoke: (actionNa
         ...story
     } = useInkStoryWrapper(storyDef.entry, handleNewMessage)
 
+    const onInvokeWrapped = useCallback(
+        (actionName: string, value: string) => {
+            assert(typeof actionName == "string", "actionName in EXTERNAL invoke(actionName, value) should be string")
+            assert(typeof value == "string", "value in EXTERNAL invoke(actionName, value) should be string")
+            onInvoke(actionName, value)
+        },
+        [onInvoke]
+    )
+
     useEffect(() => {
-        unwrappedStory.BindExternalFunction("invoke", onInvoke)
+        unwrappedStory.BindExternalFunction("invoke", onInvokeWrapped)
 
         return () => unwrappedStory.UnbindExternalFunction("invoke")
-    }, [unwrappedStory, onInvoke])
+    }, [unwrappedStory, onInvokeWrapped])
 
     const prevStory = useRef(unwrappedStory)
 
