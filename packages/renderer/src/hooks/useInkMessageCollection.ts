@@ -1,11 +1,12 @@
 import { useState } from "react"
 
+import { parseBBCode } from "../utils/parseBBCode"
 import type { StoryResourceResolver } from "./useInkIntegration"
 
 export interface InkMessageItemText {
     type: "text"
     author?: string
-    parsable: string
+    html: string
 }
 
 export interface InkMessageItemImage {
@@ -128,7 +129,7 @@ export function parseInkMessage(msg: string, resResolver: StoryResourceResolver)
         return {
             type: "text",
             author: commonMessageMatched.author,
-            parsable: commonMessageMatched.message.trim()
+            html: parseBBCode(commonMessageMatched.message.trim())
         } as InkMessageItemText
     }
     throw new TypeError(`Ink message cannot be parsed: "${JSON.stringify(msg)}"`)

@@ -1,9 +1,9 @@
 import type { FunctionComponent } from "react"
 import { useRef } from "react"
 
+import { Typewriter } from "../components/Typewriter"
 import type { StoryDefinition } from "../hooks/useInkIntegration"
 import { useInkIntegration } from "../hooks/useInkIntegration"
-import { parseBBCode } from "../utils/parseBBCode"
 import type { StorySaveFile } from "../utils/StorySaveFile"
 import crimeDetectiveTestEntry from "./data.local/crime-detective-test.json?raw"
 
@@ -40,10 +40,21 @@ export const Splash: FunctionComponent = () => {
             >
                 Load Save Data
             </button>
-            {instance.messageCollection.map((item, _index) => {
+            {instance.messageCollection.map((item, index) => {
                 switch (item.type) {
                     case "text": {
-                        return <p key={JSON.stringify(item)}>{parseBBCode(item.parsable)}</p>
+                        return (
+                            <p key={index + "#" + JSON.stringify(item)}>
+                                {
+                                    <Typewriter
+                                        richtextHtml={item.html}
+                                        interval={200}
+                                        onTyped={() => {}}
+                                        onTypingEnd={() => {}}
+                                    />
+                                }
+                            </p>
+                        )
                     }
                     case "image": {
                         return "Wat? Image?"
