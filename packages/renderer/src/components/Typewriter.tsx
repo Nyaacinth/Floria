@@ -1,6 +1,7 @@
 import { useInterval } from "@reactuses/core"
 import DOMPurify from "dompurify"
-import { useEffect, useMemo, useState, type FunctionComponent } from "react"
+import type { FunctionComponent } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 
 export interface TypewriterProps {
     richtextHtml: string
@@ -10,16 +11,19 @@ export interface TypewriterProps {
 }
 
 const TypewriterUnkeyed: FunctionComponent<TypewriterProps> = ({ richtextHtml, interval, onTyped, onTypingEnd }) => {
-    const htmlIterator = useMemo(() => createHtmlIterator(richtextHtml), [richtextHtml])
+    const htmlIterator = useMemo(() => createHtmlIterator(DOMPurify.sanitize(richtextHtml)), [richtextHtml])
     const [currentHtml, setCurrentHtml] = useState("")
     const [done, setDone] = useState(false)
+    const notifiedOnTypingEnd = useRef(false)
 
     useInterval(
         () => {
-            console.log("!")
             if (done) return
             const result = htmlIterator.next()
-            if (result.done) setDone(true)
+            if (result.done) {
+                setDone(true)
+                return
+            }
             if (result.value) setCurrentHtml(result.value)
             onTyped()
         },
@@ -28,7 +32,10 @@ const TypewriterUnkeyed: FunctionComponent<TypewriterProps> = ({ richtextHtml, i
     )
 
     useEffect(() => {
-        if (done) onTypingEnd()
+        if (done && !notifiedOnTypingEnd.current) {
+            onTypingEnd()
+            notifiedOnTypingEnd.current = true
+        }
     }, [done, onTypingEnd])
 
     return <span dangerouslySetInnerHTML={{ __html: currentHtml }} />
@@ -39,9 +46,9 @@ export const Typewriter: FunctionComponent<TypewriterProps> = (props) => {
 }
 
 /**
- * Create an iterator that iterates through given html string and automatically skip tags in the process
+ * Create an iterator that walks given _sanitized_ html string and automatically skips tags
  *
- * @param html Html string, shall not contain non-text-centric or potentially malformed html
+ * @param html Sanitized text-centric html
  */
 function* createHtmlIterator(html: string) {
     let ptr = 0

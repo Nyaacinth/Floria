@@ -16,7 +16,7 @@ const StorySaveData = z.compile(
                 z.object({
                     type: z.literal("text"),
                     author: z.optional(z.string()),
-                    parsable: z.string()
+                    html: z.string()
                 }),
                 z.object({
                     type: z.literal("image"),
