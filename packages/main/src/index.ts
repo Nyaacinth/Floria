@@ -12,8 +12,8 @@ import { createWindowManagerModule } from "./modules/WindowManager"
 export async function initApp(initConfig: AppInitConfig) {
     const moduleRunner = createModuleRunner()
         .init(serveStatics(initConfig))
-        .init(createWindowManagerModule({ initConfig, withDevTools: import.meta.env.DEV }))
         .init(disallowMultipleAppInstance())
+        .init(createWindowManagerModule({ initConfig, withDevTools: import.meta.env.DEV }))
         .init(terminateAppOnLastWindowClose({ terminateOnDarwin: true }))
         .init(hardwareAccelerationMode({ enable: true }))
         .init(initWithGivenMenu(null))
