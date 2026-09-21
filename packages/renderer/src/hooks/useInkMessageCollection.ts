@@ -109,7 +109,7 @@ export function parseInkMessage(msg: string, resResolver: StoryResourceResolver)
                     type: mediaMessageMatched.msgType,
                     author: mediaMessageMatched.author,
                     src: resResolver(mediaMessageMatched.msgType, mediaMessageMatched.value)
-                } as InkMessageItemImage | InkMessageItemSound
+                } as InkMessageItemImage | InkMessageItemSound | InkMessageItemVideo
             }
             default: {
                 throw new TypeError(
