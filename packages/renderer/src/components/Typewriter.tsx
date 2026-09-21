@@ -1,4 +1,4 @@
-import { useInterval } from "@reactuses/core"
+import { useInterval, useMount } from "@reactuses/core"
 import DOMPurify from "dompurify"
 import type { FunctionComponent } from "react"
 import { useEffect, useMemo, useRef, useState } from "react"
@@ -6,11 +6,18 @@ import { useEffect, useMemo, useRef, useState } from "react"
 export interface TypewriterProps {
     richtextHtml: string
     interval: number
+    onTypingStart: () => void
     onTyped: () => void
     onTypingEnd: () => void
 }
 
-const TypewriterUnkeyed: FunctionComponent<TypewriterProps> = ({ richtextHtml, interval, onTyped, onTypingEnd }) => {
+const TypewriterUnkeyed: FunctionComponent<TypewriterProps> = ({
+    richtextHtml,
+    interval,
+    onTypingStart,
+    onTyped,
+    onTypingEnd
+}) => {
     const htmlIterator = useMemo(() => createHtmlIterator(DOMPurify.sanitize(richtextHtml)), [richtextHtml])
     const [currentHtml, setCurrentHtml] = useState("")
     const [done, setDone] = useState(false)
@@ -30,6 +37,8 @@ const TypewriterUnkeyed: FunctionComponent<TypewriterProps> = ({ richtextHtml, i
         done ? null : interval,
         { immediate: true }
     )
+
+    useMount(() => onTypingStart())
 
     useEffect(() => {
         if (done && !notifiedOnTypingEnd.current) {
