@@ -40,8 +40,14 @@ export function useInkStoryWrapper(storyArchiveJson: string, historyHandler: (ne
 
     const continueStory = () => {
         markDirty()
-        const ret = story.Continue()
-        if (ret != null && ret.trim() !== "") historyHandler(ret)
+        let ret = story.Continue()
+        if (ret !== null) {
+            while (ret.trim() === "" && story.canContinue) {
+                const result = story.Continue()
+                if (result !== null) ret = result
+            }
+            if (ret.trim() !== "") historyHandler(ret)
+        }
         return ret
     }
 

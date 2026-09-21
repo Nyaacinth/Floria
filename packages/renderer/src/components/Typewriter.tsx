@@ -21,6 +21,7 @@ const TypewriterUnkeyed: FunctionComponent<TypewriterProps> = ({
     const htmlIterator = useMemo(() => createHtmlIterator(DOMPurify.sanitize(richtextHtml)), [richtextHtml])
     const [currentHtml, setCurrentHtml] = useState("")
     const [done, setDone] = useState(false)
+    const notifiedOnTypingStart = useRef(false)
     const notifiedOnTypingEnd = useRef(false)
 
     useInterval(
@@ -38,7 +39,11 @@ const TypewriterUnkeyed: FunctionComponent<TypewriterProps> = ({
         { immediate: true }
     )
 
-    useMount(() => onTypingStart())
+    useMount(() => {
+        if (notifiedOnTypingStart.current) return
+        onTypingStart()
+        notifiedOnTypingStart.current = true
+    })
 
     useEffect(() => {
         if (done && !notifiedOnTypingEnd.current) {
