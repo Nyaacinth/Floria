@@ -1,6 +1,6 @@
 import { useMount } from "@reactuses/core"
-import { AnimatePresence, motion } from "motion/react"
-import { useState, type FunctionComponent } from "react"
+import { motion } from "motion/react"
+import { Fragment, useState, type FunctionComponent } from "react"
 
 import { IconMaterialSymbolRestartAltRounded } from "../../components/IconMaterialSymbolRestartAltRounded"
 import { Typewriter } from "../../components/Typewriter"
@@ -42,12 +42,18 @@ export const Splash: FunctionComponent = () => {
                             case "text": {
                                 return (
                                     <motion.p
+                                        className="mt-0.5 mb-0.5"
                                         transition={{ ease: "easeInOut", duration: 0.35 }}
                                         key={index + "#" + JSON.stringify(item)}
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: isTheMostRecentLine ? 1 : 0.8 }}
                                         whileHover={{ opacity: 1 }}
                                     >
+                                        {item.author ? (
+                                            <span className="mr-1 rounded-sm bg-amber-100 pr-1 pl-1">
+                                                {item.author}:
+                                            </span>
+                                        ) : null}
                                         <Typewriter
                                             richtextHtml={item.html}
                                             interval={75}
@@ -65,13 +71,91 @@ export const Splash: FunctionComponent = () => {
                                 )
                             }
                             case "image": {
-                                return "Wat? Image?"
+                                return (
+                                    <Fragment key={index + "#" + JSON.stringify(item)}>
+                                        {item.author ? (
+                                            <motion.p
+                                                className="mt-0.5 mb-0.5"
+                                                transition={{ ease: "easeInOut", duration: 0.35 }}
+                                                initial={{ opacity: 0 }}
+                                                animate={{ opacity: isTheMostRecentLine ? 1 : 0.8 }}
+                                                whileHover={{ opacity: 1 }}
+                                            >
+                                                <span className="rounded-sm bg-amber-100 pr-1 pl-1">
+                                                    {item.author}:
+                                                </span>
+                                            </motion.p>
+                                        ) : null}
+                                        <motion.img
+                                            className="w-[50%] rounded-lg border border-gray-500 object-contain object-left"
+                                            src={item.src}
+                                            transition={{ ease: "easeInOut", duration: 0.35 }}
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: isTheMostRecentLine ? 1 : 0.8 }}
+                                            whileHover={{ opacity: 1 }}
+                                        />
+                                    </Fragment>
+                                )
                             }
                             case "sound": {
-                                return "Wat? Sound?"
+                                return (
+                                    <Fragment key={index + "#" + JSON.stringify(item)}>
+                                        {item.author ? (
+                                            <motion.p
+                                                className="mt-0.5 mb-0.5"
+                                                transition={{ ease: "easeInOut", duration: 0.35 }}
+                                                initial={{ opacity: 0 }}
+                                                animate={{ opacity: isTheMostRecentLine ? 1 : 0.8 }}
+                                                whileHover={{ opacity: 1 }}
+                                            >
+                                                <span className="rounded-sm bg-amber-100 pr-1 pl-1">
+                                                    {item.author}:
+                                                </span>
+                                            </motion.p>
+                                        ) : null}
+                                        <motion.audio
+                                            className="rounded-full border border-gray-500"
+                                            transition={{ ease: "easeInOut", duration: 0.35 }}
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: isTheMostRecentLine ? 1 : 0.8 }}
+                                            whileHover={{ opacity: 1 }}
+                                            controls
+                                            controlsList="nofullscreen nodownload noremoteplayback noplaybackrate"
+                                            src={item.src}
+                                            autoPlay
+                                        />
+                                    </Fragment>
+                                )
                             }
                             case "video": {
-                                return "Wat? Video?"
+                                return (
+                                    <Fragment key={index + "#" + JSON.stringify(item)}>
+                                        {item.author ? (
+                                            <motion.p
+                                                className="mt-0.5 mb-0.5"
+                                                transition={{ ease: "easeInOut", duration: 0.35 }}
+                                                initial={{ opacity: 0 }}
+                                                animate={{ opacity: isTheMostRecentLine ? 1 : 0.8 }}
+                                                whileHover={{ opacity: 1 }}
+                                            >
+                                                <span className="rounded-sm bg-amber-100 pr-1 pl-1">
+                                                    {item.author}:
+                                                </span>
+                                            </motion.p>
+                                        ) : null}
+                                        <motion.video
+                                            className="w-[50%] rounded-lg border border-gray-500"
+                                            transition={{ ease: "easeInOut", duration: 0.35 }}
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: isTheMostRecentLine ? 1 : 0.8 }}
+                                            whileHover={{ opacity: 1 }}
+                                            controls
+                                            controlsList="nofullscreen nodownload noremoteplayback noplaybackrate"
+                                            src={item.src}
+                                            autoPlay
+                                        />
+                                    </Fragment>
+                                )
                             }
                         }
                     })}
