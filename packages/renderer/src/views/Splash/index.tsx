@@ -16,6 +16,8 @@ export const Splash: FunctionComponent = () => {
     const inited = useRef(false)
     const [tweening, setTweening] = useState(false)
 
+    const typingInterval = mainStory.props?.typingInterval ?? 75
+
     useMount(() => {
         if (inited.current) return
         if (integration.story.canContinue) {
@@ -50,7 +52,7 @@ export const Splash: FunctionComponent = () => {
                                         ) : null}
                                         <Typewriter
                                             richtextHtml={item.html}
-                                            interval={75}
+                                            interval={typingInterval}
                                             onTypingStart={() => setTweening(true)}
                                             onTyped={() => {}}
                                             onTypingEnd={() => {

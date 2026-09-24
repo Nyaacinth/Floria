@@ -28,8 +28,14 @@ export interface StoryDefinition {
         [key: string]: string
     }
 
+    /** A table of video names and video URLs/URIs */
     videos: {
         [key: string]: string
+    }
+
+    /** Optional properties, for story ui settings */
+    props?: {
+        typingInterval?: number
     }
 }
 
