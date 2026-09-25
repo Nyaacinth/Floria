@@ -1,3 +1,4 @@
+import { useUpdate } from "@reactuses/core"
 import { InkList, Story } from "inkjs"
 import { ErrorType } from "inkjs/engine/Error"
 import type { Path as InkPath } from "inkjs/engine/Path"
@@ -22,11 +23,7 @@ export function useInkStoryWrapper(storyArchiveJson: string, historyHandler: (ne
         return s
     })
 
-    // markDirty, don't expose forceUpdate
-    const [, forceUpdate] = useState(0)
-    const markDirty = () => {
-        forceUpdate((prev) => (prev < 256 ? prev + 1 : 0))
-    }
+    const markDirty = useUpdate()
 
     // traces & re-init
     useEffect(() => {
