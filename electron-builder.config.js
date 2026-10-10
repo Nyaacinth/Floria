@@ -3,7 +3,7 @@ import { join as pathJoin } from "node:path"
 import { pathToFileURL } from "node:url"
 
 import mapWorkspaces from "@npmcli/map-workspaces"
-import { parse as parseYAML } from "@std/yaml"
+import { parseYAML } from "confbox"
 
 import packageConfig from "./package.json" with { type: "json" }
 const pnpmWorkspaceConfig = parseYAML(readFileSync(pathJoin(import.meta.dirname, "pnpm-workspace.yaml"), "utf8"))

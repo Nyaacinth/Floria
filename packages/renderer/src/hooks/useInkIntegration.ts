@@ -1,6 +1,6 @@
-import { assert } from "@std/assert"
 import { useCallback, useEffect, useRef } from "react"
 
+import { assert } from "../utils/assert"
 import { StorySaveFile } from "../utils/StorySaveFile"
 import { useInkMessageCollection } from "./useInkMessageCollection"
 import { useInkStoryWrapper } from "./useInkStoryWrapper"

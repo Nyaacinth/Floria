@@ -17,8 +17,8 @@
     },
     "devDependencies": {
         "@npmcli/map-workspaces": "6.0.0",
-        "@std/yaml": "jsr:1.2.0",
         "@types/node": "26.6.2",
+        "confbox": "0.3.1",
         "electron": "44.4.3",
         "electron-builder": "26.16.1",
         "glob": "13.0.6",
@@ -27,5 +27,5 @@
         "oxlint-tsgolint": "7.0.2002",
         "typescript": "7.0.2"
     },
-    "packageManager": "pnpm@12.6.0"
+    "packageManager": "pnpm@12.11.2"
 }

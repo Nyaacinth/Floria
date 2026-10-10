@@ -24,7 +24,6 @@
         "@bbob/preset-html5": "4.4.1",
         "@reactuses/core": "6.5.9",
         "@rolldown/plugin-babel": "0.2.4",
-        "@std/assert": "jsr:^1.0.19",
         "@tailwindcss/vite": "4.3.3",
         "@types/babel__core": "7.20.5",
         "@types/node": "26.6.2",
