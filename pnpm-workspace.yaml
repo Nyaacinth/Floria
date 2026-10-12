@@ -3,5 +3,4 @@ hoistWorkspacePackages: true # Same as above
 packages: ["packages/*"]
 
 allowBuilds:
-    electron: true
-    electron-winstaller: true
+    electron-winstaller: true # For electron-builder
