@@ -17,14 +17,14 @@
     },
     "devDependencies": {
         "@npmcli/map-workspaces": "6.0.0",
-        "@types/node": "26.6.2",
+        "@types/node": "26.6.5",
         "confbox": "0.3.1",
-        "electron": "44.4.3",
+        "electron": "44.7.0",
         "electron-builder": "26.16.1",
         "glob": "13.0.6",
-        "oxfmt": "0.70.0",
-        "oxlint": "1.85.0",
-        "oxlint-tsgolint": "7.0.2002",
+        "oxfmt": "0.72.0",
+        "oxlint": "1.87.0",
+        "oxlint-tsgolint": "7.0.2004",
         "typescript": "7.0.2"
     },
     "devEngines": {
