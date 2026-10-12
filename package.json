@@ -27,5 +27,10 @@
         "oxlint-tsgolint": "7.0.2002",
         "typescript": "7.0.2"
     },
-    "packageManager": "pnpm@12.11.2"
+    "devEngines": {
+        "packageManager": {
+            "name": "pnpm",
+            "version": "12.12.1"
+        }
+    }
 }
