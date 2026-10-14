@@ -1,11 +1,7 @@
 import { defineConfig } from "oxfmt"
 
 export default defineConfig({
-    jsdoc: true,
     sortImports: true,
-    sortPackageJson: {
-        sortScripts: true
-    },
     printWidth: 120,
     tabWidth: 4,
     useTabs: false,
@@ -21,5 +17,9 @@ export default defineConfig({
     endOfLine: "lf",
     embeddedLanguageFormatting: "auto",
     singleAttributePerLine: false,
-    ignorePatterns: ["/buildResources"]
+    ignorePatterns: ["/buildResources"],
+    jsdoc: true,
+    sortPackageJson: {
+        sortScripts: true
+    }
 })
