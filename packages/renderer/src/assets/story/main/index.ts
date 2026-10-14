@@ -1,12 +1,13 @@
 import type { StoryDefinition } from "../../../hooks/useInkIntegration"
-import entry from "./entry.json?raw"
 
-const def: StoryDefinition = {
-    entry: entry,
-    images: {},
-    sounds: {},
-    videos: {},
-    music: {}
+export default async function getMainStory(): Promise<StoryDefinition> {
+    const entry = (await import("./entry.json?raw")).default
+
+    return {
+        entry,
+        images: {},
+        sounds: {},
+        videos: {},
+        music: {}
+    }
 }
-
-export default def

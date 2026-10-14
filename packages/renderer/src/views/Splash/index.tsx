@@ -1,9 +1,9 @@
 import { useMount } from "@reactuses/core"
 import { motion } from "motion/react"
 import type { FunctionComponent } from "react"
-import { Fragment, useRef, useState } from "react"
+import { Fragment, Suspense, use, useRef, useState } from "react"
 
-import mainStory from "../../assets/story/main"
+import getMainStory from "../../assets/story/main"
 import { IconMaterialSymbolRestartAltRounded } from "../../components/IconMaterialSymbolRestartAltRounded"
 import { Typewriter } from "../../components/Typewriter"
 import { useInkIntegration } from "../../hooks/useInkIntegration"
@@ -12,6 +12,27 @@ import type { InkMessageItemImage, InkMessageItemSound, InkMessageItemVideo } fr
 import styles from "./index.module.css"
 
 export const Splash: FunctionComponent = () => {
+    return (
+        <Suspense fallback={<LoadingFallback />}>
+            <SplashAsync />
+        </Suspense>
+    )
+}
+
+const LoadingFallback: FunctionComponent = () => {
+    return (
+        <div className="relative h-full w-full bg-amber-50">
+            <p className="absolute bottom-10 left-10 font-mono text-3xl font-extrabold text-amber-700 opacity-15">
+                Loading...
+            </p>
+        </div>
+    )
+}
+
+const mainStoryHandle = getMainStory()
+
+const SplashAsync: FunctionComponent = () => {
+    const mainStory = use(mainStoryHandle)
     const integration = useInkIntegration(mainStory, (_actionName, _value) => {})
     const inited = useRef(false)
     const [tweening, setTweening] = useState(false)
