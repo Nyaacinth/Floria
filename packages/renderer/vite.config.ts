@@ -4,7 +4,7 @@ import tailwindcss from "@tailwindcss/vite"
 import react, { reactCompilerPreset } from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
 
-import fontSubset from "./lib/rolldown-plugin-font-subset.ts"
+import fontSubset from "./lib/pluginFontSubset.ts"
 
 // https://vite.dev/config/
 export default defineConfig({

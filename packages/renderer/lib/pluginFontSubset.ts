@@ -20,14 +20,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import type { OutputAsset, OutputChunk, OutputOptions } from "rolldown"
 import subsetFont from "subset-font"
 
-const isAssetInfo = (info: OutputAsset | OutputChunk): info is OutputAsset => {
+type LikelyOutputAsset = {
+    type: "asset"
+    source: string | Uint8Array
+    [k: string]: any
+}
+
+type LikelyOutputChunk = {
+    type: "chunk"
+    code: string
+    [k: string]: any
+}
+
+const isAssetInfo = (info: LikelyOutputAsset | LikelyOutputChunk): info is LikelyOutputAsset => {
     return info.type === "asset"
 }
 
-const extractCharacterSet = (info: OutputAsset | OutputChunk): Set<string> => {
+const extractCharacterSet = (info: LikelyOutputAsset | LikelyOutputChunk): Set<string> => {
     if (isAssetInfo(info)) {
         if (typeof info.source === "string") {
             return new Set(info.source)
@@ -47,8 +58,8 @@ const defaultPluginOptions: PluginOptions = {
 }
 
 async function generateBundle(
-    _options: OutputOptions,
-    bundle: { [fileName: string]: OutputAsset | OutputChunk },
+    _options: any,
+    bundle: { [fileName: string]: LikelyOutputAsset | LikelyOutputChunk },
     pluginOptions: PluginOptions
 ) {
     // list files
@@ -91,11 +102,11 @@ async function generateBundle(
     }
 }
 
-export default function fontSubset(options?: PluginOptions) {
+export default function pluginFontSubset(options?: PluginOptions) {
     const pluginOptions = { ...defaultPluginOptions, ...options }
     return {
         name: "rolldown-plugin-font-subset",
-        generateBundle: (options: OutputOptions, bundle: { [fileName: string]: OutputAsset | OutputChunk }) =>
-            generateBundle(options, bundle, pluginOptions)
+        generateBundle: (_options: any, bundle: { [fileName: string]: LikelyOutputAsset | LikelyOutputChunk }) =>
+            generateBundle(_options, bundle, pluginOptions)
     }
 }
