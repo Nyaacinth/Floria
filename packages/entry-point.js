@@ -22,9 +22,7 @@ void initApp({
     renderer:
         process.env.MODE === "development" && !!process.env.VITE_DEV_SERVER_URL
             ? new URL(process.env.VITE_DEV_SERVER_URL)
-            : {
-                  path: fileURLToPath(import.meta.resolve("@app/renderer"))
-              },
+            : { path: fileURLToPath(import.meta.resolve("@app/renderer")) },
 
     preload: {
         path: fileURLToPath(import.meta.resolve("@app/preload/exposed.mjs"))
