@@ -47,6 +47,15 @@ const SplashAsync: FunctionComponent = () => {
         inited.current = true
     })
 
+    const handleFragTweeningStart = () => setTweening(true)
+    const handleFragTweeningEnd = () => {
+        if (integration.story.canContinue) {
+            integration.continueStory()
+        } else {
+            setTweening(false)
+        }
+    }
+
     return (
         <div className={`h-full w-full overflow-x-hidden overflow-y-hidden bg-amber-50 ${styles.setDefaultFontOrder}`}>
             <div className="absolute top-8 right-16 h-[calc(100%-4rem)] w-[calc(100%-8rem)]">
@@ -55,13 +64,14 @@ const SplashAsync: FunctionComponent = () => {
                         const isTheMostRecentLine =
                             (integration.canContinue || integration.currentChoices.length > 0 || tweening) &&
                             index === integration.messageCollection.length - 1
+                        const itemIndex = `${index}#${JSON.stringify(item)}`
                         switch (item.type) {
                             case "text": {
                                 return (
                                     <motion.p
                                         className="mt-0.5 mb-0.5"
                                         transition={{ ease: "easeInOut", duration: 0.35 }}
-                                        key={index + "#" + JSON.stringify(item)}
+                                        key={itemIndex}
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: isTheMostRecentLine ? 1 : 0.8 }}
                                         whileHover={{ opacity: 1 }}
@@ -74,15 +84,9 @@ const SplashAsync: FunctionComponent = () => {
                                         <Typewriter
                                             richtextHtml={item.html}
                                             interval={typingInterval}
-                                            onTypingStart={() => setTweening(true)}
+                                            onTypingStart={handleFragTweeningStart}
                                             onTyped={() => {}}
-                                            onTypingEnd={() => {
-                                                if (integration.story.canContinue) {
-                                                    integration.continueStory()
-                                                } else {
-                                                    setTweening(false)
-                                                }
-                                            }}
+                                            onTypingEnd={handleFragTweeningEnd}
                                         />
                                     </motion.p>
                                 )
@@ -92,15 +96,9 @@ const SplashAsync: FunctionComponent = () => {
                                     <ImageFrag
                                         item={item}
                                         isTheMostRecentLine={isTheMostRecentLine}
-                                        onTweeningStart={() => setTweening(true)}
-                                        onTweeningEnd={() => {
-                                            if (integration.story.canContinue) {
-                                                integration.continueStory()
-                                            } else {
-                                                setTweening(false)
-                                            }
-                                        }}
-                                        key={index + "#" + JSON.stringify(item)}
+                                        onTweeningStart={handleFragTweeningStart}
+                                        onTweeningEnd={handleFragTweeningEnd}
+                                        key={itemIndex}
                                     />
                                 )
                             }
@@ -109,15 +107,9 @@ const SplashAsync: FunctionComponent = () => {
                                     <SoundFrag
                                         item={item}
                                         isTheMostRecentLine={isTheMostRecentLine}
-                                        onTweeningStart={() => setTweening(true)}
-                                        onTweeningEnd={() => {
-                                            if (integration.story.canContinue) {
-                                                integration.continueStory()
-                                            } else {
-                                                setTweening(false)
-                                            }
-                                        }}
-                                        key={index + "#" + JSON.stringify(item)}
+                                        onTweeningStart={handleFragTweeningStart}
+                                        onTweeningEnd={handleFragTweeningEnd}
+                                        key={itemIndex}
                                     />
                                 )
                             }
@@ -126,15 +118,9 @@ const SplashAsync: FunctionComponent = () => {
                                     <VideoFrag
                                         item={item}
                                         isTheMostRecentLine={isTheMostRecentLine}
-                                        onTweeningStart={() => setTweening(true)}
-                                        onTweeningEnd={() => {
-                                            if (integration.story.canContinue) {
-                                                integration.continueStory()
-                                            } else {
-                                                setTweening(false)
-                                            }
-                                        }}
-                                        key={index + "#" + JSON.stringify(item)}
+                                        onTweeningStart={handleFragTweeningStart}
+                                        onTweeningEnd={handleFragTweeningEnd}
+                                        key={itemIndex}
                                     />
                                 )
                             }
