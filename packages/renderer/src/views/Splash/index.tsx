@@ -21,8 +21,8 @@ export const Splash: FunctionComponent = () => {
 
 const LoadingFallback: FunctionComponent = () => {
     return (
-        <div className="relative h-full w-full bg-amber-50">
-            <p className="absolute bottom-10 left-10 font-mono text-3xl font-extrabold text-amber-700 opacity-15">
+        <div className="relative h-full w-full bg-mauve-600">
+            <p className="absolute bottom-10 left-10 font-mono text-3xl font-extrabold text-white opacity-15">
                 Loading...
             </p>
         </div>
@@ -59,7 +59,11 @@ const SplashAsync: FunctionComponent = () => {
     return (
         <div className={`h-full w-full overflow-x-hidden overflow-y-hidden bg-mauve-600 ${styles.setDefaultFontOrder}`}>
             <div className="absolute top-8 right-16 h-[calc(100%-4rem)] w-[calc(100%-8rem)]">
-                <div className={`scrollbar-thin overflow-x-hidden overflow-y-auto ${styles.stampContainer}`}>
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 100, transition: { duration: 0.1 } }}
+                    className={`scrollbar-thin overflow-x-hidden overflow-y-auto ${styles.stampContainer}`}
+                >
                     {integration.messageCollection.map((item, index) => {
                         const isTheMostRecentLine =
                             (integration.canContinue || integration.currentChoices.length > 0 || tweening) &&
@@ -172,7 +176,7 @@ const SplashAsync: FunctionComponent = () => {
                             </motion.div>
                         ) : null}
                     </div>
-                </div>
+                </motion.div>
             </div>
         </div>
     )
