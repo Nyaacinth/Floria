@@ -19,7 +19,7 @@
         "preview": "vite preview"
     },
     "devDependencies": {
-        "@babel/core": "8.0.7",
+        "@babel/core": "8.0.9",
         "@bbob/html": "4.4.1",
         "@bbob/preset-html5": "4.4.1",
         "@reactuses/core": "6.6.0",
@@ -35,10 +35,10 @@
         "dompurify": "3.4.17",
         "inkjs": "2.4.0",
         "jotai": "3.0.1",
-        "motion": "14.4.0",
-        "oxfmt": "0.73.0",
-        "oxlint": "1.88.0",
-        "oxlint-tsgolint": "7.0.2004",
+        "motion": "14.6.0",
+        "oxfmt": "0.74.0",
+        "oxlint": "1.89.0",
+        "oxlint-tsgolint": "7.0.2005",
         "react": "19.3.1",
         "react-dom": "19.3.1",
         "subset-font": "2.9.0",
@@ -46,7 +46,7 @@
         "tailwindcss": "4.3.3",
         "type-fest": "5.10.0",
         "typescript": "7.0.2",
-        "vite": "8.3.4",
+        "vite": "8.3.5",
         "wouter": "3.13.0",
         "zod": "4.6.7"
     }

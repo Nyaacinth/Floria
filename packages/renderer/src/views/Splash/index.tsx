@@ -57,9 +57,9 @@ const SplashAsync: FunctionComponent = () => {
     }
 
     return (
-        <div className={`h-full w-full overflow-x-hidden overflow-y-hidden bg-amber-50 ${styles.setDefaultFontOrder}`}>
+        <div className={`h-full w-full overflow-x-hidden overflow-y-hidden bg-mauve-600 ${styles.setDefaultFontOrder}`}>
             <div className="absolute top-8 right-16 h-[calc(100%-4rem)] w-[calc(100%-8rem)]">
-                <div className="h-full w-full scrollbar-thin overflow-x-hidden overflow-y-auto">
+                <div className={`scrollbar-thin overflow-x-hidden overflow-y-auto ${styles.stampContainer}`}>
                     {integration.messageCollection.map((item, index) => {
                         const isTheMostRecentLine =
                             (integration.canContinue || integration.currentChoices.length > 0 || tweening) &&
