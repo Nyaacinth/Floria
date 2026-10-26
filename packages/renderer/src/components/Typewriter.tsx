@@ -60,11 +60,32 @@ export const Typewriter: FunctionComponent<TypewriterProps> = (props) => {
 }
 
 /**
- * Create an iterator that walks given _sanitized_ html string and automatically skips tags
+ * Create an iterator that walks given _sanitized_ html string and automatically skips tags and entities
  *
  * @param html Sanitized text-centric html
  */
 function* createHtmlIterator(html: string) {
+    const kEntityRegex = /^&(?:[a-zA-Z][a-zA-Z\d]*|#\d+|#[xX][0-9a-fA-F]+);$/
+    const kMaxEntityLength = 64
+
+    function safeFindTagEnd(html: string, start: number) {
+        let theQuote: string | null = null
+
+        for (let idx = start + 1; idx < html.length; idx++) {
+            const theChar = html[idx]
+
+            if (theQuote) {
+                if (theChar === theQuote) theQuote = null
+            } else if (theChar === '"' || theChar === "'") {
+                theQuote = theChar
+            } else if (theChar === ">") {
+                return idx
+            }
+        }
+
+        return -1
+    }
+
     let ptr = 0
     let lastYielded = -1
 
@@ -74,7 +95,7 @@ function* createHtmlIterator(html: string) {
     while (ptr < html.length) {
         if (html[ptr] === "<") {
             // skip opening, closing, self-closing, or invalid tags
-            const end = html.indexOf(">", ptr)
+            const end = safeFindTagEnd(html, ptr)
             if (end === -1) {
                 ptr = html.length
                 break
@@ -83,12 +104,22 @@ function* createHtmlIterator(html: string) {
             continue
         }
 
-        // consume next char
-        ptr++
+        // consume next char or html entity
+        if (html[ptr] === "&") {
+            const semiIdx = html.indexOf(";", ptr)
+            const cand = semiIdx === -1 ? "" : html.slice(ptr, semiIdx + 1)
+            if (cand.length <= kMaxEntityLength && kEntityRegex.test(cand)) {
+                ptr = semiIdx + 1
+            } else {
+                ptr++
+            }
+        } else {
+            ptr++
+        }
 
         // skip immediate closing tags
         while (ptr < html.length && html[ptr] === "<" && html[ptr + 1] === "/") {
-            const end = html.indexOf(">", ptr)
+            const end = safeFindTagEnd(html, ptr)
             if (end === -1) {
                 ptr = html.length
                 break

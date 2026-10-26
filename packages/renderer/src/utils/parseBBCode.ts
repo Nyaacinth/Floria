@@ -9,7 +9,8 @@ import htmlPreset from "@bbob/preset-html5"
  * @returns Parsed HTML string
  */
 export function parseBBCode(text: string) {
-    return bbobHtml(text, htmlPreset(), {
+    const onlyTagsEscaped = text.replaceAll("<", "&lt;").replaceAll(">", "&gt;")
+    return bbobHtml(onlyTagsEscaped, htmlPreset(), {
         onlyAllowTags: ["b", "i", "u", "s", "quote", "code", "style", "color", "size"]
     })
 }
