@@ -2,7 +2,7 @@ import { motion } from "motion/react"
 import type { FunctionComponent } from "react"
 import { Fragment, useRef } from "react"
 
-import type { InkMessageItemImage, InkMessageItemSound, InkMessageItemVideo } from "../../hooks/useInkMessageCollection"
+import type { InkMessageItemImage, InkMessageItemAudio, InkMessageItemVideo } from "../../hooks/useInkMessageCollection"
 
 export const ImageFrag: FunctionComponent<{
     item: InkMessageItemImage
@@ -26,7 +26,7 @@ export const ImageFrag: FunctionComponent<{
                 </motion.p>
             ) : null}
             <motion.img
-                className="w-[60%] rounded-lg border border-gray-500 object-contain object-left"
+                className="w-[60%] rounded-sm border border-gray-500 object-contain object-left"
                 src={item.src}
                 transition={{ ease: "easeInOut", duration: 0.35 }}
                 initial={{ opacity: 0 }}
@@ -47,8 +47,8 @@ export const ImageFrag: FunctionComponent<{
     )
 }
 
-export const SoundFrag: FunctionComponent<{
-    item: InkMessageItemSound
+export const AudioFrag: FunctionComponent<{
+    item: InkMessageItemAudio
     isTheMostRecentLine: boolean
     onTweeningStart: () => void
     onTweeningEnd: () => void
@@ -115,7 +115,7 @@ export const VideoFrag: FunctionComponent<{
                 </motion.p>
             ) : null}
             <motion.video
-                className="w-[60%] rounded-lg border border-gray-500"
+                className="w-[60%] rounded-sm border border-gray-500"
                 transition={{ ease: "easeInOut", duration: 0.35 }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: isTheMostRecentLine ? 1 : 0.8 }}

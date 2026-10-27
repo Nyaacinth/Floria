@@ -10,7 +10,7 @@ import { useAutoScrollDown } from "../../hooks/useAutoScrollDown"
 import { useInkIntegration } from "../../hooks/useInkIntegration"
 import { TypewriterSfxSpawner } from "../../utils/TypewriterSfxSpawner"
 import { controls } from "./controls"
-import { ImageFrag, SoundFrag, VideoFrag } from "./media-frags"
+import { ImageFrag, AudioFrag, VideoFrag } from "./media-frags"
 
 import styles from "./styles.module.css"
 
@@ -117,9 +117,9 @@ export const SplashAsync: FunctionComponent = () => {
                                         />
                                     )
                                 }
-                                case "sound": {
+                                case "audio": {
                                     return (
-                                        <SoundFrag
+                                        <AudioFrag
                                             item={item}
                                             isTheMostRecentLine={isTheMostRecentLine}
                                             onTweeningStart={handleFragTweeningStart}

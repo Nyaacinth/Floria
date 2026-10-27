@@ -24,7 +24,7 @@ const StorySaveData = z.compile(
                     src: z.string()
                 }),
                 z.object({
-                    type: z.literal("sound"),
+                    type: z.literal("audio"),
                     author: z.optional(z.string()),
                     src: z.string()
                 }),

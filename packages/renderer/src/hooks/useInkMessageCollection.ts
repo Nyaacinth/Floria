@@ -15,8 +15,8 @@ export interface InkMessageItemImage {
     src: string
 }
 
-export interface InkMessageItemSound {
-    type: "sound"
+export interface InkMessageItemAudio {
+    type: "audio"
     author?: string
     src: string
 }
@@ -27,7 +27,7 @@ export interface InkMessageItemVideo {
     src: string
 }
 
-export type InkMessageItem = InkMessageItemText | InkMessageItemImage | InkMessageItemSound | InkMessageItemVideo
+export type InkMessageItem = InkMessageItemText | InkMessageItemImage | InkMessageItemAudio | InkMessageItemVideo
 
 export type InkMessageType = InkMessageItem["type"]
 
@@ -103,13 +103,13 @@ export function parseInkMessage(msg: string, resResolver: StoryResourceResolver)
     if (mediaMessageMatched !== false) {
         switch (mediaMessageMatched.msgType) {
             case "image":
-            case "sound":
+            case "audio":
             case "video": {
                 return {
                     type: mediaMessageMatched.msgType,
                     author: mediaMessageMatched.author,
                     src: resResolver(mediaMessageMatched.msgType, mediaMessageMatched.value)
-                } as InkMessageItemImage | InkMessageItemSound | InkMessageItemVideo
+                } as InkMessageItemImage | InkMessageItemAudio | InkMessageItemVideo
             }
             default: {
                 throw new TypeError(

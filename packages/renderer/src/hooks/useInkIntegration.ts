@@ -5,7 +5,7 @@ import { StorySaveFile } from "../utils/StorySaveFile"
 import { useInkMessageCollection } from "./useInkMessageCollection"
 import { useInkStoryWrapper } from "./useInkStoryWrapper"
 
-export type ResourceResolvables = "image" | "sound" | "music" | "video"
+export type ResourceResolvables = "image" | "audio" | "video"
 
 export type StoryResourceResolver = (type: ResourceResolvables, value: string) => string
 
@@ -18,13 +18,8 @@ export interface StoryDefinition {
         [key: string]: string
     }
 
-    /** A table of sound names and sound URLs/URIs */
-    sounds: {
-        [key: string]: string
-    }
-
-    /** A table of music names and music URLs/URIs */
-    music: {
+    /** A table of audio names and audio URLs/URIs */
+    audio: {
         [key: string]: string
     }
 
@@ -46,12 +41,8 @@ function resolveSrc(storyDef: StoryDefinition, type: ResourceResolvables, value:
             ret = storyDef.images[value]
             break
         }
-        case "sound": {
-            ret = storyDef.sounds[value]
-            break
-        }
-        case "music": {
-            ret = storyDef.music[value]
+        case "audio": {
+            ret = storyDef.audio[value]
             break
         }
         case "video": {

@@ -6,8 +6,7 @@ export default async function getMainStory(): Promise<StoryDefinition> {
     return {
         entry,
         images: {},
-        sounds: {},
-        videos: {},
-        music: {}
+        audio: {},
+        videos: {}
     }
 }
