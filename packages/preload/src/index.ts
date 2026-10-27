@@ -6,4 +6,8 @@ function send(channel: string, message: string) {
     return ipcRenderer.invoke(channel, message)
 }
 
-export { send, versions }
+function showAboutPage() {
+    return ipcRenderer.invoke("FloriaApp:showAboutPage")
+}
+
+export { send, showAboutPage, versions }

@@ -20,7 +20,7 @@ export class BlockNotAllowedOrigins extends AbstractSecurityRule {
         this.allowedOrigins = structuredClone(allowedOrigins)
     }
 
-    applyRule(contents: Electron.WebContents): Promise<void> | void {
+    applyRule(contents: Electron.WebContents): void {
         contents.on("will-navigate", (event, url) => {
             const { origin } = new URL(url)
             if (this.allowedOrigins.has(origin)) {

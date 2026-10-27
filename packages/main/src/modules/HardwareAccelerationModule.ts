@@ -8,7 +8,7 @@ export class HardwareAccelerationModule implements AppModule {
         this.shouldBeDisabled = !enable
     }
 
-    enable({ app }: ModuleContext): Promise<void> | void {
+    enable({ app }: ModuleContext): void {
         if (this.shouldBeDisabled) {
             app.disableHardwareAcceleration()
         }

@@ -18,6 +18,9 @@
         "lint": "tsc --build --noEmit && oxlint",
         "preview": "vite preview"
     },
+    "dependencies": {
+        "@app/preload": "workspace:*"
+    },
     "devDependencies": {
         "@babel/core": "8.0.9",
         "@bbob/html": "4.4.1",
@@ -42,7 +45,6 @@
         "react": "19.3.1",
         "react-dom": "19.3.1",
         "subset-font": "2.9.0",
-        "swr": "2.5.1",
         "tailwindcss": "4.3.3",
         "type-fest": "5.10.0",
         "typescript": "7.0.2",

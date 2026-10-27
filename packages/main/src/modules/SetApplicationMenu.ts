@@ -10,7 +10,7 @@ export class SetApplicationMenu implements AppModule {
         this.menu = menu
     }
 
-    enable(_ctx: ModuleContext): Promise<void> | void {
+    enable(_ctx: ModuleContext): void {
         Menu.setApplicationMenu(this.menu)
     }
 }

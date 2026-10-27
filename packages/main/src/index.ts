@@ -4,6 +4,7 @@ import { terminateAppOnLastWindowClose } from "./modules/ApplicationTerminatorOn
 import { serveStatics } from "./modules/AppServe"
 import { allowInternalOrigins } from "./modules/BlockNotAllowedOrigins"
 import { allowExternalUrls } from "./modules/ExternalUrls"
+import { handleIpcMessagesWithPredefinedActions } from "./modules/HandleIpcMessagesWithPredefinedActions"
 import { hardwareAccelerationMode } from "./modules/HardwareAccelerationModule"
 import { initWithGivenMenu } from "./modules/SetApplicationMenu"
 import { disallowMultipleAppInstance } from "./modules/SingleInstanceApp"
@@ -21,6 +22,9 @@ export async function initApp(initConfig: AppInitConfig) {
         // Security
         .init(allowInternalOrigins(new Set(initConfig.renderer instanceof URL ? [initConfig.renderer.origin] : [])))
         .init(allowExternalUrls(new Set([])))
+
+        // IPC
+        .init(handleIpcMessagesWithPredefinedActions())
 
     await moduleRunner
 }

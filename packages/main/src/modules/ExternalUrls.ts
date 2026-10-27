@@ -12,7 +12,7 @@ export class ExternalUrls implements AppModule {
         this.externalUrls = externalUrls
     }
 
-    enable({ app }: ModuleContext): Promise<void> | void {
+    enable({ app }: ModuleContext): void {
         app.on("web-contents-created", (_, contents) => {
             contents.setWindowOpenHandler(({ url }) => {
                 const { origin } = new URL(url)

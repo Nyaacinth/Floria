@@ -8,7 +8,7 @@ class ApplicationTerminatorOnLastWindowClose implements AppModule {
         this.terminateOnDarwin = terminateOnDarwin
     }
 
-    enable({ app }: ModuleContext): Promise<void> | void {
+    enable({ app }: ModuleContext): void {
         app.on("window-all-closed", () => {
             if (process.platform !== "darwin" || this.terminateOnDarwin) app.quit()
         })
