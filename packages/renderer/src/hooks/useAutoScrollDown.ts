@@ -13,10 +13,10 @@ export function useAutoScrollDown(elmRef: RefObject<HTMLElement | null>) {
             if (e.deltaY !== 0) {
                 setInterrupted(true)
 
-                setTimeout(() => setBack(), 500)
+                setBack()
             }
         }
-        window.addEventListener("wheel", cb)
+        window.addEventListener("wheel", cb, { passive: true })
 
         return () => window.removeEventListener("wheel", cb)
     }, [setBack])
@@ -29,7 +29,6 @@ export function useAutoScrollDown(elmRef: RefObject<HTMLElement | null>) {
 
         function autoScroll(currentTime: number) {
             if (abortSignal) return
-            // Throttle to approximately 100ms intervals
             if (currentTime - lastTime < autoScrollInterval) {
                 animationId = requestAnimationFrame(autoScroll)
                 return
@@ -46,10 +45,10 @@ export function useAutoScrollDown(elmRef: RefObject<HTMLElement | null>) {
                 const containerScrollTop = elm.scrollTop
                 const targetScrollTop = elm.scrollHeight - elm.clientHeight
                 const diff = targetScrollTop - containerScrollTop
-                if (diff < offsetHeight * 0.25) {
+                if (diff !== 0 && diff < offsetHeight * 0.25) {
                     elm.scrollBy({
-                        top: Math.max(0.3 * diff, 0.1),
-                        behavior: "smooth"
+                        top: Math.max(0.3 * diff, 0.05),
+                        behavior: "auto"
                     })
                 }
             }
