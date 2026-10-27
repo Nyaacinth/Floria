@@ -57,7 +57,7 @@ const SplashAsync: FunctionComponent = () => {
     }
 
     return (
-        <div className={`h-full w-full overflow-x-hidden overflow-y-hidden bg-mauve-600 ${styles.setDefaultFontOrder}`}>
+        <div className={`h-full w-full overflow-x-hidden overflow-y-hidden bg-mauve-600 ${styles.setDefaultFonts}`}>
             <div className="absolute top-8 right-16 h-[calc(100%-4rem)] w-[calc(100%-8rem)]">
                 <motion.div
                     initial={{ opacity: 0 }}
