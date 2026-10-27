@@ -26,7 +26,7 @@ export const ImageFrag: FunctionComponent<{
                 </motion.p>
             ) : null}
             <motion.img
-                className="w-[50%] rounded-lg border border-gray-500 object-contain object-left"
+                className="w-[60%] rounded-lg border border-gray-500 object-contain object-left"
                 src={item.src}
                 transition={{ ease: "easeInOut", duration: 0.35 }}
                 initial={{ opacity: 0 }}
@@ -115,7 +115,7 @@ export const VideoFrag: FunctionComponent<{
                 </motion.p>
             ) : null}
             <motion.video
-                className="w-[50%] rounded-lg border border-gray-500"
+                className="w-[60%] rounded-lg border border-gray-500"
                 transition={{ ease: "easeInOut", duration: 0.35 }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: isTheMostRecentLine ? 1 : 0.8 }}
