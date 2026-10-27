@@ -64,117 +64,120 @@ const SplashAsync: FunctionComponent = () => {
                     animate={{ opacity: 100, transition: { duration: 0.1 } }}
                     className={`scrollbar-thin overflow-x-hidden overflow-y-auto ${styles.stampContainer}`}
                 >
-                    {integration.messageCollection.map((item, index) => {
-                        const isTheMostRecentLine =
-                            (integration.canContinue || integration.currentChoices.length > 0 || tweening) &&
-                            index === integration.messageCollection.length - 1
-                        const itemIndex = `${index}#${JSON.stringify(item)}`
-                        switch (item.type) {
-                            case "text": {
-                                return (
-                                    <motion.p
-                                        className="mt-0.5 mb-0.5"
-                                        transition={{ ease: "easeInOut", duration: 0.35 }}
-                                        key={itemIndex}
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: isTheMostRecentLine ? 1 : 0.8 }}
-                                        whileHover={{ opacity: 1 }}
-                                    >
-                                        {item.author ? (
-                                            <span className="mr-1 rounded-sm bg-amber-100 pr-1 pl-1">
-                                                {item.author}:
-                                            </span>
-                                        ) : null}
-                                        <Typewriter
-                                            richtextHtml={item.html}
-                                            interval={typingInterval}
-                                            onTypingStart={handleFragTweeningStart}
-                                            onTyped={() => {}}
-                                            onTypingEnd={handleFragTweeningEnd}
+                    {/* the <div /> below: stabilize layout */}
+                    <div className="relative h-full w-full">
+                        {integration.messageCollection.map((item, index) => {
+                            const isTheMostRecentLine =
+                                (integration.canContinue || integration.currentChoices.length > 0 || tweening) &&
+                                index === integration.messageCollection.length - 1
+                            const itemIndex = `${index}#${JSON.stringify(item)}`
+                            switch (item.type) {
+                                case "text": {
+                                    return (
+                                        <motion.p
+                                            className="mt-0.5 mb-0.5"
+                                            transition={{ ease: "easeInOut", duration: 0.35 }}
+                                            key={itemIndex}
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: isTheMostRecentLine ? 1 : 0.8 }}
+                                            whileHover={{ opacity: 1 }}
+                                        >
+                                            {item.author ? (
+                                                <span className="mr-1 rounded-sm bg-amber-100 pr-1 pl-1">
+                                                    {item.author}:
+                                                </span>
+                                            ) : null}
+                                            <Typewriter
+                                                richtextHtml={item.html}
+                                                interval={typingInterval}
+                                                onTypingStart={handleFragTweeningStart}
+                                                onTyped={() => {}}
+                                                onTypingEnd={handleFragTweeningEnd}
+                                            />
+                                        </motion.p>
+                                    )
+                                }
+                                case "image": {
+                                    return (
+                                        <ImageFrag
+                                            item={item}
+                                            isTheMostRecentLine={isTheMostRecentLine}
+                                            onTweeningStart={handleFragTweeningStart}
+                                            onTweeningEnd={handleFragTweeningEnd}
+                                            key={itemIndex}
                                         />
-                                    </motion.p>
-                                )
+                                    )
+                                }
+                                case "sound": {
+                                    return (
+                                        <SoundFrag
+                                            item={item}
+                                            isTheMostRecentLine={isTheMostRecentLine}
+                                            onTweeningStart={handleFragTweeningStart}
+                                            onTweeningEnd={handleFragTweeningEnd}
+                                            key={itemIndex}
+                                        />
+                                    )
+                                }
+                                case "video": {
+                                    return (
+                                        <VideoFrag
+                                            item={item}
+                                            isTheMostRecentLine={isTheMostRecentLine}
+                                            onTweeningStart={handleFragTweeningStart}
+                                            onTweeningEnd={handleFragTweeningEnd}
+                                            key={itemIndex}
+                                        />
+                                    )
+                                }
                             }
-                            case "image": {
-                                return (
-                                    <ImageFrag
-                                        item={item}
-                                        isTheMostRecentLine={isTheMostRecentLine}
-                                        onTweeningStart={handleFragTweeningStart}
-                                        onTweeningEnd={handleFragTweeningEnd}
-                                        key={itemIndex}
-                                    />
-                                )
-                            }
-                            case "sound": {
-                                return (
-                                    <SoundFrag
-                                        item={item}
-                                        isTheMostRecentLine={isTheMostRecentLine}
-                                        onTweeningStart={handleFragTweeningStart}
-                                        onTweeningEnd={handleFragTweeningEnd}
-                                        key={itemIndex}
-                                    />
-                                )
-                            }
-                            case "video": {
-                                return (
-                                    <VideoFrag
-                                        item={item}
-                                        isTheMostRecentLine={isTheMostRecentLine}
-                                        onTweeningStart={handleFragTweeningStart}
-                                        onTweeningEnd={handleFragTweeningEnd}
-                                        key={itemIndex}
-                                    />
-                                )
-                            }
-                        }
-                    })}
-                    <div className="min-h-[30%]">
-                        {!tweening ? (
-                            <motion.div
-                                transition={{ ease: "easeInOut", duration: 0.35 }}
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                            >
-                                {integration.currentChoices.length > 0 ? (
-                                    integration.currentChoices.map((value, index) => {
-                                        return (
+                        })}
+                        <div className="min-h-[30%]">
+                            {!tweening ? (
+                                <motion.div
+                                    transition={{ ease: "easeInOut", duration: 0.35 }}
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                >
+                                    {integration.currentChoices.length > 0 ? (
+                                        integration.currentChoices.map((value, index) => {
+                                            return (
+                                                <button
+                                                    key={index}
+                                                    className="m-1 flex rounded-full bg-gray-800 pt-1 pr-2 pb-1 pl-2 text-sm text-white italic"
+                                                    onClick={() => {
+                                                        integration.chooseChoiceIndex(value.index)
+                                                        if (integration.story.canContinue) {
+                                                            integration.continueStory()
+                                                        }
+                                                    }}
+                                                >
+                                                    {value.text}
+                                                </button>
+                                            )
+                                        })
+                                    ) : !integration.canContinue ? (
+                                        <>
+                                            <p className="m-2 text-sm text-amber-800 italic">· El Final ·</p>
                                             <button
-                                                key={index}
-                                                className="m-1 flex rounded-full bg-gray-800 pt-1 pr-2 pb-1 pl-2 text-sm text-white italic"
+                                                className="m-2 flex rounded-full bg-gray-800 p-1 text-white"
                                                 onClick={() => {
-                                                    integration.chooseChoiceIndex(value.index)
-                                                    if (integration.story.canContinue) {
-                                                        integration.continueStory()
-                                                    }
+                                                    integration.resetCurrentStory()
+                                                    setTimeout(() => {
+                                                        if (integration.story.canContinue) {
+                                                            integration.continueStory()
+                                                            setTweening(true)
+                                                        }
+                                                    }, 300)
                                                 }}
                                             >
-                                                {value.text}
+                                                <IconMaterialSymbolRestartAltRounded size={20} />
                                             </button>
-                                        )
-                                    })
-                                ) : !integration.canContinue ? (
-                                    <>
-                                        <p className="m-2 text-sm text-amber-800 italic">· El Final ·</p>
-                                        <button
-                                            className="m-2 flex rounded-full bg-gray-800 p-1 text-white"
-                                            onClick={() => {
-                                                integration.resetCurrentStory()
-                                                setTimeout(() => {
-                                                    if (integration.story.canContinue) {
-                                                        integration.continueStory()
-                                                        setTweening(true)
-                                                    }
-                                                }, 300)
-                                            }}
-                                        >
-                                            <IconMaterialSymbolRestartAltRounded size={20} />
-                                        </button>
-                                    </>
-                                ) : null}
-                            </motion.div>
-                        ) : null}
+                                        </>
+                                    ) : null}
+                                </motion.div>
+                            ) : null}
+                        </div>
                     </div>
                 </motion.div>
             </div>
