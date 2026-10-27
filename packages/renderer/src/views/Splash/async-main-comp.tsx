@@ -6,6 +6,7 @@ import { use, useRef, useState } from "react"
 import getMainStory from "../../assets/story/main"
 import { IconMaterialSymbolRestartAltRounded } from "../../components/IconMaterialSymbolRestartAltRounded"
 import { Typewriter } from "../../components/Typewriter"
+import { useAutoScrollDown } from "../../hooks/useAutoScrollDown"
 import { useInkIntegration } from "../../hooks/useInkIntegration"
 import { controls } from "./controls"
 import { ImageFrag, SoundFrag, VideoFrag } from "./media-frags"
@@ -39,6 +40,9 @@ export const SplashAsync: FunctionComponent = () => {
         }
     }
 
+    const autoScrollContainerRef = useRef<HTMLDivElement>(null)
+    useAutoScrollDown(autoScrollContainerRef)
+
     return (
         <div className={`h-full w-full overflow-x-hidden overflow-y-hidden bg-mauve-600 ${styles.setDefaultFonts}`}>
             <div className="absolute top-8 left-16.5 h-[calc(100%-4rem)] w-14">
@@ -63,7 +67,10 @@ export const SplashAsync: FunctionComponent = () => {
                     animate={{ opacity: 100, transition: { duration: 0.1 } }}
                     className={styles.stampContainer}
                 >
-                    <div className="relative h-full w-full scrollbar-thin overflow-x-hidden overflow-y-auto">
+                    <div
+                        ref={autoScrollContainerRef}
+                        className="relative h-full w-full scrollbar-thin overflow-x-hidden overflow-y-auto"
+                    >
                         {integration.messageCollection.map((item, index) => {
                             const isTheMostRecentLine =
                                 (integration.canContinue || integration.currentChoices.length > 0 || tweening) &&
