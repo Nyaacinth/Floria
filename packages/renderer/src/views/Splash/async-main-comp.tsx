@@ -8,6 +8,7 @@ import { IconMaterialSymbolRestartAltRounded } from "../../components/IconMateri
 import { Typewriter } from "../../components/Typewriter"
 import { useAutoScrollDown } from "../../hooks/useAutoScrollDown"
 import { useInkIntegration } from "../../hooks/useInkIntegration"
+import { TypewriterSfxSpawner } from "../../utils/TypewriterSfxSpawner"
 import { controls } from "./controls"
 import { ImageFrag, SoundFrag, VideoFrag } from "./media-frags"
 
@@ -96,8 +97,11 @@ export const SplashAsync: FunctionComponent = () => {
                                                 richtextHtml={item.html}
                                                 interval={typingInterval}
                                                 onTypingStart={handleFragTweeningStart}
-                                                onTyped={() => {}}
-                                                onTypingEnd={handleFragTweeningEnd}
+                                                onTyped={() => TypewriterSfxSpawner.playTyped()}
+                                                onTypingEnd={() => {
+                                                    handleFragTweeningEnd()
+                                                    TypewriterSfxSpawner.playEnter()
+                                                }}
                                             />
                                         </motion.p>
                                     )

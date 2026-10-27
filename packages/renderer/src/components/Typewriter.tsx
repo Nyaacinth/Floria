@@ -32,8 +32,10 @@ const TypewriterUnkeyed: FunctionComponent<TypewriterProps> = ({
                 setDone(true)
                 return
             }
-            if (result.value) setCurrentHtml(result.value)
-            onTyped()
+            if (result.value) {
+                onTyped()
+                setCurrentHtml(result.value)
+            }
         },
         done ? null : interval,
         { immediate: true }
