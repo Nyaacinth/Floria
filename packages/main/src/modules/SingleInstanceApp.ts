@@ -6,7 +6,7 @@ class SingleInstanceApp implements AppModule {
     enable({ app }: { app: Electron.App }): void {
         const isSingleInstance = app.requestSingleInstanceLock()
         if (!isSingleInstance) {
-            app.quit()
+            app.exit(0)
         }
     }
 }

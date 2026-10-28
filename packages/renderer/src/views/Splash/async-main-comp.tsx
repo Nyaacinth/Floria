@@ -26,17 +26,21 @@ export const SplashAsync: FunctionComponent = () => {
 
     useMount(() => {
         if (inited.current) return
-        if (integration.story.canContinue) {
-            integration.continueStory()
-        }
+        integration.continueStory()
         inited.current = true
     })
 
     const handleFragTweeningStart = () => setTweening(true)
     const handleFragTweeningEnd = () => {
-        if (integration.story.canContinue) {
-            integration.continueStory()
-        } else {
+        try {
+            const lines = integration.continueStory()
+
+            if (!lines.some((line) => line.passedToHandler)) {
+                setTweening(false)
+            }
+        } catch (e) {
+            console.error(e)
+            if (e instanceof Error) alert(e.message)
             setTweening(false)
         }
     }
@@ -156,9 +160,9 @@ export const SplashAsync: FunctionComponent = () => {
                                                     className="m-1 flex rounded-full bg-gray-800 pt-1 pr-2 pb-1 pl-2 text-sm text-white italic"
                                                     onClick={() => {
                                                         integration.chooseChoiceIndex(value.index)
-                                                        if (integration.story.canContinue) {
-                                                            integration.continueStory()
-                                                        }
+                                                        const lines = integration.continueStory()
+                                                        if (lines.some((line) => line.passedToHandler))
+                                                            setTweening(true)
                                                     }}
                                                 >
                                                     {value.text}
@@ -173,8 +177,8 @@ export const SplashAsync: FunctionComponent = () => {
                                                 onClick={() => {
                                                     integration.resetCurrentStory()
                                                     setTimeout(() => {
-                                                        if (integration.story.canContinue) {
-                                                            integration.continueStory()
+                                                        const lines = integration.continueStory()
+                                                        if (lines.some((line) => line.passedToHandler)) {
                                                             setTweening(true)
                                                         }
                                                     }, 300)

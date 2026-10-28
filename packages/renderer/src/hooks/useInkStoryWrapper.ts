@@ -6,6 +6,13 @@ import { useEffect, useRef, useState } from "react"
 
 const noOpHandler = () => {}
 
+export interface StoryContinueResult {
+    ret: string | null
+    tags: string[] | null
+    /** `true` when this line was passed to `historyHandler()` */
+    passedToHandler: boolean
+}
+
 /**
  * Create a ink story instance and wire it up with React
  *
@@ -36,16 +43,28 @@ export function useInkStoryWrapper(storyArchiveJson: string, historyHandler: (ne
     }, [storyArchiveJson])
 
     const continueStory = () => {
+        if (!story.canContinue) return []
+
         markDirty()
-        let ret = story.Continue()
-        if (ret !== null) {
-            while (ret.trim() === "" && story.canContinue) {
-                const result = story.Continue()
-                if (result !== null) ret = result
+
+        const results: StoryContinueResult[] = []
+
+        while (story.canContinue) {
+            const ret = story.Continue()
+            const tags = story.currentTags === null ? null : [...story.currentTags]
+
+            if (ret === null || ret.trim() === "") {
+                results.push({ ret, tags, passedToHandler: false })
+                continue
             }
-            if (ret.trim() !== "") historyHandler(ret)
+
+            historyHandler(ret)
+            results.push({ ret, tags, passedToHandler: true })
+
+            break
         }
-        return ret
+
+        return results
     }
 
     const chooseChoiceIndex = (...args: Parameters<(typeof story)["ChooseChoiceIndex"]>) => {
@@ -269,7 +288,6 @@ const defaultHandlerOnError = (message: string, errorType: ErrorType) => {
             const oMsg = `Ink Error: ${message}`
             console.error(oMsg)
             alert(oMsg)
-            throw new Error(oMsg)
         }
     }
 }

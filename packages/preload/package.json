@@ -8,7 +8,7 @@
             "default": "./dist/_virtual_browser.mjs"
         },
         "./exposed.mjs": {
-            "types": "./src/exposed.d.ts",
+            "types": "./src/exposed.ts",
             "default": "./dist/exposed.mjs"
         }
     },

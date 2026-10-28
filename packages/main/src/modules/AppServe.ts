@@ -13,7 +13,7 @@ export class AppServe implements AppModule {
         const rendererPath = initConfig.renderer
         if (!(rendererPath instanceof URL) && typeof rendererPath.path == "string") {
             this.rendererPath = rendererPath.path
-            this.hostname = `nappslocal${Math.round(Math.random() * 1000)}`
+            this.hostname = "floria-app"
             initConfig.renderer = new URL(`app://${this.hostname}`)
         } else if (import.meta.env.PROD) {
             console.warn("Renderer path is a URL, which is not supported in production mode")

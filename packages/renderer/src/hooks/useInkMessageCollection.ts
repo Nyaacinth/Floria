@@ -147,12 +147,14 @@ export function useInkMessageCollection(resResolver: StoryResourceResolver) {
         try {
             addToCollection(parseInkMessage(newText, resResolver))
         } catch (e) {
+            console.error(e)
             if (e instanceof Error) {
                 alert(e.message)
-                throw e
-            } else {
-                throw e
             }
+            addToCollection({
+                type: "text",
+                html: "[!] To Developer: System error thrown, check the console."
+            } satisfies InkMessageItemText)
         }
     }
     return {

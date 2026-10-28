@@ -13,30 +13,61 @@ import { AbstractSecurityRule } from "./AbstractSecurityModule"
  * @see https://www.electronjs.org/docs/latest/tutorial/security#13-disable-or-limit-navigation
  */
 export class BlockNotAllowedOrigins extends AbstractSecurityRule {
-    private readonly allowedOrigins: Set<string>
+    private readonly allowedDestinations: Array<URL>
 
-    constructor(allowedOrigins: Set<string> = new Set()) {
+    /**
+     * Create BlockNotAllowedOrigins module
+     *
+     * @param allowedDestinations Warn: Only { #protocol, #hostname, #port } OR { #origin } is used to test destinations
+     */
+    constructor(allowedDestinations: Array<URL> = []) {
+        function dedupe(a: Array<URL>) {
+            const seen: Record<string, boolean> = {}
+            return a.filter((item) => {
+                const key = `${item.protocol}#AND#${item.hostname}#AND#${item.port}#AND#${item.origin}`
+                return seen.hasOwnProperty(key) ? false : (seen[key] = true)
+            })
+        }
+
         super()
-        this.allowedOrigins = structuredClone(allowedOrigins)
+        this.allowedDestinations = dedupe(allowedDestinations)
     }
 
     applyRule(contents: Electron.WebContents): void {
-        contents.on("will-navigate", (event, url) => {
-            const { origin } = new URL(url)
-            if (this.allowedOrigins.has(origin)) {
+        const filterFn = (event: Electron.Event, url: string) => {
+            let dest: URL
+            try {
+                dest = new URL(url)
+            } catch {
+                event.preventDefault()
                 return
             }
+            const isOnAllowlist = this.allowedDestinations.some((item) => {
+                if (String(item.origin) !== "null" && String(dest.origin) !== "null") {
+                    return item.origin === dest.origin
+                }
+                return item.protocol === dest.protocol && item.hostname === dest.hostname && item.port === dest.port
+            })
+
+            if (isOnAllowlist) return
 
             // Prevent navigation
             event.preventDefault()
 
             if (import.meta.env.DEV) {
-                console.warn(`Blocked navigating to disallowed origin: ${origin}`)
+                console.warn(`Blocked navigating to disallowed destination: ${dest.href}`)
             }
-        })
+        }
+        contents.on("will-navigate", filterFn)
+        contents.on("will-redirect", filterFn)
     }
 }
 
+/**
+ * Create BlockNotAllowedOrigins module
+ *
+ * @param allowedDestinations Warn: Only { #protocol, #hostname, #port } OR { #origin } is used to test destinations
+ */
 export function allowInternalOrigins(
     ...args: ConstructorParameters<typeof BlockNotAllowedOrigins>
 ): BlockNotAllowedOrigins {

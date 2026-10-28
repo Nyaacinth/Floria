@@ -32,7 +32,13 @@ export default {
      * unpredictably change during deployment, making them impossible to locate and download for update.
      */
     artifactName: "${productName}-${version}-${os}-${arch}.${ext}",
-    files: ["LICENSE*", packageConfig.main, "!node_modules/@app/**", ...(await getListOfFilesFromEachWorkspace())]
+    files: [
+        "LICENSE*",
+        "LICENSES/**/*",
+        packageConfig.main,
+        "!node_modules/@app/**",
+        ...(await getListOfFilesFromEachWorkspace())
+    ]
 }
 
 /**

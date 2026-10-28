@@ -5,8 +5,8 @@ export default async function getMainStory(): Promise<StoryDefinition> {
 
     return {
         entry,
-        images: {},
-        audio: {},
-        videos: {}
+        images: new Map([]),
+        audio: new Map([]),
+        videos: new Map([])
     }
 }

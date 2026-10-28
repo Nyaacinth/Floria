@@ -77,7 +77,7 @@ async function generateBundle(
 
     // compute glyph set
     const glyphSet = sourceFiles
-        .map((fileName) => extractCharacterSet(bundle[fileName]))
+        .map((fileName) => (bundle[fileName] != null ? extractCharacterSet(bundle[fileName]) : new Set()))
         .reduce((acc, set) => new Set([...acc, ...set]), new Set<string>())
     const glyphSetString = Array.from(glyphSet).join("")
     if (pluginOptions?.verbose) {
@@ -87,7 +87,7 @@ async function generateBundle(
     // subset fonts
     for (const fileName of fontFiles) {
         const font = bundle[fileName]
-        if (isAssetInfo(font) && typeof font.source !== "string") {
+        if (font != null && isAssetInfo(font) && typeof font.source !== "string") {
             // Determine target format from filename
             const targetFormat = fileName.endsWith(".woff2")
                 ? "woff2"

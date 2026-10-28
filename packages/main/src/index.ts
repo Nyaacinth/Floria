@@ -17,11 +17,11 @@ export async function initApp(initConfig: AppInitConfig) {
         .init(createWindowManagerModule({ initConfig, withDevTools: import.meta.env.DEV }))
         .init(terminateAppOnLastWindowClose({ terminateOnDarwin: true }))
         .init(hardwareAccelerationMode({ enable: true }))
-        .init(initWithGivenMenu(null))
+        .init(initWithGivenMenu(null, false))
 
         // Security
-        .init(allowInternalOrigins(new Set(initConfig.renderer instanceof URL ? [initConfig.renderer.origin] : [])))
-        .init(allowExternalUrls(new Set([])))
+        .init(allowInternalOrigins(initConfig.renderer instanceof URL ? [initConfig.renderer] : []))
+        .init(allowExternalUrls([]))
 
         // IPC
         .init(handleIpcMessagesWithPredefinedActions())

@@ -13,20 +13,14 @@ export interface StoryDefinition {
     /** Exported json string from ink compiler */
     entry: string
 
-    /** A table of image names and image URLs/URIs */
-    images: {
-        [key: string]: string
-    }
+    /** A map of image names and image URLs/URIs */
+    images: Map<string, string>
 
-    /** A table of audio names and audio URLs/URIs */
-    audio: {
-        [key: string]: string
-    }
+    /** A map of audio names and audio URLs/URIs */
+    audio: Map<string, string>
 
-    /** A table of video names and video URLs/URIs */
-    videos: {
-        [key: string]: string
-    }
+    /** A map of video names and video URLs/URIs */
+    videos: Map<string, string>
 
     /** Optional properties, for story ui settings */
     props?: {
@@ -35,18 +29,18 @@ export interface StoryDefinition {
 }
 
 function resolveSrc(storyDef: StoryDefinition, type: ResourceResolvables, value: string) {
-    let ret: string
+    let ret: string | undefined
     switch (type) {
         case "image": {
-            ret = storyDef.images[value]
+            ret = storyDef.images.get(value)
             break
         }
         case "audio": {
-            ret = storyDef.audio[value]
+            ret = storyDef.audio.get(value)
             break
         }
         case "video": {
-            ret = storyDef.videos[value]
+            ret = storyDef.videos.get(value)
         }
     }
     if (ret == null) throw new RangeError(`Could not resolve type: "${type}", value: "${value}"`)

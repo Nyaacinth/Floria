@@ -5,13 +5,24 @@ import type { ModuleContext } from "../ModuleContext"
 
 export class SetApplicationMenu implements AppModule {
     private menu: Menu | null
+    private menuOnDarwin?: Menu | false
 
-    constructor(menu: Menu | null) {
+    constructor(menu: Menu | null, menuOnDarwin?: Menu | false) {
         this.menu = menu
+        this.menuOnDarwin = menuOnDarwin
     }
 
     enable(_ctx: ModuleContext): void {
-        Menu.setApplicationMenu(this.menu)
+        if (process.platform !== "darwin") {
+            Menu.setApplicationMenu(this.menu)
+        } else {
+            if (this.menuOnDarwin === false) return
+            if (this.menuOnDarwin == null) {
+                Menu.setApplicationMenu(this.menu)
+                return
+            }
+            Menu.setApplicationMenu(this.menuOnDarwin)
+        }
     }
 }
 
