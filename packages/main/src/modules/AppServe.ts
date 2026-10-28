@@ -32,7 +32,7 @@ export class AppServe implements AppModule {
 
 /**
  * Mutates the `initConfig` object if successfully enabled electron-serve, in that case it will be set to URL:
- * `app://<randomhostname>`
+ * `app://floria-app`
  *
  * Must be placed before any other module that requires `initConfig.renderer`.
  */
