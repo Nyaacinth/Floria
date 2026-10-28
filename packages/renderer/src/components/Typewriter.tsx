@@ -64,17 +64,17 @@ export const Typewriter: FunctionComponent<TypewriterProps> = (props) => {
 /**
  * Create an iterator that walks given _sanitized_ html string and automatically skips tags and entities
  *
- * @param html Sanitized text-centric html
+ * @param html Known-good text-centric html
  */
 function* createHtmlIterator(html: string) {
     const kEntityRegex = /^&(?:[a-zA-Z][a-zA-Z\d]*|#\d+|#[xX][0-9a-fA-F]+);$/
     const kMaxEntityLength = 64
 
-    function safeFindTagEnd(html: string, start: number) {
+    function safeFindTagEnd(saidHtml: string, start: number) {
         let theQuote: string | null = null
 
-        for (let idx = start + 1; idx < html.length; idx++) {
-            const theChar = html[idx]
+        for (let idx = start + 1; idx < saidHtml.length; idx++) {
+            const theChar = saidHtml[idx]
 
             if (theQuote) {
                 if (theChar === theQuote) theQuote = null
@@ -131,12 +131,12 @@ function* createHtmlIterator(html: string) {
 
         if (ptr !== lastYielded) {
             lastYielded = ptr
-            yield DOMPurify.sanitize(html.slice(0, ptr))
+            yield html.slice(0, ptr)
         }
     }
 
     // guard: string ends with tags after the last visible char
     if (lastYielded !== html.length) {
-        yield DOMPurify.sanitize(html.slice(0, html.length))
+        yield html.slice(0, html.length)
     }
 }
